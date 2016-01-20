@@ -16,6 +16,7 @@
 #define MAX_CHARS 256
 #define MAX_BUFFER 512
 #define MAX_ARGS 64
+#define DEBUG 0
 
 /*
  * Types the prompt.
@@ -42,12 +43,12 @@ void read_command(char *args[]){
 		return;
 	}
 
-	printf("%s\n", argbuf);
+	if (DEBUG) printf("%s\n", argbuf);
 
 	char *token = strtok(argbuf, " ");
 	int i = 0;
 	while(token != NULL) {
-		printf("token:[%s]\n", token);
+		if (DEBUG) printf("token:[%s]\n", token);
 		args[i] = (char*)malloc(sizeof(char) * (strlen(token) + 1));
 		strcpy(args[i], token);
 		i++;
@@ -57,7 +58,7 @@ void read_command(char *args[]){
 
 	int j;
 	for (j=0; j<i; j++){
-		printf("args: %s\n", args[j]);
+		if (DEBUG) printf("args: %s\n", args[j]);
 	}
 }
 
@@ -68,9 +69,29 @@ void read_command(char *args[]){
  */
 void execute(char *args[]){
 	char *command = args[0];
-	printf("command: %s", command);
+	if (DEBUG) printf("command: %s", command);
 	if (fork() != 0){
 		/* Parent code. */
+
+		/* Check if command is exit or cd dir 
+			In either of those conditions, the command is not forked and executed in a child process.
+			Instead, these are executed in-line in the shell process itself
+		*/
+
+		// Check if command is exit
+		if (strcmp(command, "exit") == 0){
+			printf("Exiting the shell.\n");
+			exit(0);
+		}
+
+		// Check if command is cd
+		else if (strcmp(command, "cd") == 0){
+			chdir(args[2]);
+			char cwd[1024];
+			if (getcwd(cwd, sizeof(cwd)) != NULL)
+			fprintf(stdout, "Current working dir: %s\n", cwd);
+		}
+
 		int status;
 		struct timeval start_time;
 		struct timeval end_time;
@@ -96,7 +117,7 @@ void execute(char *args[]){
 			- start_usage.ru_majflt - start_usage.ru_minflt;
 		long page_faults_sat = end_usage.ru_minflt - start_usage.ru_minflt;
 
-		printf("\n");
+		printf("\n--STATS--\n");
 		printf("Time passed: %f ms\n", wall_time_passed);
 		printf("CPU user: %f ms\n", cpu_time_user);
 		printf("CPU system: %f ms\n", cpu_time_system);
@@ -105,13 +126,13 @@ void execute(char *args[]){
 		printf("Preempted CPU voluntary: %ld times\n", voluntary);
 		printf("Page faults: %ld times\n", page_faults);
 		printf("Page faults (satisfiable): %ld times\n", page_faults_sat);
+		printf("---------------------------------------------------------------\n");
 	}
 	else {
 		/* Child code. */
 		if (execvp(command, &args[0]) < 0){
-			printf("execvp failure\n");
+			printf("\nexecvp() failure\n");
 		}
-		printf("execvp failure\n");
 	}
 }
 
