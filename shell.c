@@ -67,7 +67,7 @@ void read_command(char *args[]){
  * 
  */
 void execute(char *args[]){
-	char *command = args[1];
+	char *command = args[0];
 	printf("command: %s", command);
 	if (fork() != 0){
 		/* Parent code. */
@@ -108,7 +108,7 @@ void execute(char *args[]){
 	}
 	else {
 		/* Child code. */
-		if (execvp(command, &args[1]) < 0){
+		if (execvp(command, &args[0]) < 0){
 			printf("execvp failure\n");
 		}
 		printf("execvp failure\n");
