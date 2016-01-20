@@ -1,5 +1,5 @@
 ## Start of the Makefile
-all: runCommand clean
+all: runCommand shell clean
 
 runCommand: runCommand.o
 	gcc -o runCommand runCommand.o

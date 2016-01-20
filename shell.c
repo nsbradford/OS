@@ -2,13 +2,35 @@
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <sys/resource.h>
-
+#include <string.h>
+#include <unistd.h>
 
 int execute(char *argv[]){
 	char *command = argv[1];
 	
 	if (fork() != 0){
 		/* Parent code. */
+
+		/* Check if command is exit or cd dir 
+			In either of those conditions, the command is not forked and executed in a child process.
+			Instead, these are executed in-line in the shell process itself
+		*/
+
+		// Check if command is exit
+		if (strcmp(command, "exit") == 0){
+			printf("Exiting the shell.\n");
+			exit(0);
+		}
+
+		// Check if command is cd
+		else if (strcmp(command, "cd") == 0){
+			chdir(argv[2]);
+			char cwd[1024];
+			if (getcwd(cwd, sizeof(cwd)) != NULL)
+			fprintf(stdout, "Current working dir: %s\n", cwd);
+		}
+
+
 		int status;
 		struct timeval start_time;
 		struct timeval end_time;
