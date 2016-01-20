@@ -1,12 +1,74 @@
+/*
+ * shell.c
+ * Nicholas Bradford, Himanshu Sahay
+ * 
+ */
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <sys/resource.h>
 
+#define TRUE 1
+#define MAX_CHARS 256
+#define MAX_BUFFER 512
+#define MAX_ARGS 64
 
-int execute(char *argv[]){
-	char *command = argv[1];
-	
+/*
+ * Types the prompt.
+ * 
+ */
+void type_prompt(){
+	printf("prompt$ ");
+}
+
+/*
+ * Reads a command.
+ * 
+ */
+void read_command(char *args[]){
+	char argbuf[MAX_BUFFER];
+	fgets(argbuf, MAX_BUFFER, stdin);
+
+	// fgets() includes a newline char, so turn it into NULL
+	argbuf[strlen(argbuf) - 1] = '\0';
+
+	// alert the user if their command is too long
+	if (strlen(argbuf) > MAX_CHARS){
+		printf("ERROR: shell supports only %d chars, not %d\n.", MAX_CHARS, strlen(argbuf));
+		return;
+	}
+
+	printf("%s\n", argbuf);
+
+	char *token = strtok(argbuf, " ");
+	int i = 0;
+	while(token != NULL) {
+		printf("token:[%s]\n", token);
+		args[i] = (char*)malloc(sizeof(char) * (strlen(token) + 1));
+		strcpy(args[i], token);
+		i++;
+		token = strtok(NULL, " ");
+	}
+	args[i] = NULL; // must NULL-terminate to use execvp()
+
+	int j;
+	for (j=0; j<i; j++){
+		printf("args: %s\n", args[j]);
+	}
+}
+
+/*
+ * Executes a command from a list of args,
+ * where args[0] is the command, and the rest are params.
+ * 
+ */
+void execute(char *args[]){
+	char *command = args[1];
+	printf("command: %s", command);
 	if (fork() != 0){
 		/* Parent code. */
 		int status;
@@ -40,19 +102,39 @@ int execute(char *argv[]){
 		printf("CPU system: %f ms\n", cpu_time_system);
 		printf("CPU user+system: %f ms\n", cpu_time_user+cpu_time_system);
 		printf("Preempted CPU involuntary: %ld times\n", involuntary);
+		printf("Preempted CPU voluntary: %ld times\n", voluntary);
 		printf("Page faults: %ld times\n", page_faults);
 		printf("Page faults (satisfiable): %ld times\n", page_faults_sat);
 	}
 	else {
 		/* Child code. */
-		execvp(command, &argv[1]);
+		if (execvp(command, &args[1]) < 0){
+			printf("execvp failure\n");
+		}
+		printf("execvp failure\n");
 	}
 }
 
-
-int main(int argc, char *argv[]){
-	execute(argv);
-	return 0;
+/*
+ * free() the allocated memory in args.
+ * 
+ */
+void free_args(char *args[]){
+	// TODO
 }
 
-// getrusage()
+/*
+ * Run the shell.
+ * 
+ */
+int main(int argc, char *argv[]){
+	while(TRUE){
+		// Read from stdnin
+		type_prompt();
+		char *args[MAX_ARGS];
+		read_command(args);
+		execute(args);
+		// TODO free() the memory in args!
+	}
+	return 0;
+}

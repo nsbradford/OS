@@ -1,10 +1,17 @@
+/*
+ * runCommand.c
+ * Nicholas Bradford, Himanshu Sahay
+ * 
+ */
+
 #include <stdio.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <sys/resource.h>
+#include <unistd.h>
 
 
-int execute(char *argv[]){
+void execute(char *argv[]){
 	char *command = argv[1];
 	
 	if (fork() != 0){
@@ -40,6 +47,7 @@ int execute(char *argv[]){
 		printf("CPU system: %f ms\n", cpu_time_system);
 		printf("CPU user+system: %f ms\n", cpu_time_user+cpu_time_system);
 		printf("Preempted CPU involuntary: %ld times\n", involuntary);
+		printf("Preempted CPU voluntary: %ld times\n", voluntary);
 		printf("Page faults: %ld times\n", page_faults);
 		printf("Page faults (satisfiable): %ld times\n", page_faults_sat);
 	}
@@ -54,5 +62,3 @@ int main(int argc, char *argv[]){
 	execute(argv);
 	return 0;
 }
-
-// getrusage()
