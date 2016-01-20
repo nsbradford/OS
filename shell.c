@@ -31,11 +31,17 @@ void type_prompt(){
  * 
  */
 void read_command(char *args[]){
-	char argbuf[MAX_BUFFER];
-	fgets(argbuf, MAX_BUFFER, stdin);
 
-	// fgets() includes a newline char, so turn it into NULL
-	argbuf[strlen(argbuf) - 1] = '\0';
+	// fgets is causing errors when reading commands from file, using gets instead
+	// char argbuf[MAX_BUFFER];
+	// fgets(argbuf, MAX_BUFFER, stdin);
+
+	// // fgets() includes a newline char, so turn it into NULL
+	// argbuf[strlen(argbuf) - 1] = '\0';
+
+	// TODO: READ COMMANDS FROM STDIN and handle new line character and end of file character, instead of NULL
+	char argbuf[MAX_BUFFER];
+	gets(argbuf);
 
 	// alert the user if their command is too long
 	if (strlen(argbuf) > MAX_CHARS){
@@ -78,19 +84,21 @@ void execute(char *args[]){
 			Instead, these are executed in-line in the shell process itself
 		*/
 
-		// Check if command is exit
-		if (strcmp(command, "exit") == 0){
-			printf("Exiting the shell.\n");
-			exit(0);
-		}
+		// // Check if command is exit
+			// This exit check is breaking, (string is comparing with "ex")
+		// if (strcmp(command, "exit") == 0){
+		// 	printf("Exiting the shell.\n");
+		// 	exit(-1);
+		// }
 
-		// Check if command is cd
-		else if (strcmp(command, "cd") == 0){
-			chdir(args[2]);
-			char cwd[1024];
-			if (getcwd(cwd, sizeof(cwd)) != NULL)
-			fprintf(stdout, "Current working dir: %s\n", cwd);
-		}
+		// // Check if command is cd
+		// else if (strcmp(command, "cd") == 0){
+		// 	chdir(args[2]);
+		// 	char cwd[1024];
+		// 	if (getcwd(cwd, sizeof(cwd)) != NULL)
+		// 	fprintf(stdout, "Current working dir: %s\n", cwd);
+		// }
+
 
 		int status;
 		struct timeval start_time;
@@ -149,13 +157,37 @@ void free_args(char *args[]){
  * 
  */
 int main(int argc, char *argv[]){
+
 	while(TRUE){
 		// Read from stdnin
 		type_prompt();
 		char *args[MAX_ARGS];
 		read_command(args);
+
+		// Check if command is exit
+		if (strcmp(args[0], "exit") == 0){
+			printf("Exiting the shell.\n");
+			// exit(-1);
+			return(EXIT_SUCCESS);
+		}
+
+		// Check if command is cd
+		// ERROR: cd is currently not working, causing execvp failure!
+		else if (strcmp(args[0], "cd") == 0){
+			chdir(args[2]);
+			char cwd[1024];
+			if (getcwd(cwd, sizeof(cwd)) != NULL)
+			fprintf(stdout, "Current working dir: %s\n", cwd);
+		}
+
 		execute(args);
 		// TODO free() the memory in args!
+		// TODO Store getrusage() data about previous child 
+		/* Reason: getrusage() returns the cumulative statistics for all children of a process, not just the statistics for 
+		the most recent child. Keep a record of the statistics of previous children. When you call getrusage() after a particular child has terminated,
+		subtract the previous statistics from the most recent ones returned by getrusage() in order to find out how many resources 
+		that the particular child used */
+
 	}
 	return 0;
 }
