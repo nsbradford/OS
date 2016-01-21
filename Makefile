@@ -1,3 +1,4 @@
+## Auhtors: Himanshu Sahay (hsahay@wpi.edu), Nicholas Bradford (nsbradford@wpi.edu)
 ## Start of the Makefile
 all: runCommand shell clean
 
