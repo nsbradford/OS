@@ -1,6 +1,6 @@
 /*
  * runCommand.c
- * Nicholas Bradford, Himanshu Sahay
+ * Author: Nicholas Bradford (nsbraford@wpi.edu), Himanshu Sahay (hsahay@wpi.edu)
  * 
  */
 
@@ -37,8 +37,7 @@ void execute(char *argv[]){
 			+ (end_usage.ru_stime.tv_usec - start_usage.ru_stime.tv_usec)/1000;
 		long involuntary = end_usage.ru_nivcsw - start_usage.ru_nivcsw;
 		long voluntary = end_usage.ru_nvcsw - start_usage.ru_nvcsw;
-		long page_faults = end_usage.ru_majflt + end_usage.ru_minflt
-			- start_usage.ru_majflt - start_usage.ru_minflt;
+		long page_faults = end_usage.ru_majflt - start_usage.ru_majflt;
 		long page_faults_sat = end_usage.ru_minflt - start_usage.ru_minflt;
 
 		printf("\n");

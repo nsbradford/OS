@@ -1,6 +1,6 @@
 /*
  * shell.c
- * Nicholas Bradford, Himanshu Sahay
+ * Authors: Nicholas Bradford (nsbradford@wpi.edu), Himanshu Sahay (hsahay@wpi.edu)
  * 
  */
 
@@ -39,7 +39,9 @@ void read_command(char *args[]){
 	// // fgets() includes a newline char, so turn it into NULL
 	// argbuf[strlen(argbuf) - 1] = '\0';
 
-	// TODO: READ COMMANDS FROM STDIN and handle new line character and end of file character, instead of NULL
+
+
+	// TODO: be able to read quoted commands (see forum post)
 	char argbuf[MAX_BUFFER];
 	gets(argbuf);
 
@@ -121,8 +123,7 @@ void execute(char *args[]){
 			+ (end_usage.ru_stime.tv_usec - start_usage.ru_stime.tv_usec)/1000;
 		long involuntary = end_usage.ru_nivcsw - start_usage.ru_nivcsw;
 		long voluntary = end_usage.ru_nvcsw - start_usage.ru_nvcsw;
-		long page_faults = end_usage.ru_majflt + end_usage.ru_minflt
-			- start_usage.ru_majflt - start_usage.ru_minflt;
+		long page_faults = end_usage.ru_majflt - start_usage.ru_majflt;
 		long page_faults_sat = end_usage.ru_minflt - start_usage.ru_minflt;
 
 		printf("\n--STATS--\n");
@@ -150,6 +151,9 @@ void execute(char *args[]){
  */
 void free_args(char *args[]){
 	// TODO
+	if (DEBUG)
+		printf("freeing memory in args\n");
+	free(*args);
 }
 
 /*
@@ -181,6 +185,7 @@ int main(int argc, char *argv[]){
 		}
 
 		execute(args);
+		free_args(args);
 		// TODO free() the memory in args!
 		// TODO Store getrusage() data about previous child 
 		/* Reason: getrusage() returns the cumulative statistics for all children of a process, not just the statistics for 
