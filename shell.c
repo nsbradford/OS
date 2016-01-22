@@ -176,15 +176,15 @@ int main(int argc, char *argv[]){
 		}
 
 		// Check if command is cd
-		// ERROR: cd is currently not working, causing execvp failure!
 		else if (strcmp(args[0], "cd") == 0){
-			chdir(args[2]);
+			chdir(args[1]);
 			char cwd[1024];
 			if (getcwd(cwd, sizeof(cwd)) != NULL)
 			fprintf(stdout, "Current working dir: %s\n", cwd);
 		}
+		else
+			execute(args);
 
-		execute(args);
 		free_args(args);
 		// TODO free() the memory in args!
 		// TODO Store getrusage() data about previous child 
