@@ -1,6 +1,6 @@
 ## Auhtors: Himanshu Sahay (hsahay@wpi.edu), Nicholas Bradford (nsbradford@wpi.edu)
 ## Start of the Makefile
-all: runCommand shell shell2 clean
+all: runCommand shell shell2
 
 runCommand: runCommand.o
 	gcc -o runCommand runCommand.o
