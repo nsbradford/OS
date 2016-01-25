@@ -13,10 +13,63 @@
 #include <sys/resource.h>
 
 #define TRUE 1
-#define MAX_CHARS 256
-#define MAX_BUFFER 512
-#define MAX_ARGS 64
-#define DEBUG 0
+#define MAX_CHARS 128
+#define MAX_BUFFER 256
+#define MAX_ARGS 32
+#define DEBUG 1
+
+typedef struct cmdArg {
+	int n_args;
+	char **args;
+} CmdArg;
+
+void type_prompt();
+void read_command(CmdArg *cmd);
+void execute(char *args[]);
+void free_args(CmdArg *cmd);
+
+/*
+ * Run the shell.
+ * 
+ */
+int main(int argc, char *argv[]){
+
+	while(TRUE){
+		// Read from stdnin
+		type_prompt();
+		CmdArg *cmd = malloc(sizeof(CmdArg));
+		cmd->args = malloc((MAX_ARGS+1) * sizeof(char*));
+
+		read_command(cmd);
+
+		// Check if command is exit
+		if (strcmp(cmd->args[0], "exit") == 0){
+			printf("Exiting the shell.\n");
+			// exit(-1);
+			return(EXIT_SUCCESS);
+		}
+
+		// Check if command is cd
+		else if (strcmp(cmd->args[0], "cd") == 0){
+			chdir(cmd->args[1]);
+			char cwd[1024];
+			if (getcwd(cwd, sizeof(cwd)) != NULL)
+			fprintf(stdout, "Current working dir: %s\n", cwd);
+		}
+		else
+			execute(cmd->args);
+
+		free_args(cmd);
+		// TODO free() the memory in args!
+		// TODO Store getrusage() data about previous child 
+		/* Reason: getrusage() returns the cumulative statistics for all children of a process, not just the statistics for 
+		the most recent child. Keep a record of the statistics of previous children. When you call getrusage() after a particular child has terminated,
+		subtract the previous statistics from the most recent ones returned by getrusage() in order to find out how many resources 
+		that the particular child used */
+
+	}
+	return 0;
+}
 
 /*
  * Types the prompt.
@@ -30,7 +83,7 @@ void type_prompt(){
  * Reads a command.
  * 
  */
-void read_command(char *args[]){
+void read_command(CmdArg *cmd){
 
 	// fgets is causing errors when reading commands from file, using gets instead
 	// char argbuf[MAX_BUFFER];
@@ -39,16 +92,25 @@ void read_command(char *args[]){
 	// // fgets() includes a newline char, so turn it into NULL
 	// argbuf[strlen(argbuf) - 1] = '\0';
 
-
-
 	// TODO: be able to read quoted commands (see forum post)
 	char argbuf[MAX_BUFFER];
-	gets(argbuf);
+	fgets(argbuf, MAX_BUFFER, stdin);
 
 	// alert the user if their command is too long
 	if (strlen(argbuf) > MAX_CHARS){
 		printf("ERROR: shell supports only %d chars, not %d\n.", MAX_CHARS, strlen(argbuf));
 		return;
+	}
+
+	//fgets() includes a newline char, so turn it into NULL
+	argbuf[strlen(argbuf) - 1] = '\0';
+
+	// fgets() includes the newline character. We don't want that, so make it end of line.
+	//commandstr[strlen(commandstr) - 1] = '\0';
+
+	if(feof(stdin)) {
+		if (DEBUG) printf("Found EOF\n");
+		exit(0);
 	}
 
 	if (DEBUG) printf("%s\n", argbuf);
@@ -57,17 +119,25 @@ void read_command(char *args[]){
 	int i = 0;
 	while(token != NULL) {
 		if (DEBUG) printf("token:[%s]\n", token);
-		args[i] = (char*)malloc(sizeof(char) * (strlen(token) + 1));
-		strcpy(args[i], token);
+		cmd->args[i] = (char*)malloc(sizeof(char) * (strlen(token) + 1));
+		strcpy(cmd->args[i], token);
 		i++;
 		token = strtok(NULL, " ");
 	}
-	args[i] = NULL; // must NULL-terminate to use execvp()
+	cmd->args[i] = NULL; // must NULL-terminate to use execvp()
+	cmd->n_args = i;
+
+	if (cmd->n_args > MAX_ARGS){
+		printf("ERROR: shell supports only %d chars, not %d\n.", MAX_ARGS, cmd->n_args);
+		return;
+	}
 
 	int j;
 	for (j=0; j<i; j++){
-		if (DEBUG) printf("args: %s\n", args[j]);
+		if (DEBUG) printf("args: %s\n", cmd->args[j]);
 	}
+
+
 }
 
 /*
@@ -81,27 +151,6 @@ void execute(char *args[]){
 	if (fork() != 0){
 		/* Parent code. */
 
-		/* Check if command is exit or cd dir 
-			In either of those conditions, the command is not forked and executed in a child process.
-			Instead, these are executed in-line in the shell process itself
-		*/
-
-		// // Check if command is exit
-			// This exit check is breaking, (string is comparing with "ex")
-		// if (strcmp(command, "exit") == 0){
-		// 	printf("Exiting the shell.\n");
-		// 	exit(-1);
-		// }
-
-		// // Check if command is cd
-		// else if (strcmp(command, "cd") == 0){
-		// 	chdir(args[2]);
-		// 	char cwd[1024];
-		// 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		// 	fprintf(stdout, "Current working dir: %s\n", cwd);
-		// }
-
-
 		int status;
 		struct timeval start_time;
 		struct timeval end_time;
@@ -111,7 +160,7 @@ void execute(char *args[]){
 		gettimeofday(&start_time, NULL);
 		getrusage(RUSAGE_CHILDREN, &start_usage);
 
-		waitpid(-1, &status, 0);
+		wait3(&status, 0, &end_usage); //waitpid(-1, &status, 0);
 		
 		gettimeofday(&end_time, NULL);
 		getrusage(RUSAGE_CHILDREN, &end_usage);
@@ -149,50 +198,14 @@ void execute(char *args[]){
  * free() the allocated memory in args.
  * 
  */
-void free_args(char *args[]){
-	// TODO
-	if (DEBUG)
-		printf("freeing memory in args\n");
-	free(*args);
-}
-
-/*
- * Run the shell.
- * 
- */
-int main(int argc, char *argv[]){
-
-	while(TRUE){
-		// Read from stdnin
-		type_prompt();
-		char *args[MAX_ARGS];
-		read_command(args);
-
-		// Check if command is exit
-		if (strcmp(args[0], "exit") == 0){
-			printf("Exiting the shell.\n");
-			// exit(-1);
-			return(EXIT_SUCCESS);
-		}
-
-		// Check if command is cd
-		else if (strcmp(args[0], "cd") == 0){
-			chdir(args[1]);
-			char cwd[1024];
-			if (getcwd(cwd, sizeof(cwd)) != NULL)
-			fprintf(stdout, "Current working dir: %s\n", cwd);
-		}
-		else
-			execute(args);
-
-		free_args(args);
-		// TODO free() the memory in args!
-		// TODO Store getrusage() data about previous child 
-		/* Reason: getrusage() returns the cumulative statistics for all children of a process, not just the statistics for 
-		the most recent child. Keep a record of the statistics of previous children. When you call getrusage() after a particular child has terminated,
-		subtract the previous statistics from the most recent ones returned by getrusage() in order to find out how many resources 
-		that the particular child used */
-
+void free_args(CmdArg *cmd){
+	if (DEBUG) printf("freeing memory in args\n");
+	int i;
+	for(i = 0; i < cmd->n_args; i++) {
+		free(cmd->args[i]);
 	}
-	return 0;
+	free(cmd->args);
+	free(cmd);
 }
+
+
