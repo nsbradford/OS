@@ -24,7 +24,7 @@ typedef struct cmdArg {
 } CmdArg;
 
 void type_prompt();
-void read_command(CmdArg *cmd);
+int read_command(CmdArg *cmd);
 void execute(char *args[]);
 void free_args(CmdArg *cmd);
 
@@ -40,26 +40,28 @@ int main(int argc, char *argv[]){
 		CmdArg *cmd = malloc(sizeof(CmdArg));
 		cmd->args = malloc((MAX_ARGS+1) * sizeof(char*));
 
-		read_command(cmd);
+		if (read_command(cmd) > 0){
+			// Check if command is exit
+			if (strcmp(cmd->args[0], "exit") == 0){
+				printf("Exiting the shell.\n");
+				// exit(-1);
+				return(EXIT_SUCCESS);
+			}
 
-		// Check if command is exit
-		if (strcmp(cmd->args[0], "exit") == 0){
-			printf("Exiting the shell.\n");
-			// exit(-1);
-			return(EXIT_SUCCESS);
+			// Check if command is cd
+			else if (strcmp(cmd->args[0], "cd") == 0){
+				chdir(cmd->args[1]);
+				char cwd[1024];
+				if (getcwd(cwd, sizeof(cwd)) != NULL)
+				fprintf(stdout, "Current working dir: %s\n", cwd);
+			}
+			else
+				execute(cmd->args);
+
+			free_args(cmd);
 		}
 
-		// Check if command is cd
-		else if (strcmp(cmd->args[0], "cd") == 0){
-			chdir(cmd->args[1]);
-			char cwd[1024];
-			if (getcwd(cwd, sizeof(cwd)) != NULL)
-			fprintf(stdout, "Current working dir: %s\n", cwd);
-		}
-		else
-			execute(cmd->args);
 
-		free_args(cmd);
 		// TODO free() the memory in args!
 		// TODO Store getrusage() data about previous child 
 		/* Reason: getrusage() returns the cumulative statistics for all children of a process, not just the statistics for 
@@ -83,7 +85,7 @@ void type_prompt(){
  * Reads a command.
  * 
  */
-void read_command(CmdArg *cmd){
+int read_command(CmdArg *cmd){
 
 	// fgets is causing errors when reading commands from file, using gets instead
 	// char argbuf[MAX_BUFFER];
@@ -99,8 +101,13 @@ void read_command(CmdArg *cmd){
 	// alert the user if their command is too long
 	if (strlen(argbuf) > MAX_CHARS){
 		printf("ERROR: shell supports only %d chars, not %d\n.", MAX_CHARS, strlen(argbuf));
-		return;
+		return -1;
 	}
+	else if (strlen(argbuf) == 1){
+		printf("ERROR: no input.\n");
+		return -1;
+	}
+	if (DEBUG) printf("Shell read %d chars.\n.", strlen(argbuf));
 
 	//fgets() includes a newline char, so turn it into NULL
 	argbuf[strlen(argbuf) - 1] = '\0';
@@ -129,7 +136,7 @@ void read_command(CmdArg *cmd){
 
 	if (cmd->n_args > MAX_ARGS){
 		printf("ERROR: shell supports only %d chars, not %d\n.", MAX_ARGS, cmd->n_args);
-		return;
+		return -1;
 	}
 
 	int j;
@@ -137,7 +144,7 @@ void read_command(CmdArg *cmd){
 		if (DEBUG) printf("args: %s\n", cmd->args[j]);
 	}
 
-
+	return 1;
 }
 
 /*
