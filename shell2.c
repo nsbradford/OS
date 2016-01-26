@@ -13,6 +13,7 @@
 #include <sys/resource.h>
 
 #define TRUE 1
+#define FALSE 0
 #define MAX_CHARS 128
 #define MAX_BUFFER 256
 #define MAX_ARGS 32
@@ -25,6 +26,7 @@ typedef struct cmdArg {
 
 void type_prompt();
 int read_command(CmdArg *cmd);
+int lastCharIsAmp(char *arg);
 void execute(char *args[]);
 void free_args(CmdArg *cmd);
 
@@ -41,13 +43,17 @@ int main(int argc, char *argv[]){
 		cmd->args = malloc((MAX_ARGS+1) * sizeof(char*));
 
 		if (read_command(cmd) > 0){
+			
+			if (lastCharIsAmp(cmd->args[0])){
+				//TODO
+			}
+
 			// Check if command is exit
 			if (strcmp(cmd->args[0], "exit") == 0){
 				printf("Exiting the shell.\n");
 				// exit(-1);
 				return(EXIT_SUCCESS);
 			}
-
 			// Check if command is cd
 			else if (strcmp(cmd->args[0], "cd") == 0){
 				chdir(cmd->args[1]);
@@ -60,14 +66,6 @@ int main(int argc, char *argv[]){
 
 			free_args(cmd);
 		}
-
-
-		// TODO free() the memory in args!
-		// TODO Store getrusage() data about previous child 
-		/* Reason: getrusage() returns the cumulative statistics for all children of a process, not just the statistics for 
-		the most recent child. Keep a record of the statistics of previous children. When you call getrusage() after a particular child has terminated,
-		subtract the previous statistics from the most recent ones returned by getrusage() in order to find out how many resources 
-		that the particular child used */
 
 	}
 	return 0;
@@ -87,13 +85,6 @@ void type_prompt(){
  */
 int read_command(CmdArg *cmd){
 
-	// fgets is causing errors when reading commands from file, using gets instead
-	// char argbuf[MAX_BUFFER];
-	// fgets(argbuf, MAX_BUFFER, stdin);
-
-	// // fgets() includes a newline char, so turn it into NULL
-	// argbuf[strlen(argbuf) - 1] = '\0';
-
 	// TODO: be able to read quoted commands (see forum post)
 	char argbuf[MAX_BUFFER];
 	fgets(argbuf, MAX_BUFFER, stdin);
@@ -107,20 +98,17 @@ int read_command(CmdArg *cmd){
 		printf("ERROR: no input.\n");
 		return -1;
 	}
-	if (DEBUG) printf("Shell read %d chars.\n.", strlen(argbuf));
+	if (DEBUG) printf("Shell read %d chars.\n", strlen(argbuf));
 
 	//fgets() includes a newline char, so turn it into NULL
 	argbuf[strlen(argbuf) - 1] = '\0';
-
-	// fgets() includes the newline character. We don't want that, so make it end of line.
-	//commandstr[strlen(commandstr) - 1] = '\0';
 
 	if(feof(stdin)) {
 		if (DEBUG) printf("Found EOF\n");
 		exit(0);
 	}
 
-	if (DEBUG) printf("%s\n", argbuf);
+	if (DEBUG) printf("argbuf: %s\n", argbuf);
 
 	char *token = strtok(argbuf, " ");
 	int i = 0;
@@ -148,6 +136,25 @@ int read_command(CmdArg *cmd){
 }
 
 /*
+ * Return TRUE if there is an '&' at the end of the string.
+ * Remove the '&' if it exists.
+ *
+ */
+int lastCharIsAmp(char *arg){
+	int end = strlen(arg) - 1;
+	int answer;
+	if (arg[end] == '&'){
+		answer = TRUE;
+		arg[end] = '\0';
+	}
+	else{
+		answer = FALSE;
+	}
+	if (DEBUG) printf("&: %d\n", answer);
+	return answer;
+}
+
+/*
  * Executes a command from a list of args,
  * where args[0] is the command, and the rest are params.
  * 
@@ -170,7 +177,7 @@ void execute(char *args[]){
 		wait3(&status, 0, &end_usage); //waitpid(-1, &status, 0);
 		
 		gettimeofday(&end_time, NULL);
-		getrusage(RUSAGE_CHILDREN, &end_usage);
+
 		double wall_time_passed = (end_time.tv_sec - start_time.tv_sec) * 1000 
 			+ (end_time.tv_usec - start_time.tv_usec)/1000;
 		double cpu_time_user = (end_usage.ru_utime.tv_sec - start_usage.ru_utime.tv_sec) * 1000 

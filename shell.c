@@ -170,7 +170,7 @@ void execute(char *args[]){
 		wait3(&status, 0, &end_usage); //waitpid(-1, &status, 0);
 		
 		gettimeofday(&end_time, NULL);
-		getrusage(RUSAGE_CHILDREN, &end_usage);
+		//getrusage(RUSAGE_CHILDREN, &end_usage);
 		double wall_time_passed = (end_time.tv_sec - start_time.tv_sec) * 1000 
 			+ (end_time.tv_usec - start_time.tv_usec)/1000;
 		double cpu_time_user = (end_usage.ru_utime.tv_sec - start_usage.ru_utime.tv_sec) * 1000 
