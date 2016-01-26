@@ -19,6 +19,12 @@ shell2: shell2.o
 	
 shell2.o: shell2.c
 	gcc -Wall -c shell2.c 
+
+back: back.o
+	gcc -o back back.o
+
+back.o: back.c
+	gcc -Wall -c back.c 
 	
 clean:
 	rm *.o

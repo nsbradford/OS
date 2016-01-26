@@ -28,6 +28,7 @@ void type_prompt();
 int read_command(CmdArg *cmd);
 int lastCharIsAmp(char *arg);
 void execute(char *args[]);
+void execute_background(char *args[]);
 void free_args(CmdArg *cmd);
 
 /*
@@ -38,6 +39,7 @@ int main(int argc, char *argv[]){
 
 	while(TRUE){
 		// Read from stdnin
+		int flag_background = FALSE;
 		type_prompt();
 		CmdArg *cmd = malloc(sizeof(CmdArg));
 		cmd->args = malloc((MAX_ARGS+1) * sizeof(char*));
@@ -45,7 +47,7 @@ int main(int argc, char *argv[]){
 		if (read_command(cmd) > 0){
 			
 			if (lastCharIsAmp(cmd->args[0])){
-				//TODO
+				flag_background = TRUE;
 			}
 
 			// Check if command is exit
@@ -61,8 +63,12 @@ int main(int argc, char *argv[]){
 				if (getcwd(cwd, sizeof(cwd)) != NULL)
 				fprintf(stdout, "Current working dir: %s\n", cwd);
 			}
-			else
+			else if (flag_background) {
+				execute_background(cmd->args);
+			}
+			else {
 				execute(cmd->args);
+			}
 
 			free_args(cmd);
 		}
@@ -208,6 +214,30 @@ void execute(char *args[]){
 	}
 }
 
+void execute_background(char *args[]){
+	char *command = args[0];
+	int pid = fork();
+	//add process to processes list
+	/*
+	processes[n_processes].pid = childPID;
+	processes[n_processes].command = (char*) malloc(sizeof(strCommand));
+	strcpy(processes[n_processes].command, strCommand);
+	gettimeofday(&processes[n_processes].startTime, NULL);
+	n_processes++;
+	*/
+
+	if (pid > 0){
+		// Parent
+		//waitForChildrenToFinish(0);
+	}
+	else {
+		// Child
+		if (execvp(command, &args[0]) < 0){
+			printf("\nbackground execvp() failure\n");
+		}
+	}
+}
+
 /*
  * free() the allocated memory in args.
  * 
@@ -222,4 +252,20 @@ void free_args(CmdArg *cmd){
 	free(cmd);
 }
 
+/*
+ * Print list of processes currently running.
+ * 
+ */
+void print_running_processes(){
+	//TODO
+}
 
+
+/*
+ * Wait to exit until all children have finished.
+ * 
+ */
+void shell_exit(){
+	//TODO
+	exit(0);
+}
