@@ -49,7 +49,6 @@ Test:                       See output1.txt and output2.txt for details.
                                 $ ./runCommand echo 'hi'
                                 $ ./runCommand ls
                                 $ ./runCommand aslkdjflasdjflaksdjfk
-                                
 
                             2) shell: use input1.txt. 
                                 $ ./shell < input.1txt
