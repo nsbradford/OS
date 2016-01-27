@@ -1,0 +1,77 @@
+nsbradford@ubuntu:~/OS$ ./shell < input.txt
+/home/nsbradford/OS
+prompt$ 
+--STATS--
+Time passed: 9.000000 ms
+CPU user: 0.000000 ms
+CPU system: 8.000000 ms
+CPU user+system: 8.000000 ms
+Preempted CPU involuntary: 4 times
+Preempted CPU voluntary: 1 times
+Page faults: 0 times
+Page faults (satisfiable): 184 times
+---------------------------------------------------------------
+Desktop		  hello.c~     Makefile        nsbradford_uname.txt  Public
+Documents	  hello.ko     Makefile~       OS		     Templates
+Downloads	  hello.mod.c  modules.order   Pictures		     Videos
+examples.desktop  hello.mod.o  Module.symvers  project0_test
+hello.c		  hello.o      Music	       project0_test.c
+prompt$ 
+--STATS--
+Time passed: 13.000000 ms
+CPU user: 0.000000 ms
+CPU system: 12.000000 ms
+CPU user+system: 12.000000 ms
+Preempted CPU involuntary: 29 times
+Preempted CPU voluntary: 1 times
+Page faults: 0 times
+Page faults (satisfiable): 262 times
+---------------------------------------------------------------
+'hi'
+prompt$ 
+--STATS--
+Time passed: 11.000000 ms
+CPU user: 0.000000 ms
+CPU system: 8.000000 ms
+CPU user+system: 8.000000 ms
+Preempted CPU involuntary: 6 times
+Preempted CPU voluntary: 1 times
+Page faults: 0 times
+Page faults (satisfiable): 183 times
+---------------------------------------------------------------
+9949d6b wrote background logic in execute
+fce97a8 yaaaas
+7afd44f commented out algorithm added
+38980da support for background processes in execute_background and wait_for_children (not w
+a858dec Still lots of background work to do...
+15cbe10 Added check for ampersand
+019c7c2 Added clean option to Makefile.
+669319a Added shell2.c for Phase 3
+b378c29 Phase 2 complete.
+031f831 Fixed piping issue and most of Phase 2.
+6acbf4a cd works now
+25f9bb7 updated README and author names
+a807454 Ready for Checkpoint 1
+44d194b Fixed reading from stdin, exit works, cd causes execvp() failure
+1906755 Merge fixes.
+a67e5a1 Shell operational, just need to free() memory allocated for args.
+3c1c95c Prompt working, but not passing input correctly.
+675b6b1 Handled exit and cd commands
+87f2d04 Added Makefile for runCommand and shell
+9f0ad2b Added shell.c
+30f5194 Modified README.
+dcb3661 Phase 1 complete.
+6432ef1 Intial.
+75260e6 Create README.md
+e84eb77 Initial commit
+prompt$ 
+--STATS--
+Time passed: 3544.000000 ms
+CPU user: 0.000000 ms
+CPU system: 40.000000 ms
+CPU user+system: 40.000000 ms
+Preempted CPU involuntary: 55 times
+Preempted CPU voluntary: 5 times
+Page faults: 0 times
+Page faults (satisfiable): 825 times
+--------------------------------------------------------------
