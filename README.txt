@@ -37,6 +37,38 @@ How to build the program:   1.  Supports, make, make all, OR make clean
                                 To run a task in the background, have the last arg be a '&' symbol:
                                     prompt$ [Command] [arg1] [arg2] [...] &
 
+Test:                       See output1.txt and output2.txt for details.
+
+                            1) runCommand: output should be exactly as expected on a normal terminal.
+                                $ ./runCommand pwd
+                                $ ./runCommand ls ../
+                                $ ./runCommand echo 'hi'
+                                $ ./runCommand ls
+                                $ ./runCommand aslkdjflasdjflaksdjfk
+
+                            2) shell: use input1.txt. 
+                                $ ./shell < input.1txt
+                                OR
+                                $ ./shell
+                                prompt$ pwd
+                                prompt$ ls ../
+                                prompt$ echo 'hi'
+                                prompt$ aslkdjflasdjflaksdjfk
+                                prompt$ ls
+
+                            3) shell2: use input2.txt
+                                $ ./shell2 < input2.txt
+                                OR
+                                prompt$ asdjfklsdjfkldafjalsdkfj
+                                prompt$ pwd
+                                prompt$ ls ../ 
+                                prompt$ sleep 4 &
+                                prompt$ sleep 3 &
+                                prompt$ ls &
+                                prompt$ sleep 1
+                                prompt$ echo 'hi' 
+
+
 ********************************
 
 Design Notes:      
@@ -69,35 +101,6 @@ Finally, we handle any existing background processes using the method for backgr
 
 ********************************
 
-Test:                       See output1.txt and output2.txt for details.
 
-                            1) runCommand: output should be exactly as expected on a normal terminal.
-                                $ ./runCommand pwd
-                                $ ./runCommand ls ../
-                                $ ./runCommand echo 'hi'
-                                $ ./runCommand ls
-                                $ ./runCommand aslkdjflasdjflaksdjfk
-
-                            2) shell: use input1.txt. 
-                                $ ./shell < input.1txt
-                                OR
-                                $ ./shell
-                                prompt$ pwd
-                                prompt$ ls ../
-                                prompt$ echo 'hi'
-                                prompt$ aslkdjflasdjflaksdjfk
-                                prompt$ ls
-
-                            3) shell2: use input2.txt
-                                $ ./shell2 < input2.txt
-                                OR
-                                prompt$ asdjfklsdjfkldafjalsdkfj
-                                prompt$ pwd
-                                prompt$ ls ../ 
-                                prompt$ sleep 4 &
-                                prompt$ sleep 3 &
-                                prompt$ ls &
-                                prompt$ sleep 1
-                                prompt$ echo 'hi' 
 
 EOF
