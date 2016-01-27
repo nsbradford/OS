@@ -12,17 +12,20 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 
+// Defined macros
 #define TRUE 1
 #define MAX_CHARS 128
 #define MAX_BUFFER 256
 #define MAX_ARGS 32
 #define DEBUG 1
 
+// struct for arguments in command (populated after command is tokenized)
 typedef struct cmdArg {
 	int n_args;
 	char **args;
 } CmdArg;
 
+// Function declarations
 void type_prompt();
 int read_command(CmdArg *cmd);
 void execute(char *args[]);
@@ -61,14 +64,6 @@ int main(int argc, char *argv[]){
 			free_args(cmd);
 		}
 
-
-		// TODO free() the memory in args!
-		// TODO Store getrusage() data about previous child 
-		/* Reason: getrusage() returns the cumulative statistics for all children of a process, not just the statistics for 
-		the most recent child. Keep a record of the statistics of previous children. When you call getrusage() after a particular child has terminated,
-		subtract the previous statistics from the most recent ones returned by getrusage() in order to find out how many resources 
-		that the particular child used */
-
 	}
 	return 0;
 }
@@ -87,13 +82,6 @@ void type_prompt(){
  */
 int read_command(CmdArg *cmd){
 
-	// fgets is causing errors when reading commands from file, using gets instead
-	// char argbuf[MAX_BUFFER];
-	// fgets(argbuf, MAX_BUFFER, stdin);
-
-	// // fgets() includes a newline char, so turn it into NULL
-	// argbuf[strlen(argbuf) - 1] = '\0';
-
 	// TODO: be able to read quoted commands (see forum post)
 	char argbuf[MAX_BUFFER];
 	fgets(argbuf, MAX_BUFFER, stdin);
@@ -111,9 +99,6 @@ int read_command(CmdArg *cmd){
 
 	//fgets() includes a newline char, so turn it into NULL
 	argbuf[strlen(argbuf) - 1] = '\0';
-
-	// fgets() includes the newline character. We don't want that, so make it end of line.
-	//commandstr[strlen(commandstr) - 1] = '\0';
 
 	if(feof(stdin)) {
 		if (DEBUG) printf("Found EOF\n");
@@ -214,5 +199,3 @@ void free_args(CmdArg *cmd){
 	free(cmd->args);
 	free(cmd);
 }
-
-

@@ -271,7 +271,6 @@ void execute(char *args[], int flag_background){
 		/* Child code. */
 		if (execvp(command, &args[0]) < 0){
 			printf("\nexecvp() failure\n");
-			exit(-1);
 		}
 	}
 }
