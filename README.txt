@@ -6,6 +6,7 @@ CS Class:                   CS 3013 Operating Systems
 Programming Language:       C
 Problem Description:        project1
 
+********************************
                 
 How to build the program:   1.  Supports, make, make all, OR make clean
                                     $ make
@@ -36,10 +37,37 @@ How to build the program:   1.  Supports, make, make all, OR make clean
                                 To run a task in the background, have the last arg be a '&' symbol:
                                     prompt$ [Command] [arg1] [arg2] [...] &
 
+********************************
 
-Design Notes:               For shell2, if you run 1+ background commands followed by a foreground command, 
-                            the output and stats will only print after the foreground task has completed.
+Design Notes:      
 
+For runCommand, we print statistics even when runCommand is run without any arguments becuase that in itself is a command with usage statistics.
+For shell2, if you run 1+ background commands followed by a foreground command, the output and stats will only print after the foreground task has completed.
+
+********************************
+
+Data Structure for Processes:
+
+This is a global data structure
+// struct for a process
+typedef struct {
+    pid_t pid;  // Process id
+    char* cmd;  // Command
+    struct timeval start_time; // time when command is started
+    struct timeval end_time; // end time of command
+}process;
+
+********************************
+
+Algorithm for Background Processes: 
+
+In the execute function, we pass a flag for background processes. If this flag is true, we create a new process in the process list and increment the global number of processes by 1.
+Then, we use wait3(WNOHANG). When a child process ends, it is removed from the list of processes and prints statistics.
+
+If a process is a foreground process, we use wait4() and block until the process ends. Then, we get usage statistics and print them for this process.
+Finally, we handle any existing background processes using the method for background processes mentioned earlier.
+
+********************************
 
 Test:                       See output1.txt and output2.txt for details.
 
@@ -73,4 +101,3 @@ Test:                       See output1.txt and output2.txt for details.
                                 prompt$ echo 'hi' 
 
 EOF
-
