@@ -55,7 +55,9 @@ void execute(char *argv[]){
 	}
 	else {
 		/* Child code. */
-		execvp(command, &argv[1]);
+		if (execvp(command, &argv[1]) < 0){
+			printf("\nexecvp() failure\n");
+		}
 	}
 }
 
