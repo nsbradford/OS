@@ -1,4 +1,22 @@
 /*
+Algorithm within execute
+ create new process
+ while with wait3 with pid
+ find process with this pid that ended
+ remove it from process list
+ getrusage and print stats
+
+ else
+ while wait4 without hang, get usage and print
+
+ at the end, wait for any other running processes
+ for each process, print and null it
+ then adjust process array
+ Finally, get time of day and print stats
+
+*/
+
+/*
  * shell.c
  * Authors: Nicholas Bradford (nsbradford@wpi.edu), Himanshu Sahay (hsahay@wpi.edu)
  * 
@@ -27,11 +45,10 @@ typedef struct cmdArg {
 typedef struct {
 	pid_t pid;
 	char* cmd;
-	struct timeval start_time;
 }process;
 
 // global declaration of processes
-process processes[50]; // max 50 processes at one time
+process processes[100]; // max 50 processes at one time
 int num_processes;
 
 void type_prompt();
@@ -194,16 +211,20 @@ int lastCharIsAmp(char *args[], int num_args){
 	return answer;
 }
 
+
+
 /*
  * Executes a command from a list of args,
  * where args[0] is the command, and the rest are params.
  * 
  */
-void execute(char *args[]){
+void execute(char *args[], int flag_background){
 	char *command = args[0];
 	if (DEBUG) printf("command: %s", command);
 
-	if (fork() != 0){
+	pid = fork();
+
+	if (pid != 0){
 		/* Parent code. */
 
 		int status;
