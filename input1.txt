@@ -1,4 +1,5 @@
 pwd
 ls ../
 echo 'hi'
-git log --oneline
+ls
+aslkdjflasdjflaksdjfk

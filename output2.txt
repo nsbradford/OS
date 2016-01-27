@@ -1,0 +1,68 @@
+nsbradford@ubuntu:~/OS$ ./shell2 < input2.txt
+prompt$ 
+execvp() failure
+prompt$ 
+--STATS FOR ENDED FOREGROUND PROCESS command: [asdjfklsdjfkldafjalsdkfj]--
+Time passed: 1.000000 ms
+CPU user: 0.000000 ms
+CPU system: 0.000000 ms
+CPU user+system: 0.000000 ms
+Preempted CPU involuntary: 5 times
+Preempted CPU voluntary: 1 times
+Page faults: 0 times
+Page faults (satisfiable): 55 times
+---------------------------------------------------------------
+/home/nsbradford/OS
+prompt$ 
+--STATS FOR ENDED FOREGROUND PROCESS command: [pwd]--
+Time passed: 8.000000 ms
+CPU user: 0.000000 ms
+CPU system: 8.000000 ms
+CPU user+system: 8.000000 ms
+Preempted CPU involuntary: 5 times
+Preempted CPU voluntary: 1 times
+Page faults: 0 times
+Page faults (satisfiable): 184 times
+---------------------------------------------------------------
+Desktop		  hello.c~     Makefile        nsbradford_uname.txt  Public
+Documents	  hello.ko     Makefile~       OS		     Templates
+Downloads	  hello.mod.c  modules.order   Pictures		     Videos
+examples.desktop  hello.mod.o  Module.symvers  project0_test
+hello.c		  hello.o      Music	       project0_test.c
+prompt$ 
+--STATS FOR ENDED FOREGROUND PROCESS command: [ls]--
+Time passed: 15.000000 ms
+CPU user: 0.000000 ms
+CPU system: 12.000000 ms
+CPU user+system: 12.000000 ms
+Preempted CPU involuntary: 34 times
+Preempted CPU voluntary: 1 times
+Page faults: 0 times
+Page faults (satisfiable): 263 times
+---------------------------------------------------------------
+back	garbage.txt  Makefile	  runCommand	shell	  shell2.o
+back.c	input1.txt   output1.txt  runCommand.c	shell2	  shell.c
+back.o	input2.txt   README.txt   runCommand.o	shell2.c  shell.o
+prompt$ prompt$ prompt$ prompt$ 
+--STATS FOR ENDED FOREGROUND PROCESS command: [sleep]--
+Time passed: 1022.000000 ms
+CPU user: 0.000000 ms
+CPU system: 8.000000 ms
+CPU user+system: 8.000000 ms
+Preempted CPU involuntary: 2 times
+Preempted CPU voluntary: 2 times
+Page faults: 0 times
+Page faults (satisfiable): 186 times
+---------------------------------------------------------------
+'hi'
+prompt$ 
+--STATS FOR ENDED FOREGROUND PROCESS command: [echo]--
+Time passed: 9.000000 ms
+CPU user: 0.000000 ms
+CPU system: 8.000000 ms
+CPU user+system: 8.000000 ms
+Preempted CPU involuntary: 3 times
+Preempted CPU voluntary: 1 times
+Page faults: 0 times
+Page faults (satisfiable): 183 times
+---------------------------------------------------------------

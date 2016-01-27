@@ -46,9 +46,10 @@ Test:                       See output1.txt and output2.txt for details.
                             1) runCommand: output should be exactly as expected on a normal terminal.
                                 $ ./runCommand pwd
                                 $ ./runCommand ls ../
-                                $ ./runCommand sleep 2
                                 $ ./runCommand echo 'hi'
-                                $ ./runCommand git log --oneline
+                                $ ./runCommand ls
+                                $ ./runCommand aslkdjflasdjflaksdjfk
+                                
 
                             2) shell: use input1.txt. 
                                 $ ./shell < input.1txt
@@ -57,10 +58,20 @@ Test:                       See output1.txt and output2.txt for details.
                                 prompt$ pwd
                                 prompt$ ls ../
                                 prompt$ echo 'hi'
-                                prompt$ git log --oneline
+                                prompt$ aslkdjflasdjflaksdjfk
+                                prompt$ ls
 
                             3) shell2: use input2.txt
                                 $ ./shell2 < input2.txt
+                                OR
+                                prompt$ asdjfklsdjfkldafjalsdkfj
+                                prompt$ pwd
+                                prompt$ ls ../ 
+                                prompt$ sleep 4 &
+                                prompt$ sleep 3 &
+                                prompt$ ls &
+                                prompt$ sleep 1
+                                prompt$ echo 'hi' 
 
 EOF
 
