@@ -1,0 +1,6 @@
+pwd
+ls ../
+sleep 4
+sleep 2
+echo 'hi'
+git log --oneline
