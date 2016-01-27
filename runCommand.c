@@ -10,7 +10,10 @@
 #include <sys/resource.h>
 #include <unistd.h>
 
-
+/* 
+ * Executes a command from a list of args,
+ * where args[0] is the command, and the rest are params.
+ */
 void execute(char *argv[]){
 	char *command = argv[1];
 	
@@ -56,7 +59,9 @@ void execute(char *argv[]){
 	}
 }
 
-
+/*
+ *	Runs the shell
+ */
 int main(int argc, char *argv[]){
 	execute(argv);
 	return 0;
