@@ -1,5 +1,5 @@
 /*
- * shell.c
+ * shell2.c
  * Authors: Nicholas Bradford (nsbradford@wpi.edu), Himanshu Sahay (hsahay@wpi.edu)
  * 
  */
@@ -19,11 +19,13 @@
 #define MAX_ARGS 32
 #define DEBUG 1
 
+// struct for arguments in command (populated after command is tokenized)
 typedef struct cmdArg {
 	int n_args;
 	char **args;
 } CmdArg;
 
+// struct for a process
 typedef struct {
 	pid_t pid;
 	char* cmd;
@@ -31,17 +33,17 @@ typedef struct {
 	struct timeval end_time;
 }process;
 
-// global declaration of processes
-process processes[100]; // max 50 processes at one time
+// global declaration of list of processes
+process processes[100]; // max 100 processes at one time
 int num_processes;
 
+// Function declarations
 void type_prompt();
 int read_command(CmdArg *cmd);
 int lastCharIsAmp(char **args, int n_args);
 void execute(char *args[], int flag_background);
 void process_end();
 void free_args(CmdArg *cmd);
-//void wait_for_children(int hang_val);
 
 /*
  * Run the shell.
@@ -50,7 +52,7 @@ void free_args(CmdArg *cmd);
 int main(int argc, char *argv[]){
 
 	while(TRUE){
-		// Read from stdnin
+		// Read from stdin
 		int flag_background = FALSE;
 		type_prompt();
 		CmdArg *cmd = malloc(sizeof(CmdArg));
@@ -60,8 +62,6 @@ int main(int argc, char *argv[]){
 			
 			if (lastCharIsAmp(cmd->args, cmd->n_args)){
 				flag_background = TRUE;
-				// Now, strip the last '&' arg and reduce cmd->n_args by 1
-				// cmd->args[cmd->n_args - 1] = NULL;
 				cmd->n_args --;
 			}
 
@@ -70,9 +70,9 @@ int main(int argc, char *argv[]){
 				//TODO
 				//wait_for_children(1);
 				printf("Exiting the shell.\n");
-				// exit(-1);
 				return(EXIT_SUCCESS);
 			}
+
 			// Check if command is cd
 			else if (strcmp(cmd->args[0], "cd") == 0){
 				chdir(cmd->args[1]);
@@ -82,6 +82,7 @@ int main(int argc, char *argv[]){
 						fprintf(stdout, "Current working dir: %s\n", cwd);
 				}
 			}
+			
 			// if command is jobs, print all running processes
 			else if (strcmp(cmd->args[0], "jobs") == 0){
 				printf("write jobs handler here\n");
@@ -124,7 +125,6 @@ void type_prompt(){
  */
 int read_command(CmdArg *cmd){
 
-	// TODO: be able to read quoted commands (see forum post)
 	char argbuf[MAX_BUFFER];
 	fgets(argbuf, MAX_BUFFER, stdin);
 
@@ -149,7 +149,7 @@ int read_command(CmdArg *cmd){
 		exit(0);
 	}
 
-
+	// tokenize the command string
 	char *token = strtok(argbuf, " ");
 	int i = 0;
 	while(token != NULL) {
@@ -204,27 +204,9 @@ int lastCharIsAmp(char *args[], int num_args){
 void execute(char *args[], int flag_background){
 
 	char *command = args[0];
-	if (DEBUG) printf("command: %s", command);
+	if (DEBUG) printf("command: %s\n", command);
 
 	int pid = fork();
-
-/*
-Algorithm within execute -
-
- create new process
- while with wait3 with pid
- find process with this pid that ended
- remove it from process list
- print stats
-
- else
- while wait4 without hang, print
-
- at the end, wait for any other running processes
- for each process, print and null it
- then adjust process array
- Finally, get time of day and print stats
-*/
 
 	if (pid != 0){
 		/* Parent code. */
@@ -237,6 +219,8 @@ Algorithm within execute -
 
 		if (flag_background) {
 
+			// If process is a background process
+
 			//process is added to array of processes
 			processes[num_processes].pid = pid;
 			processes[num_processes].cmd = (char*) malloc(sizeof(command));
@@ -244,6 +228,7 @@ Algorithm within execute -
 			strcpy(processes[num_processes].cmd, command);
 			num_processes++;
 
+			// handle background process
 			process_end();
 
 		}		
@@ -266,7 +251,7 @@ Algorithm within execute -
 			long page_faults = end_usage.ru_majflt;
 			long page_faults_sat = end_usage.ru_minflt;
 
-			printf("\n--STATS FOR FOREGROUND COMMAND: [%s]--\n", command);
+			printf("\n--STATS FOR ENDED FOREGROUND PROCESS command: [%s]--\n", command);
 			printf("Time passed: %f ms\n", wall_time_passed);
 			printf("CPU user: %f ms\n", cpu_time_user);
 			printf("CPU system: %f ms\n", cpu_time_system);
@@ -277,6 +262,7 @@ Algorithm within execute -
 			printf("Page faults (satisfiable): %ld times\n", page_faults_sat);
 			printf("---------------------------------------------------------------\n");
 
+			// handle existing background processes
 			process_end();
 		}
 	}
@@ -295,7 +281,7 @@ Algorithm within execute -
  * 
  */
 void free_args(CmdArg *cmd){
-	if (DEBUG) printf("freeing memory in args\n");
+	if (DEBUG) printf("\nfreeing memory in args\n");
 	int i;
 	for(i = 0; i < cmd->n_args; i++) {
 		free(cmd->args[i]);
@@ -304,6 +290,10 @@ void free_args(CmdArg *cmd){
 	free(cmd);
 }
 
+/*
+ * Handles process ending for child processes and prints stats
+ *
+ */
 void process_end(){
 
 	struct rusage end_usage;
@@ -329,7 +319,7 @@ void process_end(){
 				long page_faults = end_usage.ru_majflt;
 				long page_faults_sat = end_usage.ru_minflt;
 
-				printf("\n--STATS FOR BACKGROUND PID: [%d], COMMAND: [%s]--\n", process_id, processes[i].cmd);
+				printf("\n--STATS FOR ENDED BACKGROUND PROCESS pid: [%d], command: [%s]--\n", process_id, processes[i].cmd);
 				printf("Time passed: %f ms\n", wall_time_passed);
 				printf("CPU user: %f ms\n", cpu_time_user);
 				printf("CPU system: %f ms\n", cpu_time_system);
