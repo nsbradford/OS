@@ -208,31 +208,142 @@ void execute(char *args[], int flag_background){
 
 	int pid = fork();
 
+/*
+Algorithm within execute -
+
+ create new process
+ while with wait3 with pid
+ find process with this pid that ended
+ remove it from process list
+ getrusage and print stats
+
+ else
+ while wait4 without hang, get usage and print
+
+ at the end, wait for any other running processes
+ for each process, print and null it
+ then adjust process array
+ Finally, get time of day and print stats
+*/
+
 	if (pid != 0){
 		/* Parent code. */
 
-		//int status;
+		int status;
 		struct timeval start_time;
 		struct timeval end_time;
 		struct rusage start_usage;
 		struct rusage end_usage;
 
-		gettimeofday(&start_time, NULL);
+		// gettimeofday(&start_time, NULL);
 		getrusage(RUSAGE_CHILDREN, &start_usage);
+		int lastpid;
 
-		if (flag_background){
+		if (flag_background) {
 
+			//process is added to array of processes
+			processes[num_processes].pid = pid;
+			processes[num_processes].cmd = (char*) malloc(sizeof(command));
+			strcpy(processes[num_processes].cmd, command);
+			gettimeofday(&start_time, NULL);
+			num_processes++;
+
+			while ( (lastpid = wait3(&status, 0, &end_usage)) != 0) {
+				// find process with lastpid that ended
+				int i;
+				for (i = 0; i < num_processes; i++){
+					if (lastpid == processes[i].pid){
+						processes[i].pid = 0;
+					}
+				}
+
+				num_processes--;
+				// remove this process from the process list
+				// for(i = 0; i < num_processes; )
+			}
+
+			getrusage(RUSAGE_CHILDREN, &end_usage);
+			gettimeofday(&end_time, NULL);
+
+			double wall_time_passed = (end_time.tv_sec - start_time.tv_sec) * 1000 
+				+ (end_time.tv_usec - start_time.tv_usec)/1000;
+			double cpu_time_user = (end_usage.ru_utime.tv_sec - start_usage.ru_utime.tv_sec) * 1000 
+				+ (end_usage.ru_utime.tv_usec - start_usage.ru_utime.tv_usec)/1000;
+			double cpu_time_system = (end_usage.ru_stime.tv_sec - start_usage.ru_stime.tv_sec) * 1000 
+				+ (end_usage.ru_stime.tv_usec - start_usage.ru_stime.tv_usec)/1000;
+			long involuntary = end_usage.ru_nivcsw - start_usage.ru_nivcsw;
+			long voluntary = end_usage.ru_nvcsw - start_usage.ru_nvcsw;
+			long page_faults = end_usage.ru_majflt - start_usage.ru_majflt;
+			long page_faults_sat = end_usage.ru_minflt - start_usage.ru_minflt;
+
+			printf("\n--STATS--\n");
+			printf("Time passed: %f ms\n", wall_time_passed);
+			printf("CPU user: %f ms\n", cpu_time_user);
+			printf("CPU system: %f ms\n", cpu_time_system);
+			printf("CPU user+system: %f ms\n", cpu_time_user+cpu_time_system);
+			printf("Preempted CPU involuntary: %ld times\n", involuntary);
+			printf("Preempted CPU voluntary: %ld times\n", voluntary);
+			printf("Page faults: %ld times\n", page_faults);
+			printf("Page faults (satisfiable): %ld times\n", page_faults_sat);
+			printf("---------------------------------------------------------------\n");
+			
 		}
+
 		else {
 
-		}
-		while (TRUE){
-			int child_status;
-			wait3(&child_status, WNOHANG, &end_usage); //wait3(&status, 0, &end_usage); //waitpid(-1, &status, 0);
+			// foreground process
+			while(wait4(pid, &status, 0, &end_usage)){
+
+				getrusage(RUSAGE_CHILDREN, &end_usage);
+				gettimeofday(&end_time, NULL);
+
+				double wall_time_passed = (end_time.tv_sec - start_time.tv_sec) * 1000 
+					+ (end_time.tv_usec - start_time.tv_usec)/1000;
+				double cpu_time_user = (end_usage.ru_utime.tv_sec - start_usage.ru_utime.tv_sec) * 1000 
+					+ (end_usage.ru_utime.tv_usec - start_usage.ru_utime.tv_usec)/1000;
+				double cpu_time_system = (end_usage.ru_stime.tv_sec - start_usage.ru_stime.tv_sec) * 1000 
+					+ (end_usage.ru_stime.tv_usec - start_usage.ru_stime.tv_usec)/1000;
+				long involuntary = end_usage.ru_nivcsw - start_usage.ru_nivcsw;
+				long voluntary = end_usage.ru_nvcsw - start_usage.ru_nvcsw;
+				long page_faults = end_usage.ru_majflt - start_usage.ru_majflt;
+				long page_faults_sat = end_usage.ru_minflt - start_usage.ru_minflt;
+
+				printf("\n--STATS--\n");
+				printf("Time passed: %f ms\n", wall_time_passed);
+				printf("CPU user: %f ms\n", cpu_time_user);
+				printf("CPU system: %f ms\n", cpu_time_system);
+				printf("CPU user+system: %f ms\n", cpu_time_user+cpu_time_system);
+				printf("Preempted CPU involuntary: %ld times\n", involuntary);
+				printf("Preempted CPU voluntary: %ld times\n", voluntary);
+				printf("Page faults: %ld times\n", page_faults);
+				printf("Page faults (satisfiable): %ld times\n", page_faults_sat);
+				printf("---------------------------------------------------------------\n");
+
+			}
+
 		}
 
-		
-		
+		/*
+		at the end, wait for any other running processes
+		for each process, print and null it
+		then adjust process array
+		Finally, get time of day and print stats
+		*/
+		while ( (lastpid = wait3(&status, 0, &end_usage)) != 0) {
+				// find process with lastpid that ended
+				int i;
+				for (i = 0; i < num_processes; i++){
+					if (lastpid == processes[i].pid){
+						processes[i].pid = 0;
+					}
+				}
+
+				num_processes--;
+				// remove this process from the process list
+				// for(i = 0; i < num_processes; )
+			}
+
+		getrusage(RUSAGE_CHILDREN, &end_usage);
 		gettimeofday(&end_time, NULL);
 
 		double wall_time_passed = (end_time.tv_sec - start_time.tv_sec) * 1000 
@@ -256,6 +367,7 @@ void execute(char *args[], int flag_background){
 		printf("Page faults: %ld times\n", page_faults);
 		printf("Page faults (satisfiable): %ld times\n", page_faults_sat);
 		printf("---------------------------------------------------------------\n");
+
 	}
 	else {
 		/* Child code. */
