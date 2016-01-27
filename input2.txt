@@ -5,4 +5,5 @@ sleep 4 &
 sleep 3 &
 ls &
 sleep 1
+jobs
 echo 'hi' 
