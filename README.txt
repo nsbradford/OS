@@ -41,25 +41,26 @@ Design Notes:               For shell2, if you run 1+ background commands follow
                             the output and stats will only print after the foreground task has completed.
 
 
-Test:                       1) runCommand: output should be exactly as expected on a normal terminal.
-                                It will conclude by 
+Test:                       See output1.txt and output2.txt for details.
 
+                            1) runCommand: output should be exactly as expected on a normal terminal.
                                 $ ./runCommand pwd
                                 $ ./runCommand ls ../
                                 $ ./runCommand sleep 2
                                 $ ./runCommand echo 'hi'
                                 $ ./runCommand git log --oneline
 
-                            2) shell:
+                            2) shell: use input1.txt. 
+                                $ ./shell < input.1txt
+                                OR
                                 $ ./shell
                                 prompt$ pwd
                                 prompt$ ls ../
-                                prompt$ sleep 4
-                                prompt$ sleep 2
                                 prompt$ echo 'hi'
                                 prompt$ git log --oneline
 
-                            3) shell2: use input.txt
+                            3) shell2: use input2.txt
+                                $ ./shell2 < input2.txt
 
 EOF
 
