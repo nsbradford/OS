@@ -1,22 +1,4 @@
 /*
-Algorithm within execute
- create new process
- while with wait3 with pid
- find process with this pid that ended
- remove it from process list
- getrusage and print stats
-
- else
- while wait4 without hang, get usage and print
-
- at the end, wait for any other running processes
- for each process, print and null it
- then adjust process array
- Finally, get time of day and print stats
-
-*/
-
-/*
  * shell.c
  * Authors: Nicholas Bradford (nsbradford@wpi.edu), Himanshu Sahay (hsahay@wpi.edu)
  * 
@@ -54,11 +36,11 @@ int num_processes;
 void type_prompt();
 int read_command(CmdArg *cmd);
 int lastCharIsAmp(char **args, int n_args);
-void execute(char *args[]);
+void execute(char *args[], int flag_background);
 void execute_background(char *args[]);
 void free_args(CmdArg *cmd);
 void print_running_processes();
-void wait_for_children(int hang_val);
+//void wait_for_children(int hang_val);
 
 /*
  * Run the shell.
@@ -84,7 +66,8 @@ int main(int argc, char *argv[]){
 
 			// Check if command is exit
 			if (strcmp(cmd->args[0], "exit") == 0){
-				wait_for_children(1);
+				//TODO
+				//wait_for_children(1);
 				printf("Exiting the shell.\n");
 				// exit(-1);
 				return(EXIT_SUCCESS);
@@ -106,6 +89,7 @@ int main(int argc, char *argv[]){
 			}
 
 			// if command is a background command, execute it appropriately
+			/*
 			else if (flag_background) {
 				printf("Command is for a background process.\n");
 				if (DEBUG){
@@ -115,8 +99,9 @@ int main(int argc, char *argv[]){
 				}
 				execute_background(cmd->args);
 			}
+			*/
 			else {
-				execute(cmd->args);
+				execute(cmd->args, flag_background);
 			}
 
 			free_args(cmd);
@@ -212,7 +197,6 @@ int lastCharIsAmp(char *args[], int num_args){
 }
 
 
-
 /*
  * Executes a command from a list of args,
  * where args[0] is the command, and the rest are params.
@@ -222,12 +206,12 @@ void execute(char *args[], int flag_background){
 	char *command = args[0];
 	if (DEBUG) printf("command: %s", command);
 
-	pid = fork();
+	int pid = fork();
 
 	if (pid != 0){
 		/* Parent code. */
 
-		int status;
+		//int status;
 		struct timeval start_time;
 		struct timeval end_time;
 		struct rusage start_usage;
@@ -236,7 +220,18 @@ void execute(char *args[], int flag_background){
 		gettimeofday(&start_time, NULL);
 		getrusage(RUSAGE_CHILDREN, &start_usage);
 
-		wait3(&status, 0, &end_usage); //waitpid(-1, &status, 0);
+		if (flag_background){
+
+		}
+		else {
+
+		}
+		while (TRUE){
+			int child_status;
+			wait3(&child_status, WNOHANG, &end_usage); //wait3(&status, 0, &end_usage); //waitpid(-1, &status, 0);
+		}
+
+		
 		
 		gettimeofday(&end_time, NULL);
 
@@ -269,146 +264,6 @@ void execute(char *args[], int flag_background){
 		}
 	}
 }
-
-void execute_background(char *args[]){
-	char *command = args[0];
-	int pid = fork();
-
-	//process is added to array of processes
-	processes[num_processes].pid = pid;
-	processes[num_processes].cmd = (char*) malloc(sizeof(command));
-	strcpy(processes[num_processes].cmd, command);
-	gettimeofday(&processes[num_processes].start_time, NULL);
-	num_processes++;
-	
-
-	if (pid > 0){
-		// Parent
-		wait_for_children(0);
-	}
-	else {
-		// Child
-		printf("[%d] %d\n", num_processes, pid);
-		if (execvp(command, &args[1]) < 0){
-			printf("\nbackground execvp() failure\n");
-			exit(-1);
-		}
-	}
-}
-
-/*
- * return total prev usage stats before a child process
- */
-struct rusage init_prev_usage(){
-	struct rusage total_prev_usage;
-	getrusage(RUSAGE_CHILDREN, &total_prev_usage);
-	return total_prev_usage;
-}
-
-/* 
- *	Calculate usage stats of child process
- */
-
-struct rusage cal_rusage(struct rusage end_usage){
-
-	struct rusage total_prev_usage = init_prev_usage();
-
-	// subtract total prev usage from end usage of this child process
-	end_usage.ru_utime.tv_sec -= total_prev_usage.ru_utime.tv_sec;
-	end_usage.ru_utime.tv_usec -= total_prev_usage.ru_utime.tv_usec;
-	end_usage.ru_stime.tv_sec -= total_prev_usage.ru_stime.tv_sec;
-	end_usage.ru_stime.tv_usec -= total_prev_usage.ru_stime.tv_usec;
-	end_usage.ru_nivcsw -= total_prev_usage.ru_nivcsw;
-	end_usage.ru_nvcsw -= total_prev_usage.ru_nvcsw;
-	end_usage.ru_minflt -= total_prev_usage.ru_minflt;
-	end_usage.ru_majflt -= total_prev_usage.ru_majflt;
-
-	// reset total prev
-	getrusage(RUSAGE_CHILDREN, &total_prev_usage);
-
-	return end_usage;
-}
-
-/*
- * Wait for child processes to finish, and report stats. 
- * Keep waiting for the next until there are no more
- * if wait indicats that no child processes have finished lately, return and prompt for the next command  
- */
- void wait_for_children(int hang_val){
- 	int status;
- 	struct rusage end_usage;
- 	int pid;
-
- 	if (hang_val == 0){
- 		// stops the parent from blocking until children finish
-	 	pid = wait3(&status, hang_val, &end_usage);
- 	}
- 	else{
- 		pid = wait3(&status, WNOHANG, &end_usage);
- 	}
-
- 	while(pid != 0){
-
- 		if (pid > 0){
-
- 			// if child terminates normally
- 			if (WIFEXITED(status) != 0) {
- 				if (WEXITSTATUS(status) == 0)	{
- 					printf("%d exited normally\n", pid);
- 					struct rusage usage = cal_rusage(end_usage);
-
- 					double cpu_time_user = (usage.ru_utime.tv_sec) * 1000 + (usage.ru_utime.tv_usec)/1000;
-					double cpu_time_system = (usage.ru_stime.tv_sec) * 1000 + (usage.ru_stime.tv_usec)/1000;
-					long involuntary = usage.ru_nivcsw;
-					long voluntary = usage.ru_nvcsw;
-					long page_faults = usage.ru_majflt;
-					long page_faults_sat = usage.ru_minflt;
-
- 					printf("\n--BACKGROUND PROCESS STATS pid: %d--\n", pid);
-					printf("CPU user: %f ms\n", cpu_time_user);
-					printf("CPU system: %f ms\n", cpu_time_system);
-					printf("CPU user+system: %f ms\n", cpu_time_user+cpu_time_system);
-					printf("Preempted CPU involuntary: %ld times\n", involuntary);
-					printf("Preempted CPU voluntary: %ld times\n", voluntary);
-					printf("Page faults: %ld times\n", page_faults);
-					printf("Page faults (satisfiable): %ld times\n", page_faults_sat);
-					printf("---------------------------------------------------------------\n");
-
- 				}
- 				else{
- 					printf("%d did not exit normally\n", pid);
- 				}
- 			}
- 			else{
- 				if (pid == -1){
- 					printf("ERROR pid is -1 even though process exited correctly\n");
- 				}
- 				else{
- 					printf("[%d] terminated\n", pid);
- 				}
- 			}
- 		}
-
- 		else {
- 			// no children to wait for
- 			break;
- 		}
-
- 		// update pid
- 	 	if (hang_val == 0){
-	 		// stops the parent from blocking until children finish
-		 	pid = wait3(&status, hang_val, &end_usage);
-	 	}
-	 	else{
-	 		pid = wait3(&status, WNOHANG, &end_usage);
-	 	}
- 
-
- 	}
- 	printf("No more waiting for children\n");
-
- }
-
 
 /*
  * free() the allocated memory in args.
