@@ -1,0 +1,1 @@
+Linux ubuntu 3.13.11-ckt30nsbradford #1 SMP Sun Jan 17 13:19:46 PST 2016 i686 i686 i686 GNU/Linux

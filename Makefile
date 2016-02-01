@@ -1,30 +1,12 @@
 ## Auhtors: Himanshu Sahay (hsahay@wpi.edu), Nicholas Bradford (nsbradford@wpi.edu)
 ## Start of the Makefile
-all: runCommand shell shell2
+all: scanner
 
-runCommand: runCommand.o
-	gcc -o runCommand runCommand.o
+scanner: scanner.o
+	gcc -o scanner scanner.o
 
-runCommand.o: runCommand.c
-	gcc -Wall -c runCommand.c 
-	
-shell: shell.o
-	gcc -o shell shell.o
-	
-shell.o: shell.c
-	gcc -Wall -c shell.c 
-
-shell2: shell2.o
-	gcc -o shell2 shell2.o
-	
-shell2.o: shell2.c
-	gcc -Wall -c shell2.c 
-
-back: back.o
-	gcc -o back back.o
-
-back.o: back.c
-	gcc -Wall -c back.c 
+scanner.o: scanner.c
+	gcc -Wall -c scanner.c 
 	
 clean:
 	rm *.o
