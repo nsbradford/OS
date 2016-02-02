@@ -1,0 +1,1 @@
+cmd_/home/hsahay/Desktop/GitHub/OS/OS/project2/part1/scanner.ko := ld -r -m elf_i386 -T /usr/src/linux-source-3.13.0/linux-source-3.13.0/scripts/module-common.lds --build-id  -o /home/hsahay/Desktop/GitHub/OS/OS/project2/part1/scanner.ko /home/hsahay/Desktop/GitHub/OS/OS/project2/part1/scanner.o /home/hsahay/Desktop/GitHub/OS/OS/project2/part1/scanner.mod.o
