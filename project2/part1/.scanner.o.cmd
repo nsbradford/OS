@@ -854,6 +854,18 @@ deps_/home/hsahay/Desktop/GitHub/OS/OS/project2/part1/scanner.o := \
     $(wildcard include/config/have/perf/regs.h) \
   /usr/src/linux-source-3.13.0/linux-source-3.13.0/arch/x86/include/uapi/asm/perf_regs.h \
   /usr/src/linux-source-3.13.0/linux-source-3.13.0/arch/x86/include/asm/local.h \
+  include/linux/slab.h \
+    $(wildcard include/config/slab/debug.h) \
+    $(wildcard include/config/failslab.h) \
+    $(wildcard include/config/slob.h) \
+    $(wildcard include/config/slab.h) \
+    $(wildcard include/config/slub.h) \
+    $(wildcard include/config/debug/slab.h) \
+  include/linux/kmemleak.h \
+    $(wildcard include/config/debug/kmemleak.h) \
+  include/linux/slub_def.h \
+    $(wildcard include/config/slub/stats.h) \
+    $(wildcard include/config/memcg/kmem.h) \
 
 /home/hsahay/Desktop/GitHub/OS/OS/project2/part1/scanner.o: $(deps_/home/hsahay/Desktop/GitHub/OS/OS/project2/part1/scanner.o)
 

@@ -8,6 +8,7 @@
 #include <linux/module.h>
 #include <linux/syscalls.h>
 #include <linux/string.h>
+#include <linux/slab.h>
 
 unsigned long **sys_call_table;
 asmlinkage long (*ref_sys_cs3013_syscall1)(void);
@@ -65,7 +66,14 @@ asmlinkage long new_sys_read(unsigned int fd, char __user *buf, size_t count) {
 	uid_t uid = current_uid().val;
 	int ret_value = ref_sys_read(fd, buf, count);
 	if(uid >= 1000) {
-		if (strstr(buf, "VIRUS") != NULL) {
+		// Copy buffer into array of size 1 more than the buffer
+		// this will handle file that don't end in NULL, eg. binary files
+		char* new_buf = NULL;
+		new_buf = (char*) kmalloc((count+1) * sizeof(char), GFP_KERNEL);
+		strncpy(new_buf, buf, count);
+		new_buf[count] = '\0'; 
+
+		if (strstr(new_buf, "VIRUS") != NULL) {
 			printk(KERN_INFO "User %d is reading file: %d, but it contains malicious code!\n", uid, fd);
 		}
 		else {
