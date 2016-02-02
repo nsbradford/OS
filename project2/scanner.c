@@ -15,30 +15,30 @@ asmlinkage long (*ref_sys_read)(int fd, void *buf, size_t count);
 asmlinkage long (*ref_sys_close)(int fd);
 
 
-/*
- * Returns 1 if input contains the bad string, 0 if not.
- */
-int contains_virus(const char *haystack, size_t len_haystack) {
-	char needle[] = {'V', 'I', 'R', 'U', 'S'}; // DO NOT spell the word out here!make
+// /*
+//  * Returns 1 if input contains the bad string, 0 if not.
+//  */
+// int contains_virus(const char *haystack, size_t len_haystack) {
+// 	char needle[] = {'V', 'I', 'R', 'U', 'S'}; // DO NOT spell the word out here!make
 
-	size_t len_needle = 5; // ignore the NULL-termination
-	int found = 1;
-	int i;
-	int j;
-	for (i = 0; i < len_haystack - len_needle + 1; i++) {
-		found = 1;
-		for (j = 0; j < len_haystack && j < len_needle; j++) {
-			if (haystack[i + j] != needle[j]){
-				found = 0;
-				break;
-			}
-		}
-		if (found){
-			break;
-		}
-	}
-	return found;
-}
+// 	size_t len_needle = 5; // ignore the NULL-termination
+// 	int found = 1;
+// 	int i;
+// 	int j;
+// 	for (i = 0; i < len_haystack - len_needle + 1; i++) {
+// 		found = 1;
+// 		for (j = 0; j < len_haystack && j < len_needle; j++) {
+// 			if (haystack[i + j] != needle[j]){
+// 				found = 0;
+// 				break;
+// 			}
+// 		}
+// 		if (found){
+// 			break;
+// 		}
+// 	}
+// 	return found;
+// }
 
 /*
  * Replace cs3013_syscall1.
@@ -64,15 +64,16 @@ asmlinkage long new_sys_open(const char *filename, int flags, umode_t mode) {
  */
 asmlinkage long new_sys_read(unsigned int fd, char __user *buf, size_t count) {
 	uid_t uid = current_uid().val;
+	int ret_value = ref_sys_read(fd, buf, count);
 	if(uid >= 1000) {
-		if (contains_virus(buf, count)){
-			printk(KERN_INFO "User %d is reading file: %d, but it contains a virus!\n", uid, fd);
+		if (strstr(buf, "VIRUS") != NULL){
+			printk(KERN_INFO "User %d is reading file: %d, but it contains malicious code!\n", uid, fd);
 		}
 		else {
 			printk(KERN_INFO "User %d is reading file: %d\n", uid, fd);
 		}
 	}
-	return ref_sys_read(fd, buf, count);
+	return ret_value;
 }
 
 /*
