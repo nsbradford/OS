@@ -1,2 +1,2 @@
-/home/hsahay/Desktop/GitHub/OS/OS/project2/scanner.ko
-/home/hsahay/Desktop/GitHub/OS/OS/project2/scanner.o
+/home/nsbradford/OS/project2/scanner.ko
+/home/nsbradford/OS/project2/scanner.o
