@@ -1,6 +1,6 @@
 /*
  * scanner.c
- * Nicholas S. Bradford
+ * Nicholas S. Bradford, Himanshu Sahay
  *
  */
 
