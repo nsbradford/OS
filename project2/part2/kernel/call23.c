@@ -4,14 +4,28 @@
  *
  */
 
+ /*
+
+The shift2user
+parameters: the process ID (PID) to shift and the new user ID the process should run as. 
+The command will then go through all the processes running on the system and find the
+targeted PID. It will then change the user ID associated with the process to reflect the user ID parameter.
+If the user running the process is a non-privileged user (i.e., not root), the user should only be able to shift
+processes currently owned by that user and the target user ID should only be to user ID 1001. For the root
+user, this restriction should be waived.
+
+
+
+ */
+
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/syscalls.h>
-
+//#include <linux/sched.h>
 
 unsigned long **sys_call_table;
 asmlinkage long (*ref_sys_cs3013_syscall2)(unsigned short *target_pid, unsigned short *target_uid);
-asmlinkage long (*ref_sys_cs3013_syscall3)(void);
+asmlinkage long (*ref_sys_cs3013_syscall3)(unsigned short *target_pid, unsigned short *actual_uid);
 
 
 /*
@@ -27,12 +41,11 @@ asmlinkage long new_sys_cs3013_syscall2(unsigned short *target_pid, unsigned sho
 /*
  * Replace cs3013_syscall3.
  */
-asmlinkage long new_sys_cs3013_syscall3(void) {
+asmlinkage long new_sys_cs3013_syscall3(unsigned short *target_pid, unsigned short *actual_uid) {
 	// TODO
 	printk(KERN_INFO "syscall3!");
 	return 0;
 }
-
 
 static unsigned long **find_sys_call_table(void) {
 	unsigned long int offset = PAGE_OFFSET;
