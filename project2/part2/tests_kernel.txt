@@ -1,0 +1,29 @@
+Tests for kernel side
+
+Run >> sleep 600 in a separate terminal
+
+>> ps -A | grep sleep 
+(use this pid now (say, 3797))
+
+>> ./getloginuid 3213
+Feb  5 19:50:32 ubuntu kernel: [  889.025783] ERROR: Process with PID 3213 not found.
+
+>> getloginuid 3797
+Feb  5 20:00:47 ubuntu kernel: [ 1504.778085] Successfully copied loginuid 1001 to user space.
+
+>> ./shift2user 3797 1001
+Kernel output: 
+Feb  5 19:50:50 ubuntu kernel: [  906.960445] User with UID 1000 changed loginuid of process with PID 3797 to 1001.
+
+>> ./shift2user 3797 1002
+Feb  5 20:06:25 ubuntu kernel: [ 1842.577632] ERROR: Cannot change the UID to anything other than 1001.
+
+>> sudo ./shiftuser 3797 1002
+Feb  5 20:03:08 ubuntu kernel: [ 1645.816111] User with UID 0 changed loginuid of process with PID 3819 to 1021.
+
+>> sudo ./shift2user 3797 1001
+>> ./shift2user 3797 1001 
+Feb  5 20:10:12 ubuntu kernel: [ 2069.707044] ERROR: Invoking user UID 1000 does not own the process.
+
+
+

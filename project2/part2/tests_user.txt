@@ -1,0 +1,18 @@
+Tests for user side
+
+Run >> sleep 600 in a separate terminal
+
+>> ps -A | grep sleep 
+(use this pid now (say, 6563))
+>> ./getloginuid 6563
+output: The loginuid of process with ID 6563 is 65535
+>> ./shift2user 6563 1001
+output: The loginuid of process with ID 6563 has been changed to 1001
+>> ./shift2user 6563 1000
+output: Permission denied. Cannot change to this user
+>> sudo ./shift2user 6563 1231
+output: The loginuid of process with ID 6563 has been changed to 1231
+>> ./getloginuid 7783
+output: Process not found
+
+

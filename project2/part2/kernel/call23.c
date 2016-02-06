@@ -1,11 +1,11 @@
 /*
  * call23.c
- * Nicholas S. Bradford, Himanshu Sahay
+ * Himanshu Sahay, Nicholas S. Bradford
  *
  */
 
  /*
-
+To keep in mind
 The shift2user
 parameters: the process ID (PID) to shift and the new user ID the process should run as. 
 The command will then go through all the processes running on the system and find the
@@ -13,38 +13,161 @@ targeted PID. It will then change the user ID associated with the process to ref
 If the user running the process is a non-privileged user (i.e., not root), the user should only be able to shift
 processes currently owned by that user and the target user ID should only be to user ID 1001. For the root
 user, this restriction should be waived.
-
-
-
  */
 
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/syscalls.h>
-//#include <linux/sched.h>
+#include <linux/sched.h>
+#include <linux/uaccess.h>
+#include <linux/slab.h>
+
 
 unsigned long **sys_call_table;
 asmlinkage long (*ref_sys_cs3013_syscall2)(unsigned short *target_pid, unsigned short *target_uid);
 asmlinkage long (*ref_sys_cs3013_syscall3)(unsigned short *target_pid, unsigned short *actual_uid);
 
+// helper for cs30313_syscall2
+int search_for_process_syscall2(unsigned short *target_pid, unsigned short *target_uid){
+
+	struct task_struct *child_process;
+
+	// iterates over all the tasks under init
+	list_for_each_entry(child_process, &((&init_task)->tasks), tasks){
+		if (child_process->pid == *target_pid){
+
+			// check if user process
+			if (current_uid().val >= 1000){
+				// invoking user owns the process
+				if (child_process->loginuid.val == current_uid().val || child_process->loginuid.val == (-1) 
+					|| child_process->loginuid.val == 65535 )
+				{
+					
+					if (*target_uid == 1001){
+						// now, we can assign to the new user
+						kuid_t new_kuidt;
+						new_kuidt.val = *target_uid; 
+						child_process->loginuid = new_kuidt;
+						//child_process->loginuid.val = *target_uid;
+						printk(KERN_INFO "User with UID %d changed loginuid of process with PID %d to %d.\n", current_uid().val, *target_pid, *target_uid);
+						return 0; // success
+					}
+					else {
+						// operation not permitted error
+						printk(KERN_INFO "ERROR: Cannot change the UID to anything other than 1001.\n");
+						return EPERM;
+					}
+				}
+				else{
+					printk(KERN_INFO "ERROR: Invoking user UID %d does not own the process.\n", current_uid().val);
+					return EPERM;
+				}
+			}
+
+			// root process
+			else{
+				// has all priveleges
+				// now, we can assign to the new user
+				child_process->loginuid.val = *target_uid;
+				printk(KERN_INFO "User with UID %d changed loginuid of process with PID %d to %d.\n", current_uid().val, *target_pid, *target_uid);
+				return 0; // success
+			}
+		}
+	}
+
+	// no child process error
+	printk(KERN_INFO "ERROR: Process with PID %d not found.\n", *target_pid);
+	return ESRCH;
+
+}
 
 /*
- * Replace cs3013_syscall2.
+ * Replace cs3013_syscall2. Linked to shift2user
  * Must have memory allocated in user space before invoking system call
  * Returns: 0 if successful, -1 if unsuccessful (error code)
  */
 asmlinkage long new_sys_cs3013_syscall2(unsigned short *target_pid, unsigned short *target_uid) {
-	printk(KERN_INFO "syscall2!");
-	return 0;
+	unsigned short *new_target_pid;
+	unsigned short *new_target_uid;
+	int return_val;
+
+	// malloc space for these new variables
+	new_target_pid = (unsigned short *)kmalloc(sizeof(unsigned short), GFP_KERNEL);
+	new_target_uid = (unsigned short *)kmalloc(sizeof(unsigned short), GFP_KERNEL);
+
+	/* copy data from target_pid to area in user space pointed to by
+	new_target_pid */
+	if (copy_from_user(new_target_pid, target_pid, sizeof(unsigned short)))
+		return EFAULT;
+	/* copy data from target_uid to area in user space pointed to by
+	new_target_uid */		
+	if (copy_from_user(new_target_uid, target_uid, sizeof(unsigned short)))
+		return EFAULT;
+
+	return_val = search_for_process_syscall2(new_target_pid, new_target_uid);
+
+	// free memory in kernel
+	kfree(new_target_pid);
+	kfree(new_target_uid);
+
+	return return_val;
+
 }
+
+// helper for cs3013_syscall3
+int search_for_process_syscall3(unsigned short *actual_pid, unsigned short *actual_uid){
+
+	struct task_struct *child_process;
+
+	// iterates over all the tasks under init
+	list_for_each_entry(child_process, &((&init_task)->tasks), tasks){
+		
+		if (child_process->pid == *actual_pid){
+			
+			// variable to fetch login uid into user space
+			unsigned short *loginuid = (unsigned short *)kmalloc(sizeof(unsigned short), GFP_KERNEL);
+			*loginuid = child_process->loginuid.val;
+
+			if (copy_to_user(actual_uid, loginuid, sizeof(unsigned short))){
+				printk(KERN_INFO "ERROR: Copy of loginuid %d to user space failed.\n", *loginuid);
+				return EFAULT; // bad address error
+			}
+
+			// successful copy of loginuid to user space
+			printk(KERN_INFO "Successfully copied loginuid %d to user space.\n", *loginuid);
+			return 0;
+		}
+	}
+
+	// no child process error
+	printk(KERN_INFO "ERROR: Process with PID %d not found.\n", *actual_pid);
+	return ESRCH;
+
+}
+
 
 /*
  * Replace cs3013_syscall3.
  */
 asmlinkage long new_sys_cs3013_syscall3(unsigned short *target_pid, unsigned short *actual_uid) {
-	// TODO
-	printk(KERN_INFO "syscall3!");
-	return 0;
+	// look through all processes again, if process with required pid is found, return the loginuid
+	unsigned short *new_target_pid;
+	int return_val;
+
+	// malloc space for these new variables
+	new_target_pid = (unsigned short *)kmalloc(sizeof(unsigned short), GFP_KERNEL);
+
+	/* copy data from target_pid to area in user space pointed to by
+	new_target_pid */
+	if (copy_from_user(new_target_pid, target_pid, sizeof(unsigned short)))
+		return EFAULT;
+
+	return_val = search_for_process_syscall3(new_target_pid, actual_uid);
+
+	// free kernel memory
+	kfree(new_target_pid);
+
+	return return_val;
 }
 
 static unsigned long **find_sys_call_table(void) {
@@ -129,6 +252,7 @@ static void __exit interceptor_end(void) {
 
 	printk(KERN_INFO "Unloaded interceptor!\n");
 }
+
 
 MODULE_LICENSE("GPL");
 module_init(interceptor_start);

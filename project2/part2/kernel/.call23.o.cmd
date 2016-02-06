@@ -1,8 +1,8 @@
-cmd_/home/nsbradford/OS/project2/part2/kernel/call23.o := gcc -Wp,-MD,/home/nsbradford/OS/project2/part2/kernel/.call23.o.d  -nostdinc -isystem /usr/lib/gcc/i686-linux-gnu/4.8/include  -I/usr/src/linux-source-3.13.0/linux-source-3.13.0/arch/x86/include -Iarch/x86/include/generated  -Iinclude -I/usr/src/linux-source-3.13.0/linux-source-3.13.0/arch/x86/include/uapi -Iarch/x86/include/generated/uapi -I/usr/src/linux-source-3.13.0/linux-source-3.13.0/include/uapi -Iinclude/generated/uapi -include /usr/src/linux-source-3.13.0/linux-source-3.13.0/include/linux/kconfig.h -Iubuntu/include  -D__KERNEL__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -std=gnu89 -O2 -m32 -msoft-float -mregparm=3 -freg-struct-return -mno-mmx -mno-sse -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=generic -maccumulate-outgoing-args -Wa,-mtune=generic32 -ffreestanding -fstack-protector -DCONFIG_AS_CFI=1 -DCONFIG_AS_CFI_SIGNAL_FRAME=1 -DCONFIG_AS_CFI_SECTIONS=1 -DCONFIG_AS_AVX=1 -DCONFIG_AS_AVX2=1 -pipe -Wno-sign-compare -fno-asynchronous-unwind-tables -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -Wframe-larger-than=1024 -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(call23)"  -D"KBUILD_MODNAME=KBUILD_STR(call23)" -c -o /home/nsbradford/OS/project2/part2/kernel/.tmp_call23.o /home/nsbradford/OS/project2/part2/kernel/call23.c
+cmd_/home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/call23.o := gcc -Wp,-MD,/home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/.call23.o.d  -nostdinc -isystem /usr/lib/gcc/i686-linux-gnu/4.8/include  -I/usr/src/linux-source-3.13.0/linux-source-3.13.0/arch/x86/include -Iarch/x86/include/generated  -Iinclude -I/usr/src/linux-source-3.13.0/linux-source-3.13.0/arch/x86/include/uapi -Iarch/x86/include/generated/uapi -I/usr/src/linux-source-3.13.0/linux-source-3.13.0/include/uapi -Iinclude/generated/uapi -include /usr/src/linux-source-3.13.0/linux-source-3.13.0/include/linux/kconfig.h -Iubuntu/include  -D__KERNEL__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -std=gnu89 -O2 -m32 -msoft-float -mregparm=3 -freg-struct-return -mno-mmx -mno-sse -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=generic -maccumulate-outgoing-args -Wa,-mtune=generic32 -ffreestanding -fstack-protector -DCONFIG_AS_CFI=1 -DCONFIG_AS_CFI_SIGNAL_FRAME=1 -DCONFIG_AS_CFI_SECTIONS=1 -DCONFIG_AS_AVX=1 -DCONFIG_AS_AVX2=1 -pipe -Wno-sign-compare -fno-asynchronous-unwind-tables -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -Wframe-larger-than=1024 -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(call23)"  -D"KBUILD_MODNAME=KBUILD_STR(call23)" -c -o /home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/.tmp_call23.o /home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/call23.c
 
-source_/home/nsbradford/OS/project2/part2/kernel/call23.o := /home/nsbradford/OS/project2/part2/kernel/call23.c
+source_/home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/call23.o := /home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/call23.c
 
-deps_/home/nsbradford/OS/project2/part2/kernel/call23.o := \
+deps_/home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/call23.o := \
   include/linux/kernel.h \
     $(wildcard include/config/lbdaf.h) \
     $(wildcard include/config/preempt/voluntary.h) \
@@ -854,7 +854,19 @@ deps_/home/nsbradford/OS/project2/part2/kernel/call23.o := \
     $(wildcard include/config/have/perf/regs.h) \
   /usr/src/linux-source-3.13.0/linux-source-3.13.0/arch/x86/include/uapi/asm/perf_regs.h \
   /usr/src/linux-source-3.13.0/linux-source-3.13.0/arch/x86/include/asm/local.h \
+  include/linux/slab.h \
+    $(wildcard include/config/slab/debug.h) \
+    $(wildcard include/config/failslab.h) \
+    $(wildcard include/config/slob.h) \
+    $(wildcard include/config/slab.h) \
+    $(wildcard include/config/slub.h) \
+    $(wildcard include/config/debug/slab.h) \
+  include/linux/kmemleak.h \
+    $(wildcard include/config/debug/kmemleak.h) \
+  include/linux/slub_def.h \
+    $(wildcard include/config/slub/stats.h) \
+    $(wildcard include/config/memcg/kmem.h) \
 
-/home/nsbradford/OS/project2/part2/kernel/call23.o: $(deps_/home/nsbradford/OS/project2/part2/kernel/call23.o)
+/home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/call23.o: $(deps_/home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/call23.o)
 
-$(deps_/home/nsbradford/OS/project2/part2/kernel/call23.o):
+$(deps_/home/hsahay/Desktop/GitHub/OS/OS/project2/part2/kernel/call23.o):
