@@ -63,6 +63,14 @@ void initialize_planes(Plane planes[], unsigned int len){
 	}
 }
 
+void plane_function(void *ptr){
+	Plane *plane;
+	plane = (Plane *)ptr;
+	print_plane(*plane);
+
+	pthread_exit(0);
+}
+
 
 /**
  * Helper for qsort() in sort_plane_buffer().
@@ -91,9 +99,18 @@ int main(){
 	initialize_planes(planes, N_PLANES);
 	print_all_planes(planes, N_PLANES);
 
-	printf("Test sort by n_fuel...\n");
-	sort_plane_buffer(planes, N_PLANES);
-	print_all_planes(planes, N_PLANES);
+	//printf("Test sort by n_fuel...\n");
+	//sort_plane_buffer(planes, N_PLANES);
+	//print_all_planes(planes, N_PLANES);
+
+	pthread_t threads[N_PLANES];
+	// thread variable, a thread attribute, a start routine function, and optional argument
+	pthread_create(&threads[0], NULL, (void *)&plane_function, (void *)&planes[0]);
+
+	/* Main block now waits for both threads to terminate, before it exits
+       If main block exits, both threads exit, even if the threads have not
+       finished their work */ 
+	pthread_join(threads[0], NULL);
 
 	return 0;
 }
