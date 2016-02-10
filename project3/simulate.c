@@ -9,6 +9,9 @@
 #include <stdlib.h>
 
 #include <pthread.h>
+#include <semaphore.h>
+
+#define DEBUG true
 
 #define N_PLANES 25
 #define T_START_MIN 0
@@ -31,6 +34,8 @@ typedef struct plane{
 	bool is_emergency;
 	PlaneState state;
 } Plane;
+
+sem_t *SEM_BUFFER;
 
 
 void print_plane(Plane p){
@@ -58,7 +63,7 @@ void initialize_planes(Plane planes[], unsigned int len){
 		planes[i].t_start = rand() % T_START_RANGE + T_START_MIN;
 		planes[i].maxfuel = rand() % START_FUEL_RANGE + START_FUEL_MIN;
 		planes[i].n_fuel = planes[i].maxfuel;
-		planes[i].is_emergency = (float)rand()/(float)(RAND_MAX) > P_IS_EMERGENCY ? true : false;
+		planes[i].is_emergency = (float)rand()/(float)(RAND_MAX) > P_IS_EMERGENCY ? false : true;
 		planes[i].state = ARRIVING;
 	}
 }
@@ -94,23 +99,36 @@ void sort_plane_buffer(Plane buffer[], unsigned int len){
  * Initialize simulate, and start threads.
  */
 int main(){
+	int i;
 	Plane planes[N_PLANES];
-	printf("Initialize planes...\n");
+	SEM_BUFFER = (sem_t *)malloc(sizeof(sem_t));
+	sem_init(SEM_BUFFER, 0, 1); // only 1 thread can access at a time
+
+	printf("\n------------------------------\nInitialize planes...\n");
 	initialize_planes(planes, N_PLANES);
 	print_all_planes(planes, N_PLANES);
 
+	// Test that sorting works
 	//printf("Test sort by n_fuel...\n");
 	//sort_plane_buffer(planes, N_PLANES);
 	//print_all_planes(planes, N_PLANES);
 
+	// Create threads
+	if (DEBUG) printf("\n------------------------------\nCreate threads...\n");
 	pthread_t threads[N_PLANES];
-	// thread variable, a thread attribute, a start routine function, and optional argument
-	pthread_create(&threads[0], NULL, (void *)&plane_function, (void *)&planes[0]);
+	for (i = 0; i < N_PLANES; i++){
+		pthread_create(&threads[i], NULL, (void *)&plane_function, (void *)&planes[i]);
+	}
 
-	/* Main block now waits for both threads to terminate, before it exits
-       If main block exits, both threads exit, even if the threads have not
-       finished their work */ 
-	pthread_join(threads[0], NULL);
+	// Wait for simulation to finish, checking if a plane crashed
+	// TODO
+
+
+	// If program has finished, join all threads
+	//if (DEBUG) printf("\n------------------------------\nJoin threads...\n");
+	for (i = 0; i < N_PLANES; i++){
+		pthread_join(threads[i], NULL);
+	}
 
 	return 0;
 }
