@@ -46,8 +46,8 @@ typedef struct plane {
 	unsigned int target_runway;
 } Plane;
 
-sem_t *SEM_BUFFER;
-sem_t *SEM_RUNWAYS[N_RUNWAYS];
+pthread_mutex_t  *MUTEX_BUFFER;
+pthread_mutex_t *MUTEX_RUNWAYS[N_RUNWAYS];
 Plane PLANE_BUFFER[N_PLANE_BUFFER];
 Plane NULL_PLANE = {UINT_MAX, UINT_MAX, UINT_MAX, INT_MAX, false, GHOST, UINT_MAX};
 
@@ -120,6 +120,31 @@ void print_all_planes(Plane planes[], unsigned int len){
 }
 
 
+/**
+ * Helper for qsort() in sort_plane_buffer().
+ * Inputs a and b are pointers to planes.
+ */
+int cmp_n_fuel(const void *a, const void *b){
+	Plane *p1 = (Plane *)a;
+	Plane *p2 = (Plane *)b;
+	// return 0 if equal fuel, (+) if p1 has more, (-) if p2 has more
+	if ((p1->state == GHOST && p2->state != GHOST) || (!(p1->is_emergency) && (p2->is_emergency)))
+		return 1;
+	else if ((p1->state != GHOST && p2->state == GHOST) || ((p1->is_emergency) && !(p2->is_emergency)))
+		return -1;
+	else if (p1->state == GHOST && p2->state == GHOST)
+		return 0;
+	else // includes if (p1->is_emergency) && (p2->is_emergency)
+		return p1->n_fuel - p2->n_fuel; 
+}
+
+
+/**
+ * Sorts an array of Plane structs by increasing fuel remaining.
+ */
+void sort_plane_buffer(Plane buffer[], unsigned int len){
+	qsort(buffer, len, sizeof(Plane), cmp_n_fuel);
+}
 
 
 void plane_crash(){
@@ -144,64 +169,41 @@ void plane_function(void *ptr){
 	// Wait to arrive
 	//sleep(plane->t_start);
 
-	// ARRIVING
+	// 1: ARRIVING
 	plane->state = ARRIVING;
 	print_plane(*plane);
-	// wait on synchronized buffer
-	//sem_wait(SEM_BUFFER);
+	sem_wait(SEM_BUFFER); // wait on synchronized buffer
 
 	// QUEUING
 	plane->state = QUEUING;
 	insert_plane_in_queue(plane, PLANE_BUFFER);
 	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
-	//	if is_front_of_queue(plane, buffer):
-	//		wait on
-
-
 	sem_post(SEM_BUFFER);
+	//	if is_front_of_queue(plane, buffer) && :
+	//		wait on
+	//
 
-	// DESCENDING
+	// 2: DESCENDING
 	plane->state = DESCENDING;
+	print_plane(*plane);
 	sleep(plane->t_descend);
 
-	// LANDING
+	// 3: LANDING
 	plane->state = LANDING;
+	print_plane(*plane);
 	sleep(plane->t_land);
 
-	// CLEARING
+	// 4: CLEARING
 	plane->state = CLEARING;
+	print_plane(*plane);
+	sleep(plane->t_clear);
 
 	// All done
 	pthread_exit(0);
 }
 
 
-/**
- * Helper for qsort() in sort_plane_buffer().
- * Inputs a and b are pointers to planes.
- */
-int cmp_n_fuel(const void *a, const void *b){
-	Plane *p1 = (Plane *)a;
-	Plane *p2 = (Plane *)b;
-	// return 0 if equal fuel, (+) if p1 has more, (-) if p2 has more
-	if (p1->state == GHOST && p2->state != GHOST)
-		return 1;
-	else if (p1->state != GHOST && p2->state == GHOST)
-		return -1;
-	else if (p1->state == GHOST && p2->state == GHOST)
-		return 0;
-	else {
-		return p1->n_fuel - p2->n_fuel; 
-	}
-}
 
-
-/**
- * Sorts an array of Plane structs by increasing fuel remaining.
- */
-void sort_plane_buffer(Plane buffer[], unsigned int len){
-	qsort(buffer, len, sizeof(Plane), cmp_n_fuel);
-}
 
 
 /**
@@ -211,18 +213,17 @@ int main(){
 	int i;
 	srand(7);
 
-	printf("\n------------------------------\nInitialize semaphores...\n");
-	SEM_BUFFER = (sem_t *)malloc(sizeof(sem_t));
-	sem_init(SEM_BUFFER, 0, 1); // only 1 thread can access at a time
+	printf("\n------------------------------\nInitialize mutexes...\n");
+	MUTEX_BUFFER = (sem_t *)malloc(sizeof(sem_t));
 	for (i = 0; i < N_RUNWAYS; i++){
 		SEM_RUNWAYS[i] = (sem_t *)malloc(sizeof(sem_t) * N_RUNWAYS);
 		sem_init(SEM_RUNWAYS[i], 0, 1); // only 1 thread can access at a time
 	}
+
+	printf("\n------------------------------\nInitialize planes...\n");
 	for (i = 0; i < N_PLANE_BUFFER; i++){
 		PLANE_BUFFER[i] = NULL_PLANE;
 	}
-
-	printf("\n------------------------------\nInitialize planes...\n");
 	Plane planes[N_PLANES];
 	initialize_planes(planes, N_PLANES);
 	print_all_planes(planes, N_PLANES);

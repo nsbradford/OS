@@ -120,6 +120,31 @@ void print_all_planes(Plane planes[], unsigned int len){
 }
 
 
+/**
+ * Helper for qsort() in sort_plane_buffer().
+ * Inputs a and b are pointers to planes.
+ */
+int cmp_n_fuel(const void *a, const void *b){
+	Plane *p1 = (Plane *)a;
+	Plane *p2 = (Plane *)b;
+	// return 0 if equal fuel, (+) if p1 has more, (-) if p2 has more
+	if ((p1->state == GHOST && p2->state != GHOST) || (!(p1->is_emergency) && (p2->is_emergency)))
+		return 1;
+	else if ((p1->state != GHOST && p2->state == GHOST) || ((p1->is_emergency) && !(p2->is_emergency)))
+		return -1;
+	else if (p1->state == GHOST && p2->state == GHOST)
+		return 0;
+	else // includes if (p1->is_emergency) && (p2->is_emergency)
+		return p1->n_fuel - p2->n_fuel; 
+}
+
+
+/**
+ * Sorts an array of Plane structs by increasing fuel remaining.
+ */
+void sort_plane_buffer(Plane buffer[], unsigned int len){
+	qsort(buffer, len, sizeof(Plane), cmp_n_fuel);
+}
 
 
 void plane_crash(){
@@ -178,32 +203,6 @@ void plane_function(void *ptr){
 }
 
 
-/**
- * Helper for qsort() in sort_plane_buffer().
- * Inputs a and b are pointers to planes.
- */
-int cmp_n_fuel(const void *a, const void *b){
-	Plane *p1 = (Plane *)a;
-	Plane *p2 = (Plane *)b;
-	// return 0 if equal fuel, (+) if p1 has more, (-) if p2 has more
-	if (p1->state == GHOST && p2->state != GHOST)
-		return 1;
-	else if (p1->state != GHOST && p2->state == GHOST)
-		return -1;
-	else if (p1->state == GHOST && p2->state == GHOST)
-		return 0;
-	else {
-		return p1->n_fuel - p2->n_fuel; 
-	}
-}
-
-
-/**
- * Sorts an array of Plane structs by increasing fuel remaining.
- */
-void sort_plane_buffer(Plane buffer[], unsigned int len){
-	qsort(buffer, len, sizeof(Plane), cmp_n_fuel);
-}
 
 
 /**
@@ -220,11 +219,11 @@ int main(){
 		SEM_RUNWAYS[i] = (sem_t *)malloc(sizeof(sem_t) * N_RUNWAYS);
 		sem_init(SEM_RUNWAYS[i], 0, 1); // only 1 thread can access at a time
 	}
+
+	printf("\n------------------------------\nInitialize planes...\n");
 	for (i = 0; i < N_PLANE_BUFFER; i++){
 		PLANE_BUFFER[i] = NULL_PLANE;
 	}
-
-	printf("\n------------------------------\nInitialize planes...\n");
 	Plane planes[N_PLANES];
 	initialize_planes(planes, N_PLANES);
 	print_all_planes(planes, N_PLANES);
