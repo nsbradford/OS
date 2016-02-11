@@ -144,32 +144,34 @@ void plane_function(void *ptr){
 	// Wait to arrive
 	//sleep(plane->t_start);
 
-	// ARRIVING
+	// 1: ARRIVING
 	plane->state = ARRIVING;
 	print_plane(*plane);
-	// wait on synchronized buffer
-	//sem_wait(SEM_BUFFER);
+	sem_wait(SEM_BUFFER); // wait on synchronized buffer
 
 	// QUEUING
 	plane->state = QUEUING;
 	insert_plane_in_queue(plane, PLANE_BUFFER);
 	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
-	//	if is_front_of_queue(plane, buffer):
-	//		wait on
-
-
 	sem_post(SEM_BUFFER);
+	//	if is_front_of_queue(plane, buffer) && :
+	//		wait on
+	//
 
-	// DESCENDING
+	// 2: DESCENDING
 	plane->state = DESCENDING;
+	print_plane(*plane);
 	sleep(plane->t_descend);
 
-	// LANDING
+	// 3: LANDING
 	plane->state = LANDING;
+	print_plane(*plane);
 	sleep(plane->t_land);
 
-	// CLEARING
+	// 4: CLEARING
 	plane->state = CLEARING;
+	print_plane(*plane);
+	sleep(plane->t_clear);
 
 	// All done
 	pthread_exit(0);
