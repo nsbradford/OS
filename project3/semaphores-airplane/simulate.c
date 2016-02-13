@@ -38,32 +38,38 @@ int main(){
 	SEM_BUFFER = (sem_t *)malloc(sizeof(sem_t));
 	sem_init(SEM_BUFFER, 0, 1); // only 1 thread can access at a time
 	for (i = 0; i < N_RUNWAYS; i++){
-		SEM_RUNWAYS[i] = (sem_t *)malloc(sizeof(sem_t) * N_RUNWAYS);
+		SEM_RUNWAYS[i] = (sem_t *)malloc(sizeof(sem_t));
 		sem_init(SEM_RUNWAYS[i], 0, 1); // only 1 thread can access at a time
 	}
 
 	printf("\n------------------------------\nInitialize planes...\n");
-	null_plane = (Plane){UINT_MAX, UINT_MAX, UINT_MAX, INT_MAX, false, GHOST, UINT_MAX};
+	null_plane = (Plane){UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, 
+		INT_MAX, UINT_MAX, false, GHOST, UINT_MAX};
 	NULL_PLANE = &null_plane;
 	BUFFER_COUNT = 0;
 	for (i = 0; i < N_PLANE_BUFFER; i++){
-		PLANE_BUFFER[i] = *NULL_PLANE;
+		PLANE_BUFFER[i] = (Plane *)malloc(sizeof(Plane));
+		PLANE_BUFFER[i] = NULL_PLANE;
 	}
 	Plane planes[N_PLANES];
 	initialize_planes(planes, N_PLANES);
-	print_all_planes(planes, N_PLANES);
-
-	// Test that sorting works
-	//printf("Test sort by n_fuel...\n");
-	//sort_plane_buffer(planes, N_PLANES);
-	//print_all_planes(planes, N_PLANES);
+	for (i = 0; i < N_PLANES; i++){
+		print_plane(planes[i]);
+	}
 	
-	// Test that sorting works with NULL
-	//printf("Test sort by n_fuel and NULL...\n");
-	//PLANE_BUFFER[2] = planes[0];
-	//PLANE_BUFFER[3] = planes[1];
-	//sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
-	//print_all_planes(PLANE_BUFFER, N_PLANE_BUFFER);
+	// Test that sorting works
+	/*
+	printf("Test sort by n_fuel and GHOST and is_emergency...\n");
+	PLANE_BUFFER[1] = &planes[1];
+	PLANE_BUFFER[2] = &planes[2];
+	PLANE_BUFFER[3] = &planes[3];
+	PLANE_BUFFER[4] = &planes[4];
+	PLANE_BUFFER[5] = &planes[5];
+	PLANE_BUFFER[6] = &planes[6];
+	PLANE_BUFFER[7] = &planes[7];
+	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
+	print_all_planes(PLANE_BUFFER, N_PLANE_BUFFER);
+	*/
 
 	if (DEBUG) printf("\n------------------------------\nCreate threads...\n");
 	pthread_t threads[N_PLANES];
@@ -81,6 +87,5 @@ int main(){
 		pthread_join(threads[i], NULL);
 	}
 
-	sem_destroy(SEM_BUFFER); // deallocate semaphore
 	return 0;
 }

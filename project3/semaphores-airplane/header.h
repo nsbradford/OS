@@ -13,13 +13,13 @@
 
 #define DEBUG true
 
-#define N_PLANES 2
+#define N_PLANES 25
 #define N_PLANE_BUFFER (N_PLANES * 2)
 #define N_RUNWAYS 3
 
 #define FUEL_RATE 5
-#define T_START_MIN 0
-#define T_START_RANGE 300
+#define T_START_MIN 1
+#define T_START_RANGE 10
 #define T_DESCEND_MIN 20
 #define T_DESCEND_RANGE 10
 #define T_LAND_MIN 10
@@ -47,12 +47,15 @@ typedef struct plane {
 
 sem_t *SEM_BUFFER;
 sem_t *SEM_RUNWAYS[N_RUNWAYS];
-Plane PLANE_BUFFER[N_PLANE_BUFFER];
+Plane *PLANE_BUFFER[N_PLANE_BUFFER];
 Plane null_plane;
 Plane *NULL_PLANE;
 unsigned int BUFFER_COUNT;
 
 void plane_function(void *ptr);
-void print_all_planes(Plane planes[], unsigned int len);
+// only need these for debugging purposes
+void print_plane(Plane p);
+void print_all_planes(Plane *planes[], unsigned int len);
+void sort_plane_buffer(Plane *buffer[], unsigned int len);
 
 #endif

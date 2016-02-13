@@ -39,10 +39,10 @@ void print_plane(Plane p){
 /**
  * Call print_plane() for each Plane in a buffer.
  */
-void print_all_planes(Plane planes[], unsigned int len){
+void print_all_planes(Plane *planes[], unsigned int len){
 	int i;
 	for (i = 0; i < len; i++){
-		print_plane(planes[i]);
+		print_plane(*planes[i]);
 	}
 }
 
@@ -60,35 +60,31 @@ void check_danger(){
 /**
  * Helper for qsort() in sort_plane_buffer().
  * Inputs a and b are pointers to planes.
+ * Return 0 if equal fuel, (+) if p1 has more, (-) if p2 has more
  */
 int cmp_n_fuel(const void *a, const void *b){
-	Plane *p1 = (Plane *)a;
-	Plane *p2 = (Plane *)b;
-	// return 0 if equal fuel, (+) if p1 has more, (-) if p2 has more
+	Plane *p1 = *(Plane **)a;
+	Plane *p2 = *(Plane **)b;
+	// if a=GHOST or b=EMERGENCY
 	if ((p1->state == GHOST && p2->state != GHOST) || (!(p1->is_emergency) && (p2->is_emergency)))
 		return 1;
+	// if b=GHOST or a=EMERGENCY
 	else if ((p1->state != GHOST && p2->state == GHOST) || ((p1->is_emergency) && !(p2->is_emergency)))
 		return -1;
+	// if both=GHOST
 	else if (p1->state == GHOST && p2->state == GHOST)
 		return 0;
-	else // includes if (p1->is_emergency) && (p2->is_emergency)
+	// includes if both are emergency
+	else 
 		return p1->n_fuel - p2->n_fuel; 
-}
-
-
-/**
- *
- */
-void insert_plane_in_queue(Plane buffer[], Plane *plane){
-
 }
 
 
 /**
  * Sorts an array of Plane structs by increasing fuel remaining.
  */
-void sort_plane_buffer(Plane buffer[], unsigned int len){
-	qsort(buffer, len, sizeof(Plane), cmp_n_fuel);
+void sort_plane_buffer(Plane *buffer[], unsigned int len){
+	qsort(buffer, len, sizeof(Plane*), cmp_n_fuel);
 }
 
 
@@ -97,11 +93,13 @@ void sort_plane_buffer(Plane buffer[], unsigned int len){
  */
 void plane_insert(Plane *plane){
 	plane->state = ARRIVING; // 1: ARRIVING
-	sem_wait(SEM_BUFFER); // wait on synchronized buffer
 	print_plane(*plane);
-	insert_plane_in_queue(PLANE_BUFFER, plane);
+	
+	assert(BUFFER_COUNT < N_PLANE_BUFFER);
+	PLANE_BUFFER[BUFFER_COUNT] = plane; // change the pointer
+	BUFFER_COUNT++;
+	
 	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
-	sem_post(SEM_BUFFER);
 }
 
 
@@ -137,10 +135,15 @@ void plane_function(void *ptr){
 	plane = (Plane *)ptr;
 	assert (plane->state == FLYING);
 	
-	pthread_exit(0);
 
 	sleep(plane->t_start); 		// wait to arrive
+	sem_wait(SEM_BUFFER); 		// wait on synchronized buffer
 	plane_insert(plane);		// insert into buffer
+	sem_post(SEM_BUFFER);
+	
+	//print_plane(*plane);
+	pthread_exit(0);
+
 	plane_remove(plane);		// remove from buffer
 	pthread_exit(0);			// all done
 }
