@@ -1,4 +1,5 @@
-##
+## Nicholas Bradford (nsbradford@wpi.edu) and Himanshu Sahay (hsahay@wpi.edu)
+
 simulate: simulate.o plane.o
 	gcc -o simulate simulate.o plane.o -lpthread
 

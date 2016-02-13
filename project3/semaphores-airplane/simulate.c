@@ -1,7 +1,9 @@
-/*
- *
+/**
+ * plane.c
+ * Nicholas Bradford (nsbradford@wpi.edu) and Himanshu Sahay (hsahay@wpi.edu)
  *
  */
+
 
 #include "header.h"
 
@@ -23,6 +25,8 @@ void initialize_planes(Plane planes[], unsigned int len){
 		planes[i].is_emergency = (float)rand()/(float)(RAND_MAX) > P_IS_EMERGENCY ? false : true;
 		planes[i].state = FLYING;
 		planes[i].target_runway = (int)NULL;
+		planes[i].start_time = (struct timeval *)malloc(sizeof(struct timeval));
+		planes[i].tmp_time = (struct timeval *)malloc(sizeof(struct timeval));
 	}
 }
 
@@ -43,8 +47,8 @@ int main(){
 	}
 
 	printf("\n------------------------------\nInitialize planes...\n");
-	null_plane = (Plane){UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, 
-		INT_MAX, UINT_MAX, false, GHOST, UINT_MAX};
+	null_plane = (Plane){UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, DBL_MAX, 
+		UINT_MAX, false, GHOST, UINT_MAX, (struct timeval *)NULL, (struct timeval *)NULL};
 	NULL_PLANE = &null_plane;
 	BUFFER_COUNT = 0;
 	for (i = 0; i < N_PLANE_BUFFER; i++){

@@ -1,11 +1,18 @@
+/**
+ * header.h
+ * Nicholas Bradford (nsbradford@wpi.edu) and Himanshu Sahay (hsahay@wpi.edu)
+ *
+ */
+
 #ifndef HEADER_H
 #define HEADER_H
 
 #include <stdio.h>
 #include <stdbool.h>
-#include <time.h>
+#include <sys/time.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <float.h>
 #include <limits.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -18,6 +25,7 @@
 #define N_RUNWAYS 3
 
 #define FUEL_RATE 5
+#define FUEL_DANGER_ZONE 50
 #define T_START_MIN 1
 #define T_START_RANGE 10
 #define T_DESCEND_MIN 20
@@ -38,11 +46,13 @@ typedef struct plane {
 	unsigned int t_land;
 	unsigned int t_clear;
 	unsigned int maxfuel;
-	int n_fuel;
+	double n_fuel;
 	unsigned int fuel_rate;
 	bool is_emergency;
 	PlaneState state;
 	unsigned int target_runway;
+	struct timeval *start_time;
+	struct timeval *tmp_time;
 } Plane;
 
 sem_t *SEM_BUFFER;
@@ -55,7 +65,7 @@ unsigned int BUFFER_COUNT;
 void plane_function(void *ptr);
 // only need these for debugging purposes
 void print_plane(Plane p);
-void print_all_planes(Plane *planes[], unsigned int len);
+void print_all_planes(Plane *buffer[], unsigned int len);
 void sort_plane_buffer(Plane *buffer[], unsigned int len);
 
 #endif
