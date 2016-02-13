@@ -41,7 +41,7 @@ void print_plane(Plane p){
 			printf("ERROR in print_plane() switch.\n");
 			break;
 	}
-	if (p.n_fuel < FUEL_DANGER_ZONE){
+	if (p.n_fuel < FUEL_DANGER_ZONE && p.n_fuel > 0){
 		printf("\tin FUEL_DANGER_ZONE!\n");
 	}
 }
@@ -65,6 +65,11 @@ void update_fuel(Plane *plane){
 	double delta = (plane->tmp_time->tv_sec - plane->start_time->tv_sec)
 			+ (plane->tmp_time->tv_usec - plane->start_time->tv_usec)/1000000;
 	plane->n_fuel = plane->maxfuel - (plane->fuel_rate * delta);
+	if (plane->n_fuel < 0){
+		print_plane(*plane);
+		printf("\nPlane %d has run out of fuel and CRASHED!\n*END SIMULATION*\n\n", plane->id);
+		exit(-1);
+	}
 }
 
 
@@ -115,46 +120,10 @@ void plane_insert(Plane *plane){
 	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
 }
 
-//=================================================================================================
-// WAIT
 
-
-/**
- * Return true if plane is first in the buffer.
- */
-bool is_next(Plane *buffer[], Plane *plane){
-	Plane *first = buffer[0];
-	return(first->id == plane->id);
-}
-
-/** 
- * Return true if a runway is free.
- */
-bool is_free(){
-	// TODO
-	return true;
-}
-
-/** 
- * Wait until is_next() and is_free(), so that the plane can plane_remove()
- */
-void plane_wait(Plane *plane){
-
-}
 
 //=================================================================================================
 // DESCENDING/LANDING/CLEARED
-
-
-
-void plane_crash(){
-	
-}
-
-
-void check_danger(){
-
-}
 
 
 /**
@@ -183,6 +152,43 @@ void plane_remove(Plane *plane){
 
 	sem_wait(SEM_BUFFER);
 
+}
+
+//=================================================================================================
+// WAIT
+
+
+/**
+ * Return true if plane is first in the buffer.
+ */
+bool is_next(Plane *buffer[], Plane *plane){
+	Plane *first = buffer[0];
+	return(first->id == plane->id);
+}
+
+/** 
+ * Return true if a runway is free.
+ */
+bool is_free(){
+	// TODO
+	return true;
+}
+
+/** 
+ * Wait until is_next() and is_free(), so that the plane can plane_remove()
+ */
+void plane_wait(Plane *plane){
+	/*
+	DOWN(free)
+	while (1)
+		wait for all planes to wake up
+		if first
+			wait for others to go back to sleep
+		else
+			go back to sleep
+			wait for others to sleep
+		
+	*/
 }
 
 //=================================================================================================

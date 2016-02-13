@@ -55,12 +55,19 @@ typedef struct plane {
 	struct timeval *tmp_time;
 } Plane;
 
+// normal semaphore stuff
 sem_t *SEM_BUFFER;
 sem_t *SEM_RUNWAYS[N_RUNWAYS];
 Plane *PLANE_BUFFER[N_PLANE_BUFFER];
 Plane null_plane;
 Plane *NULL_PLANE;
 unsigned int BUFFER_COUNT;
+
+// turnstiles
+//sem_t *TURN_1;
+//sem_t *TURN_2;
+//sem_t MUTEX;
+//unsigned int TURN_COUNT;
 
 void plane_function(void *ptr);
 // only need these for debugging purposes

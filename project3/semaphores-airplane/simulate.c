@@ -39,6 +39,8 @@ int main(){
 	srand(7);
 
 	printf("\n------------------------------\nInitialize semaphores...\n");
+	
+	// buffer
 	SEM_BUFFER = (sem_t *)malloc(sizeof(sem_t));
 	sem_init(SEM_BUFFER, 0, 1); // only 1 thread can access at a time
 	for (i = 0; i < N_RUNWAYS; i++){
@@ -46,7 +48,11 @@ int main(){
 		sem_init(SEM_RUNWAYS[i], 0, 1); // only 1 thread can access at a time
 	}
 
+	// turnstiles
+
+
 	printf("\n------------------------------\nInitialize planes...\n");
+	
 	null_plane = (Plane){UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, DBL_MAX, 
 		UINT_MAX, false, GHOST, UINT_MAX, (struct timeval *)NULL, (struct timeval *)NULL};
 	NULL_PLANE = &null_plane;
@@ -75,17 +81,12 @@ int main(){
 	print_all_planes(PLANE_BUFFER, N_PLANE_BUFFER);
 	*/
 
-	if (DEBUG) printf("\n------------------------------\nCreate threads...\n");
+	printf("\n------------------------------\nCreate threads...\n");
 	pthread_t threads[N_PLANES];
 	for (i = 0; i < N_PLANES; i++){
 		pthread_create(&threads[i], NULL, (void *)&plane_function, (void *)&planes[i]);
 	}
 
-	// Wait for simulation to finish, checking if a plane crashed
-	// TODO
-
-
-	// If program has finished, join all threads
 	//if (DEBUG) printf("\n------------------------------\nJoin threads...\n");
 	for (i = 0; i < N_PLANES; i++){
 		pthread_join(threads[i], NULL);
