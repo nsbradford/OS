@@ -20,12 +20,12 @@
 
 #define DEBUG false
 
-#define N_PLANES 3
+#define N_PLANES 2
 #define N_PLANE_BUFFER (N_PLANES * 2)
 #define N_RUNWAYS 3
 
 #define T_START_MIN 1
-#define T_START_RANGE 10
+#define T_START_RANGE 5
 #define T_DESCEND_MIN 5
 #define T_DESCEND_RANGE 1
 #define T_LAND_MIN 5

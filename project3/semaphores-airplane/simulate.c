@@ -103,5 +103,6 @@ int main(){
 		pthread_join(threads[i], NULL);
 	}
 
+	printf("\n------------------------------\nSimulation finished successfully!\n*END SIMULATION*\n\n");
 	return 0;
 }

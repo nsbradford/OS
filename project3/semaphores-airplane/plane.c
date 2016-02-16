@@ -243,7 +243,7 @@ void plane_remove(Plane *plane){
 	if (DEBUG) sem_getvalue(FREE_RUNWAY, &val);
 	if (DEBUG) printf(" -Plane %d: remove() FREE_RUNWAY has value %d\n", plane->id, val);
 	if (val> 0){
-		if (DEBUG) printf(" -Plane %d: remove() sem_post(FREE_RUNWAY).\n", plane->id);
+		if (DEBUG) printf(" -Plane %d: remove() sem_wait(FREE_RUNWAY).\n", plane->id);
 		sem_wait(FREE_RUNWAY);			// need to lock FREE_RUNWAY here so barrier works
 	}
 	
