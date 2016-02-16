@@ -20,8 +20,8 @@
 
 #define DEBUG true
 
-#define N_PLANES 25
-#define N_PLANE_BUFFER (N_PLANES * 2)
+#define N_PLANES 4
+#define N_PLANE_BUFFER (N_PLANES)
 #define N_RUNWAYS 3
 
 #define T_START_MIN 1

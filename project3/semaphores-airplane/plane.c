@@ -163,6 +163,7 @@ void plane_insert(Plane *plane){
 /** 
  * Wait until is_next() and is_freerunway(), so that the plane can plane_remove()
  * Reusable barrier solution as described in the Little Book of Semphores.
+ * SEM_IN_OUT should be held by the CLEARED plane.
  */
 void plane_wait(Plane *plane){
 	bool flag_first = false;
@@ -258,7 +259,6 @@ void runway_remove(Plane *plane){
 	RUNWAY_BUFFER[runway] = NULL_PLANE;
 }
 
-
 /**
  * Land on an open runway.
  * IMPORTANT: assumes that SEM_BUFFER is already held
@@ -304,6 +304,7 @@ void plane_descend_land(Plane *plane){
 	print_plane(*plane);
 
 	sem_wait(SEM_IN_OUT);
+	sem_wait(SEM_BUFFER);
 
 	// remove from RUNWAY_BUFFER
 	runway_remove(plane);
@@ -319,6 +320,7 @@ void plane_descend_land(Plane *plane){
 		sem_wait(SEM_WAIT_DONE);	// gets unlocked by a plane which leaves the buffer
 	}
 	
+	sem_post(SEM_BUFFER);
 	sem_post(SEM_IN_OUT);			// allow another thread to begin an insert or removal
 	
 	// proceed to exit
