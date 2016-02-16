@@ -18,14 +18,14 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define DEBUG false
+#define DEBUG true
 
-#define N_PLANES 2
+#define N_PLANES 25
 #define N_PLANE_BUFFER (N_PLANES * 2)
 #define N_RUNWAYS 3
 
 #define T_START_MIN 1
-#define T_START_RANGE 5
+#define T_START_RANGE 10
 #define T_DESCEND_MIN 5
 #define T_DESCEND_RANGE 1
 #define T_LAND_MIN 5
@@ -34,8 +34,8 @@
 #define N_FUEL_RANGE 100
 #define P_IS_EMERGENCY 0.0
 
-#define FUEL_RATE 5
-#define FUEL_DANGER_ZONE (T_DESCEND_MIN + T_LAND_MIN)
+#define FUEL_RATE 0
+#define FUEL_DANGER_ZONE ((T_DESCEND_MIN + T_LAND_MIN) * FUEL_RATE)
 
 typedef enum {FLYING, ARRIVING, DESCENDING, LANDING, CLEARED, GHOST} PlaneState;
 
@@ -71,6 +71,7 @@ sem_t *FREE_RUNWAY;
 sem_t *SEM_TURN_COUNT;
 unsigned int TURN_COUNT;
 
+sem_t *SEM_PRINT;
 
 void plane_function(void *ptr);
 // only need these for debugging purposes

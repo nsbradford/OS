@@ -50,21 +50,23 @@ void print_plane(Plane p){
  * Call print_plane() for each Plane in a buffer.
  */
 void print_all_planes(Plane *buffer[], unsigned int len){
+	sem_wait(SEM_PRINT);
+	printf("\t<-------------------------------------------------->\n");
+	printf("\t ---BUFFER\n");
+	printf("\t -------------------------------------------------->\n");
 	int i;
 	for (i = 0; i < len; i++){
 		print_plane(*buffer[i]);
 	}
+	printf("\t</-------------------------------------------------->\n");
+	sem_post(SEM_PRINT);
 }
 
 /**
- *
+ * Print the PLANE_BUFFER.
  */
 void print_buffer(){
-	printf("\t<-------------------------------------------------->\n");
-	printf("\t ---BUFFER\n");
-	printf("\t -------------------------------------------------->\n");
 	print_all_planes(PLANE_BUFFER, N_PLANE_BUFFER);
-	printf("\t</-------------------------------------------------->\n");
 }
 
 /**
