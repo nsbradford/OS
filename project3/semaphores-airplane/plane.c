@@ -1,10 +1,12 @@
 /**
  * plane.c
- * Nicholas Bradford (nsbradford@wpi.edu) and Himanshu Sahay (hsahay@wpi.edu)
+ * Nicholas Bradford (nsbradford@wpi.edu)
  *
  */
 
+
 #include "header.h"
+
 
 //=================================================================================================
 // Printing/Helpers
@@ -61,7 +63,7 @@ void print_buffer(){
 	printf("</------------------------------------------------->\n");
 	printf("  ---RUNWAYS---\n");
 	for (i = 0; i < N_RUNWAYS; i++){
-		printf("%d: ", i+1);
+		printf("%d:", i+1);
 		print_plane(*RUNWAY_BUFFER[i]);
 	}
 	printf("</------------------------------------------------->\n");
@@ -231,6 +233,33 @@ void plane_wait(Plane *plane){
 // DESCENDING/LANDING/CLEARED
 
 /**
+ * Assign plane to an open runway.
+ * IMPORTANT: assumes that SEM_BUFFER is already held
+ */
+void runway_insert(Plane *plane){
+	int i;
+	for (i = 0; i < N_RUNWAYS; i++){
+		if (RUNWAY_BUFFER[i]->state == GHOST){
+			RUNWAY_BUFFER[i] = plane;
+			plane->target_runway = i+1;
+			return;
+		}
+	}
+	assert(false); // tried inserting when there was no runway open, logic error
+}
+
+/**
+ * Remove plane from runway by assigning that slot to NULL_PLANE
+ * IMPORTANT: assumes that SEM_BUFFER is already held
+ */
+void runway_remove(Plane *plane){
+	unsigned int runway = plane->target_runway - 1;
+	assert(RUNWAY_BUFFER[runway]->id == plane->id);
+	RUNWAY_BUFFER[runway] = NULL_PLANE;
+}
+
+
+/**
  * Land on an open runway.
  * IMPORTANT: assumes that SEM_BUFFER is already held
  */
@@ -250,7 +279,7 @@ void plane_remove(Plane *plane){
 	}
 
 	// add to RUNWAY_BUFFER
-	RUNWAY_BUFFER[0] = plane;
+	runway_insert(plane);
 }
 
 /**
@@ -277,7 +306,7 @@ void plane_descend_land(Plane *plane){
 	sem_wait(SEM_IN_OUT);
 
 	// remove from RUNWAY_BUFFER
-	RUNWAY_BUFFER[0] = NULL_PLANE;
+	runway_remove(plane);
 	
 	int val;
 	if (DEBUG) sem_getvalue(FREE_RUNWAY, &val);

@@ -1,12 +1,14 @@
 /**
  * plane.c
- * Nicholas Bradford (nsbradford@wpi.edu) and Himanshu Sahay (hsahay@wpi.edu)
+ * Nicholas Bradford (nsbradford@wpi.edu)
  *
  */
 
 
 #include "header.h"
 
+
+//=================================================================================================
 
 /**
  * Initialize each plane in the buffer with random values.
@@ -29,7 +31,6 @@ void initialize_planes(Plane planes[], unsigned int len){
 	}
 }
 
-
 /**
  * Initialize simulate, and start threads.
  */
@@ -39,32 +40,29 @@ int main(){
 
 	printf("\n------------------------------\nInitialize semaphores...\n");
 	
-	// buffer
-	SEM_BUFFER = (sem_t *)malloc(sizeof(sem_t));
-	sem_init(SEM_BUFFER, 0, 1);
-	//for (i = 0; i < N_RUNWAYS; i++){
-	//	SEM_RUNWAYS[i] = (sem_t *)malloc(sizeof(sem_t));
-	//	sem_init(SEM_RUNWAYS[i], 0, 1);
-	//}
-
-	// turnstiles
 	SEM_IN_OUT = (sem_t *)malloc(sizeof(sem_t));
+	SEM_BUFFER = (sem_t *)malloc(sizeof(sem_t));
 	SEM_WAIT_DONE = (sem_t *)malloc(sizeof(sem_t));
-	TURN_1 = (sem_t *)malloc(sizeof(sem_t));
-	TURN_2 = (sem_t *)malloc(sizeof(sem_t));
 	FREE_RUNWAY = (sem_t *)malloc(sizeof(sem_t));
-	SEM_TURN_COUNT = (sem_t *)malloc(sizeof(sem_t));
 	//SEM_EMERGENCY = (sem_t *)malloc(sizeof(sem_t));
 	SEM_PRINT = (sem_t *)malloc(sizeof(sem_t));
+
+	TURN_1 = (sem_t *)malloc(sizeof(sem_t));
+	TURN_2 = (sem_t *)malloc(sizeof(sem_t));
+	SEM_TURN_COUNT = (sem_t *)malloc(sizeof(sem_t));
 	TURN_COUNT = 0;
+
 	sem_init(SEM_IN_OUT, 0, 1);
-	sem_init(SEM_WAIT_DONE, 0, 0); 	// starts at 0!
-	sem_init(TURN_1, 0, 0);			// starts at 0! gave me a heart attack while debugging
-	sem_init(TURN_2, 0, 1);
-	sem_init(FREE_RUNWAY, 0, 1);
-	sem_init(SEM_TURN_COUNT, 0, 1);
+	sem_init(SEM_BUFFER, 0, 1);
+	sem_init(SEM_WAIT_DONE, 0, 0); 			// starts at 0!
+	sem_init(FREE_RUNWAY, 0, N_RUNWAYS);	// starts at N_RUNWAYS
 	//sem_init(SEM_EMERGENCY, 0, 1);
 	sem_init(SEM_PRINT, 0, 1);
+
+	// turnstiles for reusable barrier
+	sem_init(TURN_1, 0, 0);					// starts at 0! 
+	sem_init(TURN_2, 0, 1);
+	sem_init(SEM_TURN_COUNT, 0, 1);
 
 	printf("\n------------------------------\nInitialize planes...\n");
 	
@@ -73,7 +71,6 @@ int main(){
 	NULL_PLANE = &null_plane;
 	BUFFER_COUNT = 0;
 	for (i = 0; i < N_PLANE_BUFFER; i++){
-		//PLANE_BUFFER[i] = (Plane *)malloc(sizeof(Plane));
 		PLANE_BUFFER[i] = NULL_PLANE;
 	}
 	Plane planes[N_PLANES];
@@ -101,7 +98,7 @@ int main(){
 	print_all_planes(PLANE_BUFFER, N_PLANE_BUFFER);
 	*/
 
-	printf("\n------------------------------\nCreate threads...\n");
+	printf("\n------------------------------\nBegin simulation...\n");
 	pthread_t threads[N_PLANES];
 	for (i = 0; i < N_PLANES; i++){
 		pthread_create(&threads[i], NULL, (void *)&plane_function, (void *)&planes[i]);
