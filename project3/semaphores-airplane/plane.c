@@ -7,7 +7,7 @@
 #include "header.h"
 
 //=================================================================================================
-// Printing
+// Printing/Helpers
 
 /**
  * Print out the stats for each plane; handles "GHOST" planes in the buffer as well.
@@ -46,7 +46,6 @@ void print_plane(Plane p){
 	}
 }
 
-
 /**
  * Call print_plane() for each Plane in a buffer.
  */
@@ -57,8 +56,23 @@ void print_all_planes(Plane *buffer[], unsigned int len){
 	}
 }
 
-//=================================================================================================
-// ARRIVING
+/**
+ * Return true if plane is first in the buffer.
+ */
+bool is_next(Plane *plane){
+	Plane *first = PLANE_BUFFER[0];
+	return(first->id == plane->id);
+}
+
+/** 
+ * Return true if a runway is free.
+ * Assume that SEM_BUFFER is being held by the caller.
+ */
+bool is_free_runway(){
+	int i;
+	sem_getvalue(FREE_RUNWAY, &i);
+	return (i > 0) ? true : false;
+}
 
 void update_fuel(Plane *plane){
 	gettimeofday(plane->tmp_time, NULL);
@@ -72,6 +86,8 @@ void update_fuel(Plane *plane){
 	}
 }
 
+//=================================================================================================
+// Sorting
 
 /**
  * Helper for qsort() in sort_plane_buffer().
@@ -95,7 +111,6 @@ int cmp_n_fuel(const void *a, const void *b){
 		return p1->n_fuel - p2->n_fuel; 
 }
 
-
 /**
  * Sorts an array of Plane structs by increasing fuel remaining.
  */
@@ -103,14 +118,19 @@ void sort_plane_buffer(Plane *buffer[], unsigned int len){
 	qsort(buffer, len, sizeof(Plane*), cmp_n_fuel);
 }
 
+//=================================================================================================
+// ARRIVING
 
 /**
  * Enter airspace, insert into queue buffer, and sort.
+ * IMPORTANT: assumes that SEM_IN_OUT and SEM_BUFFER are already held
  */
 void plane_insert(Plane *plane){
 	gettimeofday(plane->start_time, NULL); 
 	update_fuel(plane);
-	plane->state = ARRIVING; // 1: ARRIVING
+
+	// 1: ARRIVING
+	plane->state = ARRIVING; 
 	print_plane(*plane);
 	
 	assert(BUFFER_COUNT < N_PLANE_BUFFER);
@@ -120,20 +140,77 @@ void plane_insert(Plane *plane){
 	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
 }
 
+//=================================================================================================
+// WAIT
 
+/** 
+ * Wait until is_next() and is_freerunway(), so that the plane can plane_remove()
+ * Reusable barrier solution as described in the Little Book of Semphores.
+ */
+void plane_wait(Plane *plane){
+	bool flag_first = false;
+	while(true){
+		sem_wait(FREE_RUNWAY);				// wait for FREE_RUNWAY signal
+		
+		// SEM_BUFFER is held by the plane that just exited the runway
+
+		sem_wait(SEM_TURN_COUNT);			// lock for TURN_COUNT
+		TURN_COUNT++;
+		if (TURN_COUNT == BUFFER_COUNT){	// all planes have woken
+			sem_wait(TURN_2);				// lock turnstile 2
+			sem_post(TURN_1);				// unlock turnstile 1
+		}
+		sem_post(SEM_TURN_COUNT);				
+
+		sem_wait(TURN_1);					// turnstile 1
+		sem_post(TURN_1);
+
+		// critical point here!
+		// check to see if this plane is first
+		if (is_next(plane)){
+			flag_first = true;
+		}
+		// end critical point
+
+		sem_wait(SEM_TURN_COUNT);
+		TURN_COUNT--;
+		if (TURN_COUNT == 0){				// all planes are sleeping
+			sem_wait(TURN_1);				// lock turnstile 1
+			sem_post(TURN_2);				// unlock turnstile 2
+		}
+
+		sem_wait(TURN_2);					// turnstile 2
+		sem_post(TURN_2);
+
+		// if first, take control of the buffer to do a remove()
+		if (flag_first){
+			sem_wait(SEM_BUFFER);	
+			break;
+		}
+		// else: go right back into the wait cycle
+	}
+	// ready to plane_remove()
+}
 
 //=================================================================================================
 // DESCENDING/LANDING/CLEARED
 
+/**
+ * Land on an open runway.
+ * IMPORTANT: assumes that SEM_BUFFER is already held
+ */
+void plane_remove(Plane *plane){
+	assert(is_next(plane));
+	BUFFER_COUNT--;
+	PLANE_BUFFER[0] = NULL_PLANE;
+	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
+}
 
 /**
  * Land on an open runway.
  */
-void plane_remove(Plane *plane){
-	BUFFER_COUNT--;
-
-	// TODO!
-
+void plane_descend_land(Plane *plane){
+	
 	// 2: DESCENDING
 	plane->state = DESCENDING;
 	update_fuel(plane);
@@ -143,52 +220,21 @@ void plane_remove(Plane *plane){
 	// 3: LANDING
 	plane->state = LANDING;
 	print_plane(*plane);
+	update_fuel(plane);
 	sleep(plane->t_land);
 
 	// 4: CLEARED
 	plane->state = CLEARED;
 	print_plane(*plane);
-	sleep(plane->t_clear);
 
-	sem_wait(SEM_BUFFER);
-
-}
-
-//=================================================================================================
-// WAIT
-
-
-/**
- * Return true if plane is first in the buffer.
- */
-bool is_next(Plane *buffer[], Plane *plane){
-	Plane *first = buffer[0];
-	return(first->id == plane->id);
-}
-
-/** 
- * Return true if a runway is free.
- */
-bool is_free(){
-	// TODO
-	return true;
-}
-
-/** 
- * Wait until is_next() and is_free(), so that the plane can plane_remove()
- */
-void plane_wait(Plane *plane){
-	/*
-	DOWN(free)
-	while (1)
-		wait for all planes to wake up
-		if first
-			wait for others to go back to sleep
-		else
-			go back to sleep
-			wait for others to sleep
-		
-	*/
+	sem_wait(SEM_IN_OUT);			
+	sem_post(FREE_RUNWAY);			// alert the planes in the buffer to wake
+	if (BUFFER_COUNT > 0){	
+		sem_wait(SEM_WAIT_DONE);	// gets unlocked by a plane which leaves the buffer
+	}
+	
+	sem_post(SEM_IN_OUT);			// allow another thread to begin an insert or removal
+	// proceed to exit
 }
 
 //=================================================================================================
@@ -203,19 +249,21 @@ void plane_function(void *ptr){
 	assert (plane->state == FLYING);
 	
 	sleep(plane->t_start); 		// wait to arrive
+	sem_wait(SEM_IN_OUT);		// make sure no other plane is being inserted or removed
 	sem_wait(SEM_BUFFER); 		// wait on synchronized buffer
 	plane_insert(plane);		// insert into buffer and sort
-	sem_post(SEM_BUFFER);
-	pthread_exit(0);
-
-	if (is_next(PLANE_BUFFER, plane) && is_free()){
-		plane_remove(plane);		// remove from buffer
-	}
-	else{
-		sem_post(SEM_BUFFER);
-		plane_wait(plane);
-		plane_remove(plane);
-	}
 	
+	//sem_post(SEM_BUFFER);
+	//pthread_exit(0);
+
+	if ( !(is_next(plane) && is_free_runway()) ){
+		sem_post(SEM_BUFFER);
+		plane_wait(plane);		// wait on is_first() and FREE_RUNWAY in a loop with turnstiles 
+		sem_wait(SEM_BUFFER);	// while SEM_IN_OUT is held by exiting plane, get ahold of buffer
+	}
+
+	plane_remove(plane);
+	sem_post(SEM_BUFFER);
+	plane_descend_land(plane);
 	pthread_exit(0);			// all done
 }

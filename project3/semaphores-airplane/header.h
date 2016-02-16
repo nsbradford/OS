@@ -32,7 +32,6 @@
 #define T_DESCEND_RANGE 10
 #define T_LAND_MIN 10
 #define T_LAND_RANGE 10
-#define T_CLEAR 10
 #define N_FUEL_MIN 50
 #define N_FUEL_RANGE 100
 #define P_IS_EMERGENCY 0.1
@@ -44,7 +43,6 @@ typedef struct plane {
 	unsigned int t_start;
 	unsigned int t_descend;
 	unsigned int t_land;
-	unsigned int t_clear;
 	unsigned int maxfuel;
 	double n_fuel;
 	unsigned int fuel_rate;
@@ -57,17 +55,21 @@ typedef struct plane {
 
 // normal semaphore stuff
 sem_t *SEM_BUFFER;
-sem_t *SEM_RUNWAYS[N_RUNWAYS];
+//sem_t *SEM_RUNWAYS[N_RUNWAYS];
 Plane *PLANE_BUFFER[N_PLANE_BUFFER];
 Plane null_plane;
 Plane *NULL_PLANE;
 unsigned int BUFFER_COUNT;
 
 // turnstiles
-//sem_t *TURN_1;
-//sem_t *TURN_2;
-//sem_t MUTEX;
-//unsigned int TURN_COUNT;
+sem_t *SEM_IN_OUT;
+sem_t *SEM_WAIT_DONE;
+sem_t *TURN_1;
+sem_t *TURN_2;
+sem_t *FREE_RUNWAY;
+sem_t *SEM_TURN_COUNT;
+unsigned int TURN_COUNT;
+
 
 void plane_function(void *ptr);
 // only need these for debugging purposes

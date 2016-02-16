@@ -18,7 +18,6 @@ void initialize_planes(Plane planes[], unsigned int len){
 		planes[i].t_start = rand() % T_START_RANGE + T_START_MIN;
 		planes[i].t_descend = rand() % T_DESCEND_RANGE + T_DESCEND_MIN;
 		planes[i].t_land = rand() % T_LAND_RANGE + T_LAND_MIN;
-		planes[i].t_clear = T_CLEAR;
 		planes[i].maxfuel = rand() % N_FUEL_RANGE + N_FUEL_MIN;
 		planes[i].n_fuel = planes[i].maxfuel;
 		planes[i].fuel_rate = FUEL_RATE;
@@ -42,18 +41,30 @@ int main(){
 	
 	// buffer
 	SEM_BUFFER = (sem_t *)malloc(sizeof(sem_t));
-	sem_init(SEM_BUFFER, 0, 1); // only 1 thread can access at a time
-	for (i = 0; i < N_RUNWAYS; i++){
-		SEM_RUNWAYS[i] = (sem_t *)malloc(sizeof(sem_t));
-		sem_init(SEM_RUNWAYS[i], 0, 1); // only 1 thread can access at a time
-	}
+	sem_init(SEM_BUFFER, 0, 1);
+	//for (i = 0; i < N_RUNWAYS; i++){
+	//	SEM_RUNWAYS[i] = (sem_t *)malloc(sizeof(sem_t));
+	//	sem_init(SEM_RUNWAYS[i], 0, 1);
+	//}
 
 	// turnstiles
-
+	SEM_IN_OUT = (sem_t *)malloc(sizeof(sem_t));
+	SEM_WAIT_DONE = (sem_t *)malloc(sizeof(sem_t));
+	TURN_1 = (sem_t *)malloc(sizeof(sem_t));
+	TURN_2 = (sem_t *)malloc(sizeof(sem_t));
+	FREE_RUNWAY = (sem_t *)malloc(sizeof(sem_t));
+	SEM_TURN_COUNT = (sem_t *)malloc(sizeof(sem_t));
+	TURN_COUNT = 0;
+	sem_init(SEM_IN_OUT, 0, 1);
+	sem_init(SEM_WAIT_DONE, 0, 0); // the only semaphore which starts at 0!
+	sem_init(TURN_1, 0, 1);
+	sem_init(TURN_2, 0, 1);
+	sem_init(FREE_RUNWAY, 0, 1);
+	sem_init(SEM_TURN_COUNT, 0, 1);
 
 	printf("\n------------------------------\nInitialize planes...\n");
 	
-	null_plane = (Plane){UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, DBL_MAX, 
+	null_plane = (Plane){UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, DBL_MAX, 
 		UINT_MAX, false, GHOST, UINT_MAX, (struct timeval *)NULL, (struct timeval *)NULL};
 	NULL_PLANE = &null_plane;
 	BUFFER_COUNT = 0;
