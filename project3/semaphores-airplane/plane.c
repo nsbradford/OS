@@ -23,15 +23,15 @@ void print_plane(Plane p){
 				p.id, p.t_start, p.maxfuel, p.n_fuel, p.is_emergency, p.state);
 			break;
 		case DESCENDING:
-			printf("DESCEND id:%d\t t_start:%d\t maxfuel:%d\t n_fuel:%f\tis_emergency:%d\t state:%d\n runway:%d\n", 
+			printf("DESCEND id:%d\t t_start:%d\t maxfuel:%d\t n_fuel:%f\tis_emergency:%d\t state:%d\t runway:%d\n", 
 				p.id, p.t_start, p.maxfuel, p.n_fuel, p.is_emergency, p.state, p.target_runway);
 			break;
 		case LANDING:
-			printf("LANDING id:%d\t t_start:%d\t maxfuel:%d\t n_fuel:%f\tis_emergency:%d\t state:%d\n runway:%d\n", 
+			printf("LANDING id:%d\t t_start:%d\t maxfuel:%d\t n_fuel:%f\tis_emergency:%d\t state:%d\t runway:%d\n", 
 				p.id, p.t_start, p.maxfuel, p.n_fuel, p.is_emergency, p.state, p.target_runway);
 			break;
 		case CLEARED:
-			printf("CLEARED id:%d\t t_start:%d\t maxfuel:%d\t n_fuel:%f\tis_emergency:%d\t state:%d\n runway:%d\n", 
+			printf("CLEARED id:%d\t t_start:%d\t maxfuel:%d\t n_fuel:%f\tis_emergency:%d\t state:%d\t runway:%d\n", 
 				p.id, p.t_start, p.maxfuel, p.n_fuel, p.is_emergency, p.state, p.target_runway);
 			break;
 		case GHOST:
@@ -150,8 +150,17 @@ void plane_insert(Plane *plane){
 void plane_wait(Plane *plane){
 	bool flag_first = false;
 	while(true){
+		if (DEBUG) printf(" -Plane %d: plane_wait() loop.\n", plane->id);
 		sem_wait(FREE_RUNWAY);				// wait for FREE_RUNWAY signal
-		
+		sem_post(FREE_RUNWAY);
+
+		// if there's only one plane in the buffer, can skip all the turnstile business
+		if (BUFFER_COUNT == 1){
+			assert(is_next(plane));
+			if (DEBUG) printf(" -Plane %d: plane_wait() found (BUFFER_COUNT == 1).\n", plane->id);
+			break;
+		}
+
 		// SEM_BUFFER is held by the plane that just exited the runway
 
 		sem_wait(SEM_TURN_COUNT);			// lock for TURN_COUNT
@@ -211,6 +220,7 @@ void plane_remove(Plane *plane){
 void plane_descend_land(Plane *plane){
 	
 	// TODO assign a runway!!
+	sem_wait(FREE_RUNWAY);			// if this doesn't work immediately, something bad happened
 
 	// 2: DESCENDING
 	plane->state = DESCENDING;
@@ -220,8 +230,8 @@ void plane_descend_land(Plane *plane){
 
 	// 3: LANDING
 	plane->state = LANDING;
-	print_plane(*plane);
 	update_fuel(plane);
+	print_plane(*plane);
 	sleep(plane->t_land);
 
 	// 4: CLEARED
@@ -229,13 +239,16 @@ void plane_descend_land(Plane *plane){
 	print_plane(*plane);
 
 	sem_wait(SEM_IN_OUT);			
+									// TODO plane in queue not being woken up!!!
 	sem_post(FREE_RUNWAY);			// alert the planes in the buffer to wake
-	if (BUFFER_COUNT > 0){	
+	if (BUFFER_COUNT > 0){
+		if (DEBUG) printf(" -Plane %d: sem_wait(SEM_WAIT_DONE).\n", plane->id);
 		sem_wait(SEM_WAIT_DONE);	// gets unlocked by a plane which leaves the buffer
 	}
 	
 	sem_post(SEM_IN_OUT);			// allow another thread to begin an insert or removal
 	// proceed to exit
+	if (DEBUG) printf(" -Plane %d: exited.\n", plane->id);
 }
 
 //=================================================================================================
@@ -262,7 +275,9 @@ void plane_function(void *ptr){
 		sem_post(SEM_BUFFER);
 		sem_post(SEM_IN_OUT);
 		plane_wait(plane);		// wait on is_first() and FREE_RUNWAY in a loop with turnstiles 
+		if (DEBUG) printf(" -Plane %d: plane_function:if: try to acquire SEM_BUFFER.\n", plane->id);
 		sem_wait(SEM_BUFFER);	// while SEM_IN_OUT is held by exiting plane, get ahold of buffer
+		if (DEBUG) printf(" -Plane %d: plane_function:if: acquired SEM_BUFFER.\n", plane->id);
 		sem_post(SEM_WAIT_DONE);	// tell the plane that left the runway that we're all set
 	}
 

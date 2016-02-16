@@ -20,21 +20,21 @@
 
 #define DEBUG true
 
-#define N_PLANES 25
+#define N_PLANES 3
 #define N_PLANE_BUFFER (N_PLANES * 2)
 #define N_RUNWAYS 3
 
 #define FUEL_RATE 5
 #define FUEL_DANGER_ZONE 50
 #define T_START_MIN 1
-#define T_START_RANGE 5
-#define T_DESCEND_MIN 10
-#define T_DESCEND_RANGE 10
-#define T_LAND_MIN 10
-#define T_LAND_RANGE 10
-#define N_FUEL_MIN 50
+#define T_START_RANGE 10
+#define T_DESCEND_MIN 5
+#define T_DESCEND_RANGE 1
+#define T_LAND_MIN 5
+#define T_LAND_RANGE 1
+#define N_FUEL_MIN 100
 #define N_FUEL_RANGE 100
-#define P_IS_EMERGENCY 0.1
+#define P_IS_EMERGENCY 0.0
 
 typedef enum {FLYING, ARRIVING, DESCENDING, LANDING, CLEARED, GHOST} PlaneState;
 
