@@ -27,8 +27,8 @@
 #define FUEL_RATE 5
 #define FUEL_DANGER_ZONE 50
 #define T_START_MIN 1
-#define T_START_RANGE 10
-#define T_DESCEND_MIN 20
+#define T_START_RANGE 5
+#define T_DESCEND_MIN 10
 #define T_DESCEND_RANGE 10
 #define T_LAND_MIN 10
 #define T_LAND_RANGE 10
