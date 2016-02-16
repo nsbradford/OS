@@ -316,11 +316,15 @@ void plane_descend_land(Plane *plane){
 	sem_post(FREE_RUNWAY);			// alert the planes in the buffer to wake
 
 	if (BUFFER_COUNT > 0){
+		sem_post(SEM_BUFFER);
 		if (DEBUG) printf(" -Plane %d: descend_land() sem_wait(SEM_WAIT_DONE).\n", plane->id);
 		sem_wait(SEM_WAIT_DONE);	// gets unlocked by a plane which leaves the buffer
 	}
+	else{
+		sem_post(SEM_BUFFER);
+	}
 	
-	sem_post(SEM_BUFFER);
+	
 	sem_post(SEM_IN_OUT);			// allow another thread to begin an insert or removal
 	
 	// proceed to exit
