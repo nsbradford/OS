@@ -54,6 +54,7 @@ int main(){
 	TURN_2 = (sem_t *)malloc(sizeof(sem_t));
 	FREE_RUNWAY = (sem_t *)malloc(sizeof(sem_t));
 	SEM_TURN_COUNT = (sem_t *)malloc(sizeof(sem_t));
+	//SEM_EMERGENCY = (sem_t *)malloc(sizeof(sem_t));
 	SEM_PRINT = (sem_t *)malloc(sizeof(sem_t));
 	TURN_COUNT = 0;
 	sem_init(SEM_IN_OUT, 0, 1);
@@ -62,6 +63,7 @@ int main(){
 	sem_init(TURN_2, 0, 1);
 	sem_init(FREE_RUNWAY, 0, 1);
 	sem_init(SEM_TURN_COUNT, 0, 1);
+	//sem_init(SEM_EMERGENCY, 0, 1);
 	sem_init(SEM_PRINT, 0, 1);
 
 	printf("\n------------------------------\nInitialize planes...\n");
@@ -71,13 +73,18 @@ int main(){
 	NULL_PLANE = &null_plane;
 	BUFFER_COUNT = 0;
 	for (i = 0; i < N_PLANE_BUFFER; i++){
-		PLANE_BUFFER[i] = (Plane *)malloc(sizeof(Plane));
+		//PLANE_BUFFER[i] = (Plane *)malloc(sizeof(Plane));
 		PLANE_BUFFER[i] = NULL_PLANE;
 	}
 	Plane planes[N_PLANES];
 	initialize_planes(planes, N_PLANES);
 	for (i = 0; i < N_PLANES; i++){
 		print_plane(planes[i]);
+	}
+
+	// RUNWAY_BUFFER
+	for (i = 0; i < N_RUNWAYS; i++){
+		RUNWAY_BUFFER[i] = NULL_PLANE;
 	}
 	
 	// Test that sorting works
