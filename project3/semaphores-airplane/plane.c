@@ -60,6 +60,7 @@ void print_all_planes(Plane *buffer[], unsigned int len){
  *
  */
 void print_buffer(){
+	return;
 	printf("\t<-------------------------------------------------->\n");
 	printf("\t ---BUFFER\n");
 	printf("\t -------------------------------------------------->\n");
@@ -173,10 +174,11 @@ void plane_wait(Plane *plane){
 		}
 
 		// SEM_BUFFER is held by the plane that just exited the runway
-
+		if (DEBUG) printf(" -Plane %d: plane_wait() TURN_1\n", plane->id);
 		sem_wait(SEM_TURN_COUNT);			// lock for TURN_COUNT
 		TURN_COUNT++;
 		if (TURN_COUNT == BUFFER_COUNT){	// all planes have woken
+			if (DEBUG) printf(" -Plane %d: plane_wait() found all planes awake\n", plane->id);
 			sem_wait(TURN_2);				// lock turnstile 2
 			sem_post(TURN_1);				// unlock turnstile 1
 		}
@@ -185,20 +187,24 @@ void plane_wait(Plane *plane){
 		sem_wait(TURN_1);					// turnstile 1
 		sem_post(TURN_1);
 
-		// critical point here!
+		// critical region here!
 		// check to see if this plane is first
+		if (DEBUG) printf(" -Plane %d: plane_wait() critical region.\n", plane->id);
 		if (is_next(plane)){
 			if (DEBUG) printf(" -Plane %d: plane_wait() found is_next()\n", plane->id);
 			flag_first = true;
 		}
-		// end critical point
+		// end critical region
 
+		if (DEBUG) printf(" -Plane %d: plane_wait() TURN_2\n", plane->id);
 		sem_wait(SEM_TURN_COUNT);
 		TURN_COUNT--;
 		if (TURN_COUNT == 0){				// all planes are sleeping
+			if (DEBUG) printf(" -Plane %d: plane_wait() found all planes sleeping\n", plane->id);
 			sem_wait(TURN_1);				// lock turnstile 1
 			sem_post(TURN_2);				// unlock turnstile 2
 		}
+		sem_post(SEM_TURN_COUNT);	
 
 		sem_wait(TURN_2);					// turnstile 2
 		sem_post(TURN_2);

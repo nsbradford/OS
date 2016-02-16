@@ -56,8 +56,8 @@ int main(){
 	SEM_TURN_COUNT = (sem_t *)malloc(sizeof(sem_t));
 	TURN_COUNT = 0;
 	sem_init(SEM_IN_OUT, 0, 1);
-	sem_init(SEM_WAIT_DONE, 0, 0); // the only semaphore which starts at 0!
-	sem_init(TURN_1, 0, 1);
+	sem_init(SEM_WAIT_DONE, 0, 0); 	// starts at 0!
+	sem_init(TURN_1, 0, 0);			// starts at 0! gave me a heart attack while debugging
 	sem_init(TURN_2, 0, 1);
 	sem_init(FREE_RUNWAY, 0, 1);
 	sem_init(SEM_TURN_COUNT, 0, 1);
