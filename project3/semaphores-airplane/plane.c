@@ -35,7 +35,7 @@ void print_plane(Plane p){
 				p.id, p.t_start, p.maxfuel, p.n_fuel, p.is_emergency, p.state, p.target_runway);
 			break;
 		case GHOST:
-			printf("GHOST\n");
+			if (DEBUG) printf("GHOST\n");
 			break;
 		default:
 			printf("ERROR in print_plane() switch.\n");
@@ -54,6 +54,17 @@ void print_all_planes(Plane *buffer[], unsigned int len){
 	for (i = 0; i < len; i++){
 		print_plane(*buffer[i]);
 	}
+}
+
+/**
+ *
+ */
+void print_buffer(){
+	printf("\t<-------------------------------------------------->\n");
+	printf("\t ---BUFFER\n");
+	printf("\t -------------------------------------------------->\n");
+	print_all_planes(PLANE_BUFFER, N_PLANE_BUFFER);
+	printf("\t</-------------------------------------------------->\n");
 }
 
 /**
@@ -177,6 +188,7 @@ void plane_wait(Plane *plane){
 		// critical point here!
 		// check to see if this plane is first
 		if (is_next(plane)){
+			if (DEBUG) printf(" -Plane %d: plane_wait() found is_next()\n", plane->id);
 			flag_first = true;
 		}
 		// end critical point
@@ -240,7 +252,13 @@ void plane_descend_land(Plane *plane){
 
 	sem_wait(SEM_IN_OUT);			
 									// TODO plane in queue not being woken up!!!
+	
+	if (DEBUG) printf(" -Plane %d: sem_post(FREE_RUNWAY).\n", plane->id);
+	int val;
+	if (DEBUG) sem_getvalue(FREE_RUNWAY, &val);
+	if (DEBUG) printf(" -Plane %d: FREE_RUNWAY had value %d\n", plane->id, val);
 	sem_post(FREE_RUNWAY);			// alert the planes in the buffer to wake
+
 	if (BUFFER_COUNT > 0){
 		if (DEBUG) printf(" -Plane %d: sem_wait(SEM_WAIT_DONE).\n", plane->id);
 		sem_wait(SEM_WAIT_DONE);	// gets unlocked by a plane which leaves the buffer
@@ -249,6 +267,7 @@ void plane_descend_land(Plane *plane){
 	sem_post(SEM_IN_OUT);			// allow another thread to begin an insert or removal
 	// proceed to exit
 	if (DEBUG) printf(" -Plane %d: exited.\n", plane->id);
+	if (DEBUG) print_buffer();
 }
 
 //=================================================================================================
@@ -269,6 +288,8 @@ void plane_function(void *ptr){
 	
 	//sem_post(SEM_BUFFER);
 	//pthread_exit(0);
+	if (DEBUG) printf(" -Plane %d: finished insert()\n", plane->id);
+	if (DEBUG) print_buffer();
 
 	// if we're not first, wait
 	if ( !(is_next(plane) && is_free_runway()) ){
@@ -283,6 +304,8 @@ void plane_function(void *ptr){
 
 	// holding SEM_BUFFER here
 	plane_remove(plane);
+	if (DEBUG) printf(" -Plane %d: finished remove()\n", plane->id);
+	if (DEBUG) print_buffer();
 	sem_post(SEM_BUFFER);
 	sem_post(SEM_IN_OUT);
 	plane_descend_land(plane);
