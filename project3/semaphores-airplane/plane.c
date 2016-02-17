@@ -232,13 +232,6 @@ void plane_wait(Plane *plane){
 		sem_post(TURN_1);
 
 		// critical region here! ------------------------------------------------------------------
-		
-		// <Error checking>	-------------------------
-		int err;
-		sem_getvalue(SEM_EMERGENCY, &err);
-		assert(err == 1); // should not have gotten this far if an emergency is landing
-		// </Error checking> ------------------------
-
 		// check to see if this plane is first
 		//if (DEBUG) printf(" -Plane %d: WAIT() critical region.\n", plane->id);
 		if (is_next(plane)){
