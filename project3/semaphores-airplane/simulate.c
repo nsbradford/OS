@@ -44,7 +44,7 @@ int main(){
 	SEM_BUFFER = (sem_t *)malloc(sizeof(sem_t));
 	SEM_WAIT_DONE = (sem_t *)malloc(sizeof(sem_t));
 	FREE_RUNWAY = (sem_t *)malloc(sizeof(sem_t));
-	//SEM_EMERGENCY = (sem_t *)malloc(sizeof(sem_t));
+	SEM_EMERGENCY = (sem_t *)malloc(sizeof(sem_t));
 	SEM_PRINT = (sem_t *)malloc(sizeof(sem_t));
 
 	TURN_1 = (sem_t *)malloc(sizeof(sem_t));
@@ -56,7 +56,7 @@ int main(){
 	sem_init(SEM_BUFFER, 0, 1);
 	sem_init(SEM_WAIT_DONE, 0, 0); 			// starts at 0!
 	sem_init(FREE_RUNWAY, 0, N_RUNWAYS);	// starts at N_RUNWAYS
-	//sem_init(SEM_EMERGENCY, 0, 1);
+	sem_init(SEM_EMERGENCY, 0, 1);
 	sem_init(SEM_PRINT, 0, 1);
 
 	// turnstiles for reusable barrier

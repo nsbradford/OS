@@ -19,22 +19,23 @@
 #include <semaphore.h>
 
 #define DEBUG true
+//#define EMERGENCY_ENABLED true
 
-#define N_PLANES 25
-#define N_PLANE_BUFFER (N_PLANES*2)
+#define N_PLANES 5
+#define N_PLANE_BUFFER (N_PLANES)
 #define N_RUNWAYS 3
 
 #define T_START_MIN 1
-#define T_START_RANGE 1
-#define T_DESCEND_MIN 5
+#define T_START_RANGE 15
+#define T_DESCEND_MIN 1
 #define T_DESCEND_RANGE 1
-#define T_LAND_MIN 5
+#define T_LAND_MIN 1
 #define T_LAND_RANGE 1
 #define N_FUEL_MIN 100
 #define N_FUEL_RANGE 100
-#define P_IS_EMERGENCY 0.1
+#define P_IS_EMERGENCY 1.0
 
-#define FUEL_RATE 0
+#define FUEL_RATE 5
 #define FUEL_DANGER_ZONE ((T_DESCEND_MIN + T_LAND_MIN) * FUEL_RATE)
 
 typedef enum {FLYING, ARRIVING, DESCENDING, LANDING, CLEARED, GHOST} PlaneState;
@@ -66,7 +67,7 @@ sem_t *SEM_IN_OUT;			// limits insert() or remove() to 1 thread & RUNWAY_BUFFER
 sem_t *SEM_BUFFER;			// locks the buffer within an insert() or remove()
 sem_t *SEM_WAIT_DONE;		// signals a CLEARED plane
 sem_t *FREE_RUNWAY;			// set to N_RUNWAYS
-//sem_t *SEM_EMERGENCY;		// flag for an active emergency on a runway
+sem_t *SEM_EMERGENCY;		// flag for an active emergency on a runway
 sem_t *SEM_PRINT;			// lets print_buffer() can be done  semi-atomically
 
 // turnstiles for reusable barrier
