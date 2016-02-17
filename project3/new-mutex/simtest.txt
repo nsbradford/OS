@@ -1,0 +1,469 @@
+
+------------------------------
+Initialize semaphores...
+
+------------------------------
+Initialize planes...
+FLYING id:1	 t_start:1	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:0
+FLYING id:2	 t_start:1	 maxfuel:100	 n_fuel:100.000000	is_emergency:1	 state:0
+FLYING id:3	 t_start:1	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:0
+FLYING id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:1	 state:0
+FLYING id:5	 t_start:1	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:0
+FLYING id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:0
+FLYING id:7	 t_start:1	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:0
+FLYING id:8	 t_start:1	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:0
+FLYING id:9	 t_start:1	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:0
+FLYING id:10	 t_start:1	 maxfuel:145	 n_fuel:145.000000	is_emergency:0	 state:0
+FLYING id:11	 t_start:1	 maxfuel:101	 n_fuel:101.000000	is_emergency:0	 state:0
+FLYING id:12	 t_start:1	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:0
+FLYING id:13	 t_start:1	 maxfuel:178	 n_fuel:178.000000	is_emergency:0	 state:0
+FLYING id:14	 t_start:1	 maxfuel:183	 n_fuel:183.000000	is_emergency:0	 state:0
+FLYING id:15	 t_start:1	 maxfuel:107	 n_fuel:107.000000	is_emergency:0	 state:0
+FLYING id:16	 t_start:1	 maxfuel:190	 n_fuel:190.000000	is_emergency:0	 state:0
+FLYING id:17	 t_start:1	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:0
+FLYING id:18	 t_start:1	 maxfuel:127	 n_fuel:127.000000	is_emergency:0	 state:0
+FLYING id:19	 t_start:1	 maxfuel:122	 n_fuel:122.000000	is_emergency:0	 state:0
+FLYING id:20	 t_start:1	 maxfuel:163	 n_fuel:163.000000	is_emergency:0	 state:0
+FLYING id:21	 t_start:1	 maxfuel:150	 n_fuel:150.000000	is_emergency:0	 state:0
+FLYING id:22	 t_start:1	 maxfuel:158	 n_fuel:158.000000	is_emergency:0	 state:0
+FLYING id:23	 t_start:1	 maxfuel:160	 n_fuel:160.000000	is_emergency:0	 state:0
+FLYING id:24	 t_start:1	 maxfuel:164	 n_fuel:164.000000	is_emergency:0	 state:0
+FLYING id:25	 t_start:1	 maxfuel:172	 n_fuel:172.000000	is_emergency:1	 state:0
+
+------------------------------
+Begin simulation...
+A new emergency place with id 6 has entered airspace. 
+ARRIVE id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:1
+ -Plane 6: finished insert()
+<-------------------------------------------------->
+  ---BUFFER---
+ARRIVE id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:GHOST
+2:GHOST
+3:GHOST
+</------------------------------------------------->
+ -Plane 6: remove() FREE_RUNWAY has value 4
+ -Plane 6: remove() pthread_mutex_lock(FREE_RUNWAY).
+ -Plane 6: finished remove()
+<-------------------------------------------------->
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:ARRIVE id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:1
+2:GHOST
+3:GHOST
+</------------------------------------------------->
+DESCEND id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:2	 runway:0
+A new emergency place with id 5 has entered airspace. 
+ARRIVE id:5	 t_start:1	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:1
+ -Plane 5: finished insert()
+<-------------------------------------------------->
+  ---BUFFER---
+ARRIVE id:5	 t_start:1	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:DESCEND id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:2	 runway:0
+2:GHOST
+3:GHOST
+</------------------------------------------------->
+ -Plane 5: remove() FREE_RUNWAY has value 3
+ -Plane 5: remove() pthread_mutex_lock(FREE_RUNWAY).
+ -Plane 5: finished remove()
+<-------------------------------------------------->
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:DESCEND id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:2	 runway:0
+2:ARRIVE id:5	 t_start:1	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:1
+3:GHOST
+</------------------------------------------------->
+DESCEND id:5	 t_start:1	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:2	 runway:1
+ARRIVE id:7	 t_start:1	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ -Plane 7: finished insert()
+<-------------------------------------------------->
+  ---BUFFER---
+ARRIVE id:7	 t_start:1	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:DESCEND id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:2	 runway:0
+2:DESCEND id:5	 t_start:1	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:2	 runway:1
+3:GHOST
+</------------------------------------------------->
+ -Plane 7: remove() FREE_RUNWAY has value 4
+ -Plane 7: remove() pthread_mutex_lock(FREE_RUNWAY).
+ -Plane 7: finished remove()
+<-------------------------------------------------->
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:DESCEND id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:2	 runway:0
+2:DESCEND id:5	 t_start:1	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:2	 runway:1
+3:ARRIVE id:7	 t_start:1	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+</------------------------------------------------->
+DESCEND id:7	 t_start:1	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:2	 runway:2
+A new emergency place with id 4 has entered airspace. 
+ARRIVE id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:1	 state:1
+ -Plane 4: finished insert()
+<-------------------------------------------------->
+  ---BUFFER---
+ARRIVE id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:1	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:DESCEND id:6	 t_start:1	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:2	 runway:0
+2:DESCEND id:5	 t_start:1	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:2	 runway:1
+3:DESCEND id:7	 t_start:1	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:2	 runway:2
+</------------------------------------------------->
+ -Plane 4: WAIT() loop.
+ -Plane 4: plane_wait() found (BUFFER_COUNT == 1).
+ -Plane 4: plane_function:if: try to acquire SEM_BUFFER.
+ -Plane 4: plane_function:if: acquired SEM_BUFFER.
+ -Plane 4: remove() FREE_RUNWAY has value 3
+ -Plane 4: remove() pthread_mutex_lock(FREE_RUNWAY).
