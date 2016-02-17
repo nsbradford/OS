@@ -26,9 +26,9 @@
 
 #define T_START_MIN 1
 #define T_START_RANGE 1
-#define T_DESCEND_MIN 5
+#define T_DESCEND_MIN 1
 #define T_DESCEND_RANGE 1
-#define T_LAND_MIN 5
+#define T_LAND_MIN 1
 #define T_LAND_RANGE 1
 #define N_FUEL_MIN 100
 #define N_FUEL_RANGE 100

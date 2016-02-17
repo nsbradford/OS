@@ -303,8 +303,8 @@ void plane_descend_land(Plane *plane){
 	plane->state = CLEARED;
 	print_plane(*plane);
 
+	if (DEBUG) printf(" -Plane %d: descend_land() sem_wait(SEM_IN_OUT).\n", plane->id);
 	sem_wait(SEM_IN_OUT);
-	sem_wait(SEM_BUFFER);
 
 	// remove from RUNWAY_BUFFER
 	runway_remove(plane);
@@ -316,14 +316,9 @@ void plane_descend_land(Plane *plane){
 	sem_post(FREE_RUNWAY);			// alert the planes in the buffer to wake
 
 	if (BUFFER_COUNT > 0){
-		sem_post(SEM_BUFFER);
 		if (DEBUG) printf(" -Plane %d: descend_land() sem_wait(SEM_WAIT_DONE).\n", plane->id);
 		sem_wait(SEM_WAIT_DONE);	// gets unlocked by a plane which leaves the buffer
 	}
-	else{
-		sem_post(SEM_BUFFER);
-	}
-	
 	
 	sem_post(SEM_IN_OUT);			// allow another thread to begin an insert or removal
 	
@@ -361,11 +356,14 @@ void plane_function(void *ptr){
 		if (DEBUG) printf(" -Plane %d: plane_function:if: try to acquire SEM_BUFFER.\n", plane->id);
 		sem_wait(SEM_BUFFER);	// while SEM_IN_OUT is held by exiting plane, get ahold of buffer
 		if (DEBUG) printf(" -Plane %d: plane_function:if: acquired SEM_BUFFER.\n", plane->id);
+		plane_remove(plane);
 		sem_post(SEM_WAIT_DONE);	// tell the plane that left the runway that we're all set
+	}
+	else{
+		plane_remove(plane);
 	}
 
 	// holding SEM_BUFFER here
-	plane_remove(plane);
 	if (DEBUG) printf(" -Plane %d: finished remove()\n", plane->id);
 	if (DEBUG) print_buffer();
 	sem_post(SEM_BUFFER);
