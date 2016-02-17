@@ -20,8 +20,8 @@
 
 #define DEBUG true
 
-#define N_PLANES 4
-#define N_PLANE_BUFFER (N_PLANES)
+#define N_PLANES 25
+#define N_PLANE_BUFFER (N_PLANES*2)
 #define N_RUNWAYS 3
 
 #define T_START_MIN 1
@@ -32,7 +32,7 @@
 #define T_LAND_RANGE 1
 #define N_FUEL_MIN 100
 #define N_FUEL_RANGE 100
-#define P_IS_EMERGENCY 0.0
+#define P_IS_EMERGENCY 0.1
 
 #define FUEL_RATE 0
 #define FUEL_DANGER_ZONE ((T_DESCEND_MIN + T_LAND_MIN) * FUEL_RATE)

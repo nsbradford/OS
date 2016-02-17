@@ -132,7 +132,17 @@ int cmp_n_fuel(const void *a, const void *b){
  * Sorts an array of Plane structs by increasing fuel remaining.
  */
 void sort_plane_buffer(Plane *buffer[], unsigned int len){
-	qsort(buffer, len, sizeof(Plane*), cmp_n_fuel);
+	// qsort(buffer, len, sizeof(Plane*), cmp_n_fuel);
+	int i = 0, j = 0;
+	for( i = 0; i < (len - 1); i++ ) {
+		for( j = 0; j < len - i - 1; j++ ) {
+			if(!buffer[j]->is_emergency && buffer[j]->n_fuel > buffer[j+1]->n_fuel) {
+				Plane *tempswap = buffer[j];
+				buffer[j] = buffer[j + 1];
+				buffer[j + 1] = tempswap;
+			}
+		}
+	}
 }
 
 //=================================================================================================
@@ -156,6 +166,30 @@ void plane_insert(Plane *plane){
 	
 	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
 }
+
+/**
+ * Enter airspace, insert into queue buffer at beginning, and sort buffer
+ * IMPORTANT: assumes that SEM_IN_OUT, SEM_BUFFER, and FREE_RUNWAY are already held
+ */
+void plane_emergency_insert(Plane *plane){
+	gettimeofday(plane->start_time, NULL); 
+	update_fuel(plane);
+
+	// 1: ARRIVING
+	plane->state = ARRIVING; 
+	print_plane(*plane);
+	
+	assert(BUFFER_COUNT < N_PLANE_BUFFER);
+	int i;
+	for (i = BUFFER_COUNT - 1; i >= 0; i--){
+		PLANE_BUFFER[i + 1] = PLANE_BUFFER[i];
+	}
+	PLANE_BUFFER[0] = plane; // change the pointer
+	BUFFER_COUNT++;
+	
+	sort_plane_buffer(PLANE_BUFFER, N_PLANE_BUFFER);
+}
+
 
 //=================================================================================================
 // WAIT
@@ -346,8 +380,16 @@ void plane_function(void *ptr){
 	sleep(plane->t_start); 		// wait to arrive
 	sem_wait(SEM_IN_OUT);		// make sure no other plane is being inserted or removed
 	sem_wait(SEM_BUFFER); 		// wait on synchronized buffer
-	plane_insert(plane);		// insert into buffer and sort
+	// plane_insert(plane);		// insert into buffer and sort
 	
+	if (plane->is_emergency){
+		printf("A new emergency place with id %d has entered airspace. \n", plane->id);
+		plane_emergency_insert(plane); // insert as an emergency plane
+	}
+	else {
+		plane_insert(plane);		// insert into buffer and sort
+	}
+
 	//sem_post(SEM_BUFFER);
 	//pthread_exit(0);
 	if (DEBUG) printf(" -Plane %d: finished insert()\n", plane->id);
