@@ -18,9 +18,9 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define DEBUG true
+#define DEBUG false
 
-#define N_PLANES 5
+#define N_PLANES 25
 #define N_PLANE_BUFFER (N_PLANES)
 #define N_RUNWAYS 3
 
