@@ -54,19 +54,30 @@ void print_plane(Plane p){
  */
 void print_buffer(){
 	sem_wait(SEM_PRINT);
-	printf("<-------------------------------------------------->\n");
+	printf("\n<==================================================>\n");
 	printf("  ---BUFFER---\n");
 	int i;
 	for (i = 0; i < N_PLANE_BUFFER; i++){
 		print_plane(*PLANE_BUFFER[i]);
 	}
+
 	printf("</------------------------------------------------->\n");
 	printf("  ---RUNWAYS---\n");
 	for (i = 0; i < N_RUNWAYS; i++){
 		printf("%d:", i+1);
 		print_plane(*RUNWAY_BUFFER[i]);
 	}
+
 	printf("</------------------------------------------------->\n");
+	printf("  ---SEMAPHORES---\n");
+	int io, buf, wd, fr;
+	sem_getvalue(SEM_IN_OUT, &io);
+	sem_getvalue(SEM_BUFFER, &buf);
+	sem_getvalue(SEM_WAIT_DONE, &wd);
+	sem_getvalue(FREE_RUNWAY, &fr);
+	printf("SEM_IN_OUT:%d\t SEM_BUFFER:%d\t SEM_WAIT_DONE:%d\t FREE_RUNWAY:%d\n", io, buf, wd, fr);
+
+	printf("<==================================================>\n\n");
 	sem_post(SEM_PRINT);
 }
 
@@ -140,9 +151,17 @@ void sort_plane_buffer(Plane *buffer[], unsigned int len){
 
 /**
  * Enter airspace, insert into queue buffer, and sort.
- * IMPORTANT: assumes that SEM_IN_OUT, SEM_BUFFER, and FREE_RUNWAY are already held
+ * IMPORTANT: assumes that SEM_IN_OUT and SEM_BUFFER are already held
  */
 void plane_insert(Plane *plane){
+	// <Error checking>
+	int err;
+	sem_getvalue(SEM_IN_OUT, &err);
+	assert(err == 0);
+	sem_getvalue(SEM_BUFFER, &err);
+	assert(err == 0);
+	// </Error checking>
+
 	gettimeofday(plane->start_time, NULL); 
 	update_fuel(plane);
 
@@ -161,9 +180,9 @@ void plane_insert(Plane *plane){
 // WAIT
 
 /** 
- * Wait until is_next() and is_freerunway(), so that the plane can plane_remove()
+ * Wait until is_next() and is_freerunway(), so that the plane can plane_remove
  * Reusable barrier solution as described in the Little Book of Semphores.
- * SEM_IN_OUT should be held by the CLEARED plane.
+ * SEM_IN_OUT should be held by the CLEARED plane when the FREE_RUNWAY is called.
  */
 void plane_wait(Plane *plane){
 	bool flag_first = false;
@@ -172,6 +191,12 @@ void plane_wait(Plane *plane){
 		if (DEBUG) printf(" -Plane %d: WAIT() loop.\n", plane->id);
 		sem_wait(FREE_RUNWAY);				// wait for FREE_RUNWAY signal
 		sem_post(FREE_RUNWAY);
+
+		// <Error checking>
+		int err;
+		sem_getvalue(SEM_IN_OUT, &err);
+		assert(err == 0);
+		// </Error checking>
 
 		// if there's only one plane in the buffer, can skip all the turnstile business
 		if (BUFFER_COUNT == 1){
@@ -202,7 +227,7 @@ void plane_wait(Plane *plane){
 			int val;
 			if (DEBUG) sem_getvalue(FREE_RUNWAY, &val);
 			if (DEBUG) printf(" -Plane %d: WAIT() FREE_RUNWAY has value %d\n", plane->id, val);
-			if (DEBUG) printf(" -Plane %d: WAIT() sem_post(FREE_RUNWAY).\n", plane->id);
+			if (DEBUG) printf(" -Plane %d: WAIT() sem_wait(FREE_RUNWAY).\n", plane->id);
 			sem_wait(FREE_RUNWAY);			// need to lock FREE_RUNWAY here so barrier works
 			flag_first = true;
 		}
@@ -227,43 +252,27 @@ void plane_wait(Plane *plane){
 		}
 		// else: go right back into the wait cycle
 	}
-	// ready to plane_remove()
+	// ready to plane_remove
 }
 
 //=================================================================================================
 // DESCENDING/LANDING/CLEARED
 
-/**
- * Assign plane to an open runway.
- * IMPORTANT: assumes that SEM_BUFFER is already held
- */
-void runway_insert(Plane *plane){
-	int i;
-	for (i = 0; i < N_RUNWAYS; i++){
-		if (RUNWAY_BUFFER[i]->state == GHOST){
-			RUNWAY_BUFFER[i] = plane;
-			plane->target_runway = i+1;
-			return;
-		}
-	}
-	assert(false); // tried inserting when there was no runway open, logic error
-}
-
-/**
- * Remove plane from runway by assigning that slot to NULL_PLANE
- * IMPORTANT: assumes that SEM_BUFFER is already held
- */
-void runway_remove(Plane *plane){
-	unsigned int runway = plane->target_runway - 1;
-	assert(RUNWAY_BUFFER[runway]->id == plane->id);
-	RUNWAY_BUFFER[runway] = NULL_PLANE;
-}
 
 /**
  * Land on an open runway.
- * IMPORTANT: assumes that SEM_BUFFER is already held
+ * Called directly from plane_function.
+ * IMPORTANT: assumes that SEM_IN_OUT and SEM_BUFFER is already held
  */
 void plane_remove(Plane *plane){
+	// <Error checking>
+	int err;
+	sem_getvalue(SEM_IN_OUT, &err);
+	assert(err == 0);
+	sem_getvalue(SEM_BUFFER, &err);
+	assert(err == 0);
+	// </Error checking>
+
 	assert(is_next(plane));
 	BUFFER_COUNT--;
 	PLANE_BUFFER[0] = NULL_PLANE;
@@ -273,24 +282,60 @@ void plane_remove(Plane *plane){
 	int val;
 	if (DEBUG) sem_getvalue(FREE_RUNWAY, &val);
 	if (DEBUG) printf(" -Plane %d: remove() FREE_RUNWAY has value %d\n", plane->id, val);
-	if (val > 0){
-		if (DEBUG) printf(" -Plane %d: remove() sem_wait(FREE_RUNWAY).\n", plane->id);
-		sem_wait(FREE_RUNWAY);			// need to lock FREE_RUNWAY here so barrier works
-	}
-
-	// add to RUNWAY_BUFFER
-	runway_insert(plane);
+	//if (val > 0){
+	//	if (DEBUG) printf(" -Plane %d: remove() sem_wait(FREE_RUNWAY).\n", plane->id);
+	//	sem_wait(FREE_RUNWAY);			// need to lock FREE_RUNWAY here so barrier works
+	//}
 }
 
 /**
- * Land on an open runway.
+ * Assign plane to an open runway.
+ * Called directly from plane_function.
+ * IMPORTANT: assumes that SEM_BUFFER is already held
+ */
+void runway_insert(Plane *plane){
+	// <Error checking>
+	int err;
+	sem_getvalue(SEM_BUFFER, &err);
+	assert(err == 0);
+	// </Error checking>
+
+	int i;
+	for (i = 0; i < N_RUNWAYS; i++){
+		if (RUNWAY_BUFFER[i]->state == GHOST){
+			RUNWAY_BUFFER[i] = plane;
+			plane->target_runway = i+1;
+			plane->state = DESCENDING;
+			update_fuel(plane);
+			print_plane(*plane);
+			return;
+		}
+	}
+	assert(false); // tried inserting when there was no runway open, logic error
+}
+
+/**
+ * Remove plane from runway by assigning that slot to NULL_PLANE
+ * IMPORTANT: assumes that SEM_IN_OUT is already held
+ */
+void runway_remove(Plane *plane){
+	// <Error checking>
+	int err;
+	sem_getvalue(SEM_IN_OUT, &err);
+	assert(err == 0);
+	// </Error checking>
+
+	unsigned int runway = plane->target_runway - 1;
+	assert(RUNWAY_BUFFER[runway]->id == plane->id);
+	RUNWAY_BUFFER[runway] = NULL_PLANE;
+}
+
+/**
+ * Land on the previously assigned runway.
  */
 void plane_descend_land(Plane *plane){
 
 	// 2: DESCENDING
-	plane->state = DESCENDING;
-	update_fuel(plane);
-	print_plane(*plane);
 	sleep(plane->t_descend);
 
 	// 3: LANDING
@@ -300,13 +345,13 @@ void plane_descend_land(Plane *plane){
 	sleep(plane->t_land);
 
 	// 4: CLEARED
+	if (DEBUG) printf(" -Plane %d: descend_land() sem_wait(SEM_IN_OUT).\n", plane->id);
+	sem_wait(SEM_IN_OUT);
 	plane->state = CLEARED;
 	print_plane(*plane);
 
-	if (DEBUG) printf(" -Plane %d: descend_land() sem_wait(SEM_IN_OUT).\n", plane->id);
-	sem_wait(SEM_IN_OUT);
-
 	// remove from RUNWAY_BUFFER
+	if (DEBUG) printf(" -Plane %d: descend_land() about to runway_remove\n", plane->id);
 	runway_remove(plane);
 	
 	int val;
@@ -319,7 +364,12 @@ void plane_descend_land(Plane *plane){
 		if (DEBUG) printf(" -Plane %d: descend_land() sem_wait(SEM_WAIT_DONE).\n", plane->id);
 		sem_wait(SEM_WAIT_DONE);	// gets unlocked by a plane which leaves the buffer
 	}
-	
+
+	// <Error checking>
+	int err;
+	sem_getvalue(SEM_IN_OUT, &err);
+	assert(err == 0);
+	// </Error checking>
 	sem_post(SEM_IN_OUT);			// allow another thread to begin an insert or removal
 	
 	// proceed to exit
@@ -334,6 +384,7 @@ void plane_descend_land(Plane *plane){
  * Each Plane thread runs this function.
  */
 void plane_function(void *ptr){
+	int err;
 	Plane *plane;
 	plane = (Plane *)ptr;
 	assert (plane->state == FLYING);
@@ -350,24 +401,48 @@ void plane_function(void *ptr){
 
 	// if we're not first, wait
 	if ( !(is_next(plane) && is_free_runway()) ){
+		
+		// <Error checking>
+		sem_getvalue(SEM_BUFFER, &err);
+		assert(err == 0);
+		sem_getvalue(SEM_IN_OUT, &err);
+		assert(err == 0);
+		// </Error checking>
+
 		sem_post(SEM_BUFFER);
 		sem_post(SEM_IN_OUT);
-		plane_wait(plane);		// wait on is_first() and FREE_RUNWAY in a loop with turnstiles 
+		plane_wait(plane);			// wait on is_first() and FREE_RUNWAY in a loop with turnstiles 
 		if (DEBUG) printf(" -Plane %d: plane_function:if: try to acquire SEM_BUFFER.\n", plane->id);
-		sem_wait(SEM_BUFFER);	// while SEM_IN_OUT is held by exiting plane, get ahold of buffer
+		sem_wait(SEM_BUFFER);		// while SEM_IN_OUT is held by exiting plane, get ahold of buffer
 		if (DEBUG) printf(" -Plane %d: plane_function:if: acquired SEM_BUFFER.\n", plane->id);
 		plane_remove(plane);
+		runway_insert(plane);		// add to RUNWAY_BUFFER
+		if (DEBUG) printf(" -Plane %d: plane_function:if: about to sem_post(SEM_WAIT_DONE)\n", plane->id);
 		sem_post(SEM_WAIT_DONE);	// tell the plane that left the runway that we're all set
+		sem_post(SEM_BUFFER);
 	}
 	else{
+		sem_wait(FREE_RUNWAY);			// need to lock FREE_RUNWAY here so barrier works
 		plane_remove(plane);
+		runway_insert(plane);		// add to RUNWAY_BUFFER
+		
+		// <Error checking>
+		//int err;
+
+		sem_getvalue(SEM_IN_OUT, &err);
+		assert(err == 0);
+		// </Error checking>
+
+		sem_post(SEM_BUFFER);
+		sem_post(SEM_IN_OUT);
 	}
 
 	// holding SEM_BUFFER here
 	if (DEBUG) printf(" -Plane %d: finished remove()\n", plane->id);
 	if (DEBUG) print_buffer();
-	sem_post(SEM_BUFFER);
-	sem_post(SEM_IN_OUT);
+
+	//sem_post(SEM_BUFFER);
+	//sem_post(SEM_IN_OUT);
 	plane_descend_land(plane);
 	pthread_exit(0);			// all done
 }
