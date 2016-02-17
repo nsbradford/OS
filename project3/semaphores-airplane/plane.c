@@ -70,12 +70,13 @@ void print_buffer(){
 
 	printf("</------------------------------------------------->\n");
 	printf("  ---SEMAPHORES---\n");
-	int io, buf, wd, fr;
+	int io, buf, wd, fr, em;
 	sem_getvalue(SEM_IN_OUT, &io);
 	sem_getvalue(SEM_BUFFER, &buf);
 	sem_getvalue(SEM_WAIT_DONE, &wd);
 	sem_getvalue(FREE_RUNWAY, &fr);
-	printf("SEM_IN_OUT:%d\t SEM_BUFFER:%d\t SEM_WAIT_DONE:%d\t FREE_RUNWAY:%d\n", io, buf, wd, fr);
+	sem_getvalue(SEM_EMERGENCY, &em);
+	printf("SEM_IN_OUT:%d\t SEM_BUFFER:%d\t SEM_WAIT_DONE:%d\t FREE_RUNWAY:%d\t SEM_EMERGENCY:%d\n", io, buf, wd, fr, em);
 
 	printf("<==================================================>\n\n");
 	sem_post(SEM_PRINT);
@@ -189,14 +190,18 @@ void plane_wait(Plane *plane){
 	while(true){
 		update_fuel(plane);
 		if (DEBUG) printf(" -Plane %d: WAIT() loop.\n", plane->id);
+		
+		// if SEM_EMERGENCY==0, there is an emergency
+		int no_emergency;
+		sem_getvalue(SEM_EMERGENCY, &no_emergency);
+		if (!no_emergency){
+			//sem_wait(SEM_EMERGENCY);		// wait for SEM_EMERGENCY signal
+			//sem_post(SEM_EMERGENCY);
+			//continue;
+		}
+
 		sem_wait(FREE_RUNWAY);				// wait for FREE_RUNWAY signal
 		sem_post(FREE_RUNWAY);
-
-		// <Error checking>
-		int err;
-		sem_getvalue(SEM_IN_OUT, &err);
-		assert(err == 0);
-		// </Error checking>
 
 		// if there's only one plane in the buffer, can skip all the turnstile business
 		if (BUFFER_COUNT == 1){
@@ -206,7 +211,7 @@ void plane_wait(Plane *plane){
 		}
 
 		// SEM_BUFFER is held by the plane that just exited the runway
-		if (DEBUG) printf(" -Plane %d: WAIT() TURN_1\n", plane->id);
+		//if (DEBUG) printf(" -Plane %d: WAIT() TURN_1\n", plane->id);
 		sem_wait(SEM_TURN_COUNT);			// lock for TURN_COUNT
 		TURN_COUNT++;
 		if (TURN_COUNT == BUFFER_COUNT){	// all planes have woken
@@ -221,7 +226,7 @@ void plane_wait(Plane *plane){
 
 		// critical region here! ------------------------------------------------------
 		// check to see if this plane is first
-		if (DEBUG) printf(" -Plane %d: WAIT() critical region.\n", plane->id);
+		//if (DEBUG) printf(" -Plane %d: WAIT() critical region.\n", plane->id);
 		if (is_next(plane)){
 			if (DEBUG) printf(" -Plane %d: WAIT() found is_next()\n", plane->id);
 			int val;
@@ -230,10 +235,21 @@ void plane_wait(Plane *plane){
 			if (DEBUG) printf(" -Plane %d: WAIT() sem_wait(FREE_RUNWAY).\n", plane->id);
 			sem_wait(FREE_RUNWAY);			// need to lock FREE_RUNWAY here so barrier works
 			flag_first = true;
+
+			// am I in an emergency? if so, I get special priveliges!
+			// <Error checking>
+			int err;
+			sem_getvalue(SEM_EMERGENCY, &err);
+			assert(err == 1); // should not have gotten this far if another emergency is landing
+			// </Error checking>
+			//if (plane->is_emergency){
+			//	if (DEBUG) printf(" -Plane %d: WAIT() is an emergency!\n", plane->id);
+			//	sem_wait(SEM_EMERGENCY);
+			//}
 		}
 		// end critical region   ------------------------------------------------------
 
-		if (DEBUG) printf(" -Plane %d: WAIT() TURN_2\n", plane->id);
+		//if (DEBUG) printf(" -Plane %d: WAIT() TURN_2\n", plane->id);
 		sem_wait(SEM_TURN_COUNT);
 		TURN_COUNT--;
 		if (TURN_COUNT == 0){				// all planes are sleeping
@@ -359,6 +375,16 @@ void plane_descend_land(Plane *plane){
 	if (DEBUG) printf(" -Plane %d: descend_land() FREE_RUNWAY has value %d\n", plane->id, val);
 	if (DEBUG) printf(" -Plane %d: sem_post(FREE_RUNWAY).\n", plane->id);
 	sem_post(FREE_RUNWAY);			// alert the planes in the buffer to wake
+	if (plane->is_emergency){
+		// <Error checking>
+		//int err;
+		//sem_getvalue(SEM_EMERGENCY, &err);
+		//assert(err == 0);
+		// </Error checking>
+
+		//sem_post(SEM_EMERGENCY);
+	}
+	
 
 	if (BUFFER_COUNT > 0){
 		if (DEBUG) printf(" -Plane %d: descend_land() sem_wait(SEM_WAIT_DONE).\n", plane->id);
@@ -400,8 +426,11 @@ void plane_function(void *ptr){
 	if (DEBUG) print_buffer();
 
 	// if we're not first, wait
-	if ( !(is_next(plane) && is_free_runway()) ){
-		
+		// if SEM_EMERGENCY==0, there is an emergency
+	int no_emergency;
+	sem_getvalue(SEM_EMERGENCY, &no_emergency);
+	if ( !(is_next(plane) && is_free_runway() )){ // if ( !(is_next(plane) && is_free_runway() ) || !no_emergency){
+		if (DEBUG) printf(" -Plane %d: plane_function: goto wait\n", plane->id);
 		// <Error checking>
 		sem_getvalue(SEM_BUFFER, &err);
 		assert(err == 0);
@@ -422,13 +451,23 @@ void plane_function(void *ptr){
 		sem_post(SEM_BUFFER);
 	}
 	else{
+		if (DEBUG) printf(" -Plane %d: plane_function: goto remove\n", plane->id);
+
+		// am I in an emergency? if so, I get special priveliges!
+		// <Error checking>
+		sem_getvalue(SEM_EMERGENCY, &err);
+		assert(err == 1); // should not have gotten this far if another emergency is landing
+		// </Error checking>
+		if (plane->is_emergency){
+			//if (DEBUG) printf(" -Plane %d: WAIT() is an emergency!\n", plane->id);
+			//sem_wait(SEM_EMERGENCY);
+		}
+
 		sem_wait(FREE_RUNWAY);			// need to lock FREE_RUNWAY here so barrier works
 		plane_remove(plane);
 		runway_insert(plane);		// add to RUNWAY_BUFFER
 		
 		// <Error checking>
-		//int err;
-
 		sem_getvalue(SEM_IN_OUT, &err);
 		assert(err == 0);
 		// </Error checking>

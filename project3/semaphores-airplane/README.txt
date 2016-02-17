@@ -36,10 +36,11 @@ General Approach:           Each plane is represented by a separate thread passe
                             Besides the semaphores used for the Reusable Barrier, we used four
                             semaphores to solve the synchronization problem:
 
-                                SEM_IN_OUT;          // limits insert() or remove() 
-                                SEM_BUFFER;          // locks the buffer within  insert()/remove()
-                                SEM_WAIT_DONE;       // signals a CLEARED plane
-                                FREE_RUNWAY;         // set to N_RUNWAYS
+                                SEM_IN_OUT;             // limits insert() or remove() 
+                                SEM_BUFFER;             // locks the buffer within  insert()/remove()
+                                SEM_WAIT_DONE;          // signals a CLEARED plane
+                                FREE_RUNWAY;            // set to N_RUNWAYS
+                                SEM_EMERGENCY;          // flag for an active emergency on a runway
 
                             SEM_BUFFER restricts access to the PLANE_BUFFER global.
                             SEM_IN_OUT allows control of SEM_BUFFER to pass directly from a
@@ -49,10 +50,14 @@ General Approach:           Each plane is represented by a separate thread passe
                                 plane begins to descend.
                             FREE_RUNWAY is set to the number of runways, and threads in the queue
                                 wait on it while all the runways are full.
+                            SEM_EMERGENCY is set to 1 when there is no active emergency landing,
+                                and 0 when there is one. Whenever a plane thinks it is ready to
+                                begin its descent, it checks the SEM_EMERGENCY value, and goes
+                                back to sleep (remaining in the queue) if it equals 0.
 
 Test cases:                 Our test cases were systematic and incremental.
                             Each involved changing one or more #define statements in header.h.
-
-                            The demonstration defaults:
-
-                            ... TODO ...
+                            We also utilized assert() statements in nearly every function
+                            to check that the semaphore values were as expected.
+                            
+                            The demonstration defaults: TODO
