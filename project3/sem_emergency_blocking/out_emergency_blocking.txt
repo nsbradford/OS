@@ -1,0 +1,164 @@
+
+------------------------------
+Initialize semaphores...
+
+------------------------------
+Initialize planes...
+FLYING id:1	 t_start:1	 maxfuel:1071	 n_fuel:1071.000000	is_emergency:1	 state:0
+FLYING id:2	 t_start:1	 maxfuel:1000	 n_fuel:1000.000000	is_emergency:1	 state:0
+FLYING id:3	 t_start:1	 maxfuel:1026	 n_fuel:1026.000000	is_emergency:1	 state:0
+FLYING id:4	 t_start:1	 maxfuel:1070	 n_fuel:1070.000000	is_emergency:1	 state:0
+FLYING id:5	 t_start:1	 maxfuel:1004	 n_fuel:1004.000000	is_emergency:1	 state:0
+FLYING id:6	 t_start:1	 maxfuel:1057	 n_fuel:1057.000000	is_emergency:1	 state:0
+FLYING id:7	 t_start:1	 maxfuel:1012	 n_fuel:1012.000000	is_emergency:1	 state:0
+FLYING id:8	 t_start:1	 maxfuel:1053	 n_fuel:1053.000000	is_emergency:1	 state:0
+FLYING id:9	 t_start:1	 maxfuel:1080	 n_fuel:1080.000000	is_emergency:1	 state:0
+FLYING id:10	 t_start:1	 maxfuel:1045	 n_fuel:1045.000000	is_emergency:1	 state:0
+FLYING id:11	 t_start:1	 maxfuel:1001	 n_fuel:1001.000000	is_emergency:1	 state:0
+FLYING id:12	 t_start:1	 maxfuel:1080	 n_fuel:1080.000000	is_emergency:1	 state:0
+FLYING id:13	 t_start:1	 maxfuel:1078	 n_fuel:1078.000000	is_emergency:1	 state:0
+FLYING id:14	 t_start:1	 maxfuel:1083	 n_fuel:1083.000000	is_emergency:1	 state:0
+FLYING id:15	 t_start:1	 maxfuel:1007	 n_fuel:1007.000000	is_emergency:1	 state:0
+FLYING id:16	 t_start:1	 maxfuel:1090	 n_fuel:1090.000000	is_emergency:1	 state:0
+FLYING id:17	 t_start:1	 maxfuel:1026	 n_fuel:1026.000000	is_emergency:1	 state:0
+FLYING id:18	 t_start:1	 maxfuel:1027	 n_fuel:1027.000000	is_emergency:1	 state:0
+FLYING id:19	 t_start:1	 maxfuel:1022	 n_fuel:1022.000000	is_emergency:1	 state:0
+FLYING id:20	 t_start:1	 maxfuel:1063	 n_fuel:1063.000000	is_emergency:1	 state:0
+FLYING id:21	 t_start:1	 maxfuel:1050	 n_fuel:1050.000000	is_emergency:1	 state:0
+FLYING id:22	 t_start:1	 maxfuel:1058	 n_fuel:1058.000000	is_emergency:1	 state:0
+FLYING id:23	 t_start:1	 maxfuel:1060	 n_fuel:1060.000000	is_emergency:1	 state:0
+FLYING id:24	 t_start:1	 maxfuel:1064	 n_fuel:1064.000000	is_emergency:1	 state:0
+FLYING id:25	 t_start:1	 maxfuel:1072	 n_fuel:1072.000000	is_emergency:1	 state:0
+
+------------------------------
+Begin simulation...
+ARRIVE id:3	 t_start:1	 maxfuel:1026	 n_fuel:1026.000000	is_emergency:1	 state:1
+ -Plane 3: is starting an emergency landing!
+DESCEND id:3	 t_start:1	 maxfuel:1026	 n_fuel:1026.000000	is_emergency:1	 state:2	 runway:1
+ARRIVE id:2	 t_start:1	 maxfuel:1000	 n_fuel:1000.000000	is_emergency:1	 state:1
+ARRIVE id:1	 t_start:1	 maxfuel:1071	 n_fuel:1071.000000	is_emergency:1	 state:1
+ARRIVE id:10	 t_start:1	 maxfuel:1045	 n_fuel:1045.000000	is_emergency:1	 state:1
+ARRIVE id:9	 t_start:1	 maxfuel:1080	 n_fuel:1080.000000	is_emergency:1	 state:1
+ARRIVE id:11	 t_start:1	 maxfuel:1001	 n_fuel:1001.000000	is_emergency:1	 state:1
+ARRIVE id:8	 t_start:1	 maxfuel:1053	 n_fuel:1053.000000	is_emergency:1	 state:1
+ARRIVE id:12	 t_start:1	 maxfuel:1080	 n_fuel:1080.000000	is_emergency:1	 state:1
+ARRIVE id:13	 t_start:1	 maxfuel:1078	 n_fuel:1078.000000	is_emergency:1	 state:1
+ARRIVE id:7	 t_start:1	 maxfuel:1012	 n_fuel:1012.000000	is_emergency:1	 state:1
+ARRIVE id:14	 t_start:1	 maxfuel:1083	 n_fuel:1083.000000	is_emergency:1	 state:1
+ARRIVE id:15	 t_start:1	 maxfuel:1007	 n_fuel:1007.000000	is_emergency:1	 state:1
+ARRIVE id:16	 t_start:1	 maxfuel:1090	 n_fuel:1090.000000	is_emergency:1	 state:1
+ARRIVE id:17	 t_start:1	 maxfuel:1026	 n_fuel:1026.000000	is_emergency:1	 state:1
+ARRIVE id:6	 t_start:1	 maxfuel:1057	 n_fuel:1057.000000	is_emergency:1	 state:1
+ARRIVE id:18	 t_start:1	 maxfuel:1027	 n_fuel:1027.000000	is_emergency:1	 state:1
+ARRIVE id:19	 t_start:1	 maxfuel:1022	 n_fuel:1022.000000	is_emergency:1	 state:1
+ARRIVE id:20	 t_start:1	 maxfuel:1063	 n_fuel:1063.000000	is_emergency:1	 state:1
+ARRIVE id:21	 t_start:1	 maxfuel:1050	 n_fuel:1050.000000	is_emergency:1	 state:1
+ARRIVE id:23	 t_start:1	 maxfuel:1060	 n_fuel:1060.000000	is_emergency:1	 state:1
+ARRIVE id:25	 t_start:1	 maxfuel:1072	 n_fuel:1072.000000	is_emergency:1	 state:1
+ARRIVE id:22	 t_start:1	 maxfuel:1058	 n_fuel:1058.000000	is_emergency:1	 state:1
+ARRIVE id:24	 t_start:1	 maxfuel:1064	 n_fuel:1064.000000	is_emergency:1	 state:1
+ARRIVE id:5	 t_start:1	 maxfuel:1004	 n_fuel:1004.000000	is_emergency:1	 state:1
+ARRIVE id:4	 t_start:1	 maxfuel:1070	 n_fuel:1070.000000	is_emergency:1	 state:1
+LANDING id:3	 t_start:1	 maxfuel:1026	 n_fuel:1021.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:3	 t_start:1	 maxfuel:1026	 n_fuel:1021.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 2: is starting an emergency landing!
+DESCEND id:2	 t_start:1	 maxfuel:1000	 n_fuel:990.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:2	 t_start:1	 maxfuel:1000	 n_fuel:985.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:2	 t_start:1	 maxfuel:1000	 n_fuel:985.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 11: is starting an emergency landing!
+DESCEND id:11	 t_start:1	 maxfuel:1001	 n_fuel:981.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:11	 t_start:1	 maxfuel:1001	 n_fuel:976.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:11	 t_start:1	 maxfuel:1001	 n_fuel:976.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 5: is starting an emergency landing!
+DESCEND id:5	 t_start:1	 maxfuel:1004	 n_fuel:974.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:5	 t_start:1	 maxfuel:1004	 n_fuel:969.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:5	 t_start:1	 maxfuel:1004	 n_fuel:969.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 15: is starting an emergency landing!
+DESCEND id:15	 t_start:1	 maxfuel:1007	 n_fuel:967.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:15	 t_start:1	 maxfuel:1007	 n_fuel:962.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:15	 t_start:1	 maxfuel:1007	 n_fuel:962.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 7: is starting an emergency landing!
+DESCEND id:7	 t_start:1	 maxfuel:1012	 n_fuel:962.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:7	 t_start:1	 maxfuel:1012	 n_fuel:957.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:7	 t_start:1	 maxfuel:1012	 n_fuel:957.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 19: is starting an emergency landing!
+DESCEND id:19	 t_start:1	 maxfuel:1022	 n_fuel:962.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:19	 t_start:1	 maxfuel:1022	 n_fuel:957.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:19	 t_start:1	 maxfuel:1022	 n_fuel:957.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 17: is starting an emergency landing!
+DESCEND id:17	 t_start:1	 maxfuel:1026	 n_fuel:956.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:17	 t_start:1	 maxfuel:1026	 n_fuel:951.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:17	 t_start:1	 maxfuel:1026	 n_fuel:951.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 18: is starting an emergency landing!
+DESCEND id:18	 t_start:1	 maxfuel:1027	 n_fuel:947.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:18	 t_start:1	 maxfuel:1027	 n_fuel:942.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:18	 t_start:1	 maxfuel:1027	 n_fuel:942.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 10: is starting an emergency landing!
+DESCEND id:10	 t_start:1	 maxfuel:1045	 n_fuel:955.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:10	 t_start:1	 maxfuel:1045	 n_fuel:950.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:10	 t_start:1	 maxfuel:1045	 n_fuel:950.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 21: is starting an emergency landing!
+DESCEND id:21	 t_start:1	 maxfuel:1050	 n_fuel:950.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:21	 t_start:1	 maxfuel:1050	 n_fuel:945.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:21	 t_start:1	 maxfuel:1050	 n_fuel:945.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 8: is starting an emergency landing!
+DESCEND id:8	 t_start:1	 maxfuel:1053	 n_fuel:943.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:8	 t_start:1	 maxfuel:1053	 n_fuel:938.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:8	 t_start:1	 maxfuel:1053	 n_fuel:938.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 6: is starting an emergency landing!
+DESCEND id:6	 t_start:1	 maxfuel:1057	 n_fuel:937.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:6	 t_start:1	 maxfuel:1057	 n_fuel:932.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:6	 t_start:1	 maxfuel:1057	 n_fuel:932.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 22: is starting an emergency landing!
+DESCEND id:22	 t_start:1	 maxfuel:1058	 n_fuel:928.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:22	 t_start:1	 maxfuel:1058	 n_fuel:923.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:22	 t_start:1	 maxfuel:1058	 n_fuel:923.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 23: is starting an emergency landing!
+DESCEND id:23	 t_start:1	 maxfuel:1060	 n_fuel:920.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:23	 t_start:1	 maxfuel:1060	 n_fuel:915.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:23	 t_start:1	 maxfuel:1060	 n_fuel:915.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 20: is starting an emergency landing!
+DESCEND id:20	 t_start:1	 maxfuel:1063	 n_fuel:913.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:20	 t_start:1	 maxfuel:1063	 n_fuel:908.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:20	 t_start:1	 maxfuel:1063	 n_fuel:908.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 24: is starting an emergency landing!
+DESCEND id:24	 t_start:1	 maxfuel:1064	 n_fuel:904.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:24	 t_start:1	 maxfuel:1064	 n_fuel:899.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:24	 t_start:1	 maxfuel:1064	 n_fuel:899.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 4: is starting an emergency landing!
+DESCEND id:4	 t_start:1	 maxfuel:1070	 n_fuel:900.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:4	 t_start:1	 maxfuel:1070	 n_fuel:895.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:4	 t_start:1	 maxfuel:1070	 n_fuel:895.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 1: is starting an emergency landing!
+DESCEND id:1	 t_start:1	 maxfuel:1071	 n_fuel:891.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:1	 t_start:1	 maxfuel:1071	 n_fuel:886.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:1	 t_start:1	 maxfuel:1071	 n_fuel:886.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 25: is starting an emergency landing!
+DESCEND id:25	 t_start:1	 maxfuel:1072	 n_fuel:882.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:25	 t_start:1	 maxfuel:1072	 n_fuel:877.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:25	 t_start:1	 maxfuel:1072	 n_fuel:877.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 13: is starting an emergency landing!
+DESCEND id:13	 t_start:1	 maxfuel:1078	 n_fuel:878.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:13	 t_start:1	 maxfuel:1078	 n_fuel:873.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:13	 t_start:1	 maxfuel:1078	 n_fuel:873.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 9: is starting an emergency landing!
+DESCEND id:9	 t_start:1	 maxfuel:1080	 n_fuel:870.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:9	 t_start:1	 maxfuel:1080	 n_fuel:865.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:9	 t_start:1	 maxfuel:1080	 n_fuel:865.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 12: is starting an emergency landing!
+DESCEND id:12	 t_start:1	 maxfuel:1080	 n_fuel:860.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:12	 t_start:1	 maxfuel:1080	 n_fuel:855.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:12	 t_start:1	 maxfuel:1080	 n_fuel:855.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 14: is starting an emergency landing!
+DESCEND id:14	 t_start:1	 maxfuel:1083	 n_fuel:853.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:14	 t_start:1	 maxfuel:1083	 n_fuel:848.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:14	 t_start:1	 maxfuel:1083	 n_fuel:848.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 16: is starting an emergency landing!
+DESCEND id:16	 t_start:1	 maxfuel:1090	 n_fuel:850.000000	is_emergency:1	 state:2	 runway:1
+LANDING id:16	 t_start:1	 maxfuel:1090	 n_fuel:845.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:16	 t_start:1	 maxfuel:1090	 n_fuel:845.000000	is_emergency:1	 state:4	 runway:1
+
+------------------------------
+Simulation finished successfully!
+*END SIMULATION*
+

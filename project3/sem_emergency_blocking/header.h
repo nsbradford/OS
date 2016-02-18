@@ -18,7 +18,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define DEBUG true
+#define DEBUG false
 
 #define N_PLANES 25
 #define N_PLANE_BUFFER (N_PLANES)
@@ -30,7 +30,7 @@
 #define T_DESCEND_RANGE 1
 #define T_LAND_MIN 1
 #define T_LAND_RANGE 1
-#define N_FUEL_MIN 100
+#define N_FUEL_MIN 1000
 #define N_FUEL_RANGE 100
 #define P_IS_EMERGENCY 1.0
 #define FUEL_RATE 5
