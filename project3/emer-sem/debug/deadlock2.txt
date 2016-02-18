@@ -1,0 +1,424 @@
+nsbradford@ubuntu:~/OS/project3/semaphores-airplane$ ./simulate
+
+------------------------------
+Initialize semaphores...
+
+------------------------------
+Initialize planes...
+FLYING id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:0
+FLYING id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:0
+FLYING id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:0
+FLYING id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:0	 state:0
+FLYING id:5	 t_start:5	 maxfuel:104	 n_fuel:104.000000	is_emergency:0	 state:0
+FLYING id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:0
+FLYING id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:0
+FLYING id:8	 t_start:6	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:0
+FLYING id:9	 t_start:8	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:0
+FLYING id:10	 t_start:8	 maxfuel:145	 n_fuel:145.000000	is_emergency:0	 state:0
+
+------------------------------
+Create threads...
+ARRIVE id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:0	 state:1
+ -Plane 4: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 4: finished remove()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+DESCEND id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:0	 state:2	 runway:0
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ -Plane 2: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 2: plane_wait() loop.
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ -Plane 7: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 7: plane_wait() loop.
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:1
+ -Plane 6: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 6: plane_wait() loop.
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:104.000000	is_emergency:0	 state:1
+ -Plane 5: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:104.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 5: plane_wait() loop.
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ -Plane 3: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:104.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 3: plane_wait() loop.
+ARRIVE id:8	 t_start:6	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:1
+ -Plane 8: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:104.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ARRIVE id:8	 t_start:6	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 8: plane_wait() loop.
+LANDING id:4	 t_start:1	 maxfuel:170	 n_fuel:145.000000	is_emergency:0	 state:3	 runway:0
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:1
+ -Plane 1: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:104.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ARRIVE id:8	 t_start:6	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:1
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 1: plane_wait() loop.
+ARRIVE id:9	 t_start:8	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:1
+ -Plane 9: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:104.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ARRIVE id:8	 t_start:6	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:1
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:1
+ARRIVE id:9	 t_start:8	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 9: plane_wait() loop.
+ARRIVE id:10	 t_start:8	 maxfuel:145	 n_fuel:145.000000	is_emergency:0	 state:1
+ -Plane 10: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:104.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ARRIVE id:10	 t_start:8	 maxfuel:145	 n_fuel:145.000000	is_emergency:0	 state:1
+ARRIVE id:8	 t_start:6	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:0	 state:1
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:1
+ARRIVE id:9	 t_start:8	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 10: plane_wait() loop.
+CLEARED id:4	 t_start:1	 maxfuel:170	 n_fuel:145.000000	is_emergency:0	 state:4	 runway:0
+ -Plane 4: sem_post(FREE_RUNWAY).
+ -Plane 4: FREE_RUNWAY had value 0
+ -Plane 4: sem_wait(SEM_WAIT_DONE).
+ -Plane 2: plane_wait() TURN_1
+ -Plane 7: plane_wait() TURN_1
+ -Plane 6: plane_wait() TURN_1
+ -Plane 3: plane_wait() TURN_1
+ -Plane 5: plane_wait() TURN_1
+ -Plane 8: plane_wait() TURN_1
+ -Plane 1: plane_wait() TURN_1
+ -Plane 9: plane_wait() TURN_1
+ -Plane 10: plane_wait() TURN_1
+ -Plane 10: plane_wait() found all planes awake
+ -Plane 10: plane_wait() critical region.
+ -Plane 10: plane_wait() TURN_2
+ -Plane 2: plane_wait() critical region.
+ -Plane 2: plane_wait() found is_next()
+ -Plane 2: plane_wait() TURN_2
+ -Plane 7: plane_wait() critical region.
+ -Plane 7: plane_wait() TURN_2
+ -Plane 3: plane_wait() critical region.
+ -Plane 3: plane_wait() TURN_2
+ -Plane 6: plane_wait() critical region.
+ -Plane 6: plane_wait() TURN_2
+ -Plane 5: plane_wait() critical region.
+ -Plane 5: plane_wait() TURN_2
+ -Plane 1: plane_wait() critical region.
+ -Plane 1: plane_wait() TURN_2
+ -Plane 8: plane_wait() critical region.
+ -Plane 8: plane_wait() TURN_2
+ -Plane 9: plane_wait() critical region.
+ -Plane 9: plane_wait() TURN_2
+ -Plane 9: plane_wait() found all planes sleeping
+ -Plane 9: plane_wait() loop.
+ -Plane 9: plane_wait() TURN_1
+ -Plane 7: plane_wait() loop.
+ -Plane 7: plane_wait() TURN_1
+ -Plane 3: plane_wait() loop.
+ -Plane 3: plane_wait() TURN_1
+ -Plane 10: plane_wait() loop.
+ -Plane 10: plane_wait() TURN_1
+ -Plane 1: plane_wait() loop.
+ -Plane 1: plane_wait() TURN_1
+ -Plane 8: plane_wait() loop.
+ -Plane 8: plane_wait() TURN_1
+ -Plane 6: plane_wait() loop.
+ -Plane 6: plane_wait() TURN_1
+ -Plane 5: plane_wait() loop.
+ -Plane 5: plane_wait() TURN_1
+ -Plane 2: plane_function:if: try to acquire SEM_BUFFER.
+ -Plane 2: plane_function:if: acquired SEM_BUFFER.
+ -Plane 2: finished remove()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:74.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:77.000000	is_emergency:0	 state:1
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:101.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:127.000000	is_emergency:0	 state:1
+ARRIVE id:8	 t_start:6	 maxfuel:153	 n_fuel:128.000000	is_emergency:0	 state:1
+ARRIVE id:10	 t_start:8	 maxfuel:145	 n_fuel:130.000000	is_emergency:0	 state:1
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:156.000000	is_emergency:0	 state:1
+ARRIVE id:9	 t_start:8	 maxfuel:180	 n_fuel:165.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+DESCEND id:2	 t_start:4	 maxfuel:100	 n_fuel:65.000000	is_emergency:0	 state:2	 runway:0
+ -Plane 4: exited.
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:5	 t_start:5	 maxfuel:104	 n_fuel:74.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:77.000000	is_emergency:0	 state:1
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:101.000000	is_emergency:0	 state:1
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:127.000000	is_emergency:0	 state:1
+ARRIVE id:8	 t_start:6	 maxfuel:153	 n_fuel:128.000000	is_emergency:0	 state:1
+ARRIVE id:10	 t_start:8	 maxfuel:145	 n_fuel:130.000000	is_emergency:0	 state:1
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:156.000000	is_emergency:0	 state:1
+ARRIVE id:9	 t_start:8	 maxfuel:180	 n_fuel:165.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+LANDING id:2	 t_start:4	 maxfuel:100	 n_fuel:40.000000	is_emergency:0	 state:3	 runway:0
+CLEARED id:2	 t_start:4	 maxfuel:100	 n_fuel:40.000000	is_emergency:0	 state:4	 runway:0
+ -Plane 2: sem_post(FREE_RUNWAY).
+ -Plane 2: FREE_RUNWAY had value 0
+ -Plane 2: sem_wait(SEM_WAIT_DONE).
