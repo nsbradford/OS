@@ -6,4 +6,4 @@ CS Class:                   CS 3013 Operating Systems
 Programming Language:       C
 Problem Description:        project3
 
-Notes:						Split into two directories, each with separate README files.
+Notes:                      Split into two directories, each with separate README files.

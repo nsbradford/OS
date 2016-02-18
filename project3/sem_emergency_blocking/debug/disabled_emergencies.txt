@@ -1,0 +1,212 @@
+
+------------------------------
+Initialize semaphores...
+
+------------------------------
+Initialize planes...
+FLYING id:1	 t_start:2	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:0
+FLYING id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:0
+FLYING id:3	 t_start:4	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:0
+
+------------------------------
+Begin simulation...
+ARRIVE id:1	 t_start:2	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:1
+ -Plane 1: finished insert()
+
+<==================================================>
+  ---BUFFER---
+ARRIVE id:1	 t_start:2	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:1
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:GHOST
+2:GHOST
+3:GHOST
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:0	 SEM_BUFFER:0	 SEM_WAIT_DONE:0	 FREE_RUNWAY:3	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:1
+<==================================================>
+
+ -Plane 1: plane_function: goto remove
+ -Plane 1: remove() FREE_RUNWAY has value 2
+DESCEND id:1	 t_start:2	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:2	 runway:1
+ -Plane 1: finished remove()
+
+<==================================================>
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:DESCEND id:1	 t_start:2	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:2	 runway:1
+2:GHOST
+3:GHOST
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:1	 SEM_BUFFER:1	 SEM_WAIT_DONE:0	 FREE_RUNWAY:2	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:0
+<==================================================>
+
+LANDING id:1	 t_start:2	 maxfuel:171	 n_fuel:166.000000	is_emergency:1	 state:3	 runway:1
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ -Plane 2: finished insert()
+
+<==================================================>
+  ---BUFFER---
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:LANDING id:1	 t_start:2	 maxfuel:171	 n_fuel:166.000000	is_emergency:1	 state:3	 runway:1
+2:GHOST
+3:GHOST
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:0	 SEM_BUFFER:0	 SEM_WAIT_DONE:0	 FREE_RUNWAY:2	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:1
+<==================================================>
+
+ -Plane 2: plane_function: goto remove
+ -Plane 2: remove() FREE_RUNWAY has value 1
+DESCEND id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:2	 runway:2
+ -Plane 2: finished remove()
+
+<==================================================>
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:LANDING id:1	 t_start:2	 maxfuel:171	 n_fuel:166.000000	is_emergency:1	 state:3	 runway:1
+2:DESCEND id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:2	 runway:2
+3:GHOST
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:1	 SEM_BUFFER:1	 SEM_WAIT_DONE:0	 FREE_RUNWAY:1	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:0
+<==================================================>
+
+ARRIVE id:3	 t_start:4	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ -Plane 3: finished insert()
+
+<==================================================>
+  ---BUFFER---
+ARRIVE id:3	 t_start:4	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:LANDING id:1	 t_start:2	 maxfuel:171	 n_fuel:166.000000	is_emergency:1	 state:3	 runway:1
+2:DESCEND id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:2	 runway:2
+3:GHOST
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:0	 SEM_BUFFER:0	 SEM_WAIT_DONE:0	 FREE_RUNWAY:1	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:1
+<==================================================>
+
+ -Plane 3: plane_function: goto remove
+ -Plane 3: remove() FREE_RUNWAY has value 0
+DESCEND id:3	 t_start:4	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:2	 runway:3
+ -Plane 3: finished remove()
+
+<==================================================>
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:LANDING id:1	 t_start:2	 maxfuel:171	 n_fuel:166.000000	is_emergency:1	 state:3	 runway:1
+2:DESCEND id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:2	 runway:2
+3:DESCEND id:3	 t_start:4	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:2	 runway:3
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:1	 SEM_BUFFER:1	 SEM_WAIT_DONE:0	 FREE_RUNWAY:0	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:0
+<==================================================>
+
+ -Plane 1: descend_land() sem_wait(SEM_IN_OUT).
+CLEARED id:1	 t_start:2	 maxfuel:171	 n_fuel:166.000000	is_emergency:1	 state:4	 runway:1
+ -Plane 1: descend_land() about to runway_remove
+ -Plane 1: descend_land() FREE_RUNWAY has value 0
+ -Plane 1: sem_post(FREE_RUNWAY).
+ -Plane 1: descend_land() BUFFER_COUNT=0, no sem_wait(SEM_WAIT_DONE)
+ -Plane 1: descend_land() EXIT
+
+<==================================================>
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:GHOST
+2:DESCEND id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:2	 runway:2
+3:DESCEND id:3	 t_start:4	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:2	 runway:3
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:1	 SEM_BUFFER:1	 SEM_WAIT_DONE:0	 FREE_RUNWAY:1	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:0
+<==================================================>
+
+LANDING id:2	 t_start:4	 maxfuel:100	 n_fuel:95.000000	is_emergency:0	 state:3	 runway:2
+LANDING id:3	 t_start:4	 maxfuel:126	 n_fuel:121.000000	is_emergency:0	 state:3	 runway:3
+ -Plane 2: descend_land() sem_wait(SEM_IN_OUT).
+CLEARED id:2	 t_start:4	 maxfuel:100	 n_fuel:95.000000	is_emergency:0	 state:4	 runway:2
+ -Plane 2: descend_land() about to runway_remove
+ -Plane 2: descend_land() FREE_RUNWAY has value 1
+ -Plane 2: sem_post(FREE_RUNWAY).
+ -Plane 2: descend_land() BUFFER_COUNT=0, no sem_wait(SEM_WAIT_DONE)
+ -Plane 2: descend_land() EXIT
+
+<==================================================>
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:GHOST
+2:GHOST
+3:LANDING id:3	 t_start:4	 maxfuel:126	 n_fuel:121.000000	is_emergency:0	 state:3	 runway:3
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:1	 SEM_BUFFER:1	 SEM_WAIT_DONE:0	 FREE_RUNWAY:2	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:0
+<==================================================>
+
+ -Plane 3: descend_land() sem_wait(SEM_IN_OUT).
+CLEARED id:3	 t_start:4	 maxfuel:126	 n_fuel:121.000000	is_emergency:0	 state:4	 runway:3
+ -Plane 3: descend_land() about to runway_remove
+ -Plane 3: descend_land() FREE_RUNWAY has value 2
+ -Plane 3: sem_post(FREE_RUNWAY).
+ -Plane 3: descend_land() BUFFER_COUNT=0, no sem_wait(SEM_WAIT_DONE)
+ -Plane 3: descend_land() EXIT
+
+<==================================================>
+  ---BUFFER---
+GHOST
+GHOST
+GHOST
+</------------------------------------------------->
+  ---RUNWAYS---
+1:GHOST
+2:GHOST
+3:GHOST
+</------------------------------------------------->
+  ---SEMAPHORES---
+SEM_IN_OUT:1	 SEM_BUFFER:1	 SEM_WAIT_DONE:0	 FREE_RUNWAY:3	 SEM_EMERGENCY:1
+TURN_1:0	 TURN_2:1	 SEM_TURN_COUNT:1	 TURN_COUNT:0	 BUFFER_COUNT:0
+<==================================================>
+
+
+------------------------------
+Simulation finished successfully!
+*END SIMULATION*
+

@@ -1,0 +1,139 @@
+
+------------------------------
+Initialize semaphores...
+
+------------------------------
+Initialize planes...
+FLYING id:1	 t_start:13	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:0
+FLYING id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:1	 state:0
+FLYING id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:0
+FLYING id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:1	 state:0
+FLYING id:5	 t_start:15	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:0
+FLYING id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:0
+FLYING id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:0
+FLYING id:8	 t_start:6	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:0
+FLYING id:9	 t_start:8	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:0
+FLYING id:10	 t_start:3	 maxfuel:145	 n_fuel:145.000000	is_emergency:0	 state:0
+FLYING id:11	 t_start:14	 maxfuel:101	 n_fuel:101.000000	is_emergency:0	 state:0
+FLYING id:12	 t_start:11	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:0
+FLYING id:13	 t_start:9	 maxfuel:178	 n_fuel:178.000000	is_emergency:0	 state:0
+FLYING id:14	 t_start:8	 maxfuel:183	 n_fuel:183.000000	is_emergency:0	 state:0
+FLYING id:15	 t_start:1	 maxfuel:107	 n_fuel:107.000000	is_emergency:0	 state:0
+FLYING id:16	 t_start:7	 maxfuel:190	 n_fuel:190.000000	is_emergency:0	 state:0
+FLYING id:17	 t_start:14	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:0
+FLYING id:18	 t_start:5	 maxfuel:127	 n_fuel:127.000000	is_emergency:0	 state:0
+FLYING id:19	 t_start:7	 maxfuel:122	 n_fuel:122.000000	is_emergency:0	 state:0
+FLYING id:20	 t_start:8	 maxfuel:163	 n_fuel:163.000000	is_emergency:0	 state:0
+FLYING id:21	 t_start:3	 maxfuel:150	 n_fuel:150.000000	is_emergency:0	 state:0
+FLYING id:22	 t_start:3	 maxfuel:158	 n_fuel:158.000000	is_emergency:0	 state:0
+FLYING id:23	 t_start:2	 maxfuel:160	 n_fuel:160.000000	is_emergency:0	 state:0
+FLYING id:24	 t_start:4	 maxfuel:164	 n_fuel:164.000000	is_emergency:0	 state:0
+FLYING id:25	 t_start:11	 maxfuel:172	 n_fuel:172.000000	is_emergency:1	 state:0
+
+------------------------------
+Begin simulation...
+ARRIVE id:15	 t_start:1	 maxfuel:107	 n_fuel:107.000000	is_emergency:0	 state:1
+DESCEND id:15	 t_start:1	 maxfuel:107	 n_fuel:107.000000	is_emergency:0	 state:2	 runway:1
+ARRIVE id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:1	 state:1
+DESCEND id:4	 t_start:1	 maxfuel:170	 n_fuel:170.000000	is_emergency:1	 state:2	 runway:2
+ARRIVE id:23	 t_start:2	 maxfuel:160	 n_fuel:160.000000	is_emergency:0	 state:1
+DESCEND id:23	 t_start:2	 maxfuel:160	 n_fuel:160.000000	is_emergency:0	 state:2	 runway:3
+ARRIVE id:22	 t_start:3	 maxfuel:158	 n_fuel:158.000000	is_emergency:0	 state:1
+ARRIVE id:21	 t_start:3	 maxfuel:150	 n_fuel:150.000000	is_emergency:0	 state:1
+ARRIVE id:10	 t_start:3	 maxfuel:145	 n_fuel:145.000000	is_emergency:0	 state:1
+LANDING id:4	 t_start:1	 maxfuel:170	 n_fuel:160.000000	is_emergency:1	 state:3	 runway:2
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:1	 state:1
+ARRIVE id:24	 t_start:4	 maxfuel:164	 n_fuel:164.000000	is_emergency:0	 state:1
+ARRIVE id:7	 t_start:4	 maxfuel:112	 n_fuel:112.000000	is_emergency:0	 state:1
+LANDING id:15	 t_start:1	 maxfuel:107	 n_fuel:92.000000	is_emergency:0	 state:3	 runway:1
+ARRIVE id:18	 t_start:5	 maxfuel:127	 n_fuel:127.000000	is_emergency:0	 state:1
+LANDING id:23	 t_start:2	 maxfuel:160	 n_fuel:145.000000	is_emergency:0	 state:3	 runway:3
+ARRIVE id:6	 t_start:5	 maxfuel:157	 n_fuel:157.000000	is_emergency:1	 state:1
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ARRIVE id:8	 t_start:6	 maxfuel:153	 n_fuel:153.000000	is_emergency:0	 state:1
+CLEARED id:15	 t_start:1	 maxfuel:107	 n_fuel:92.000000	is_emergency:0	 state:4	 runway:1
+DESCEND id:2	 t_start:4	 maxfuel:100	 n_fuel:90.000000	is_emergency:1	 state:2	 runway:1
+CLEARED id:4	 t_start:1	 maxfuel:170	 n_fuel:160.000000	is_emergency:1	 state:4	 runway:2
+DESCEND id:6	 t_start:5	 maxfuel:157	 n_fuel:152.000000	is_emergency:1	 state:2	 runway:2
+ARRIVE id:16	 t_start:7	 maxfuel:190	 n_fuel:190.000000	is_emergency:0	 state:1
+ARRIVE id:19	 t_start:7	 maxfuel:122	 n_fuel:122.000000	is_emergency:0	 state:1
+ARRIVE id:14	 t_start:8	 maxfuel:183	 n_fuel:183.000000	is_emergency:0	 state:1
+ARRIVE id:20	 t_start:8	 maxfuel:163	 n_fuel:163.000000	is_emergency:0	 state:1
+ARRIVE id:9	 t_start:8	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:1
+CLEARED id:23	 t_start:2	 maxfuel:160	 n_fuel:145.000000	is_emergency:0	 state:4	 runway:3
+DESCEND id:7	 t_start:4	 maxfuel:112	 n_fuel:92.000000	is_emergency:0	 state:2	 runway:3
+LANDING id:6	 t_start:5	 maxfuel:157	 n_fuel:142.000000	is_emergency:1	 state:3	 runway:2
+ARRIVE id:13	 t_start:9	 maxfuel:178	 n_fuel:178.000000	is_emergency:0	 state:1
+LANDING id:2	 t_start:4	 maxfuel:100	 n_fuel:75.000000	is_emergency:1	 state:3	 runway:1
+CLEARED id:6	 t_start:5	 maxfuel:157	 n_fuel:142.000000	is_emergency:1	 state:4	 runway:2
+DESCEND id:18	 t_start:5	 maxfuel:127	 n_fuel:107.000000	is_emergency:0	 state:2	 runway:2
+LANDING id:7	 t_start:4	 maxfuel:112	 n_fuel:82.000000	is_emergency:0	 state:3	 runway:3
+ARRIVE id:25	 t_start:11	 maxfuel:172	 n_fuel:172.000000	is_emergency:1	 state:1
+ARRIVE id:12	 t_start:11	 maxfuel:180	 n_fuel:180.000000	is_emergency:0	 state:1
+CLEARED id:2	 t_start:4	 maxfuel:100	 n_fuel:75.000000	is_emergency:1	 state:4	 runway:1
+DESCEND id:25	 t_start:11	 maxfuel:172	 n_fuel:172.000000	is_emergency:1	 state:2	 runway:1
+CLEARED id:7	 t_start:4	 maxfuel:112	 n_fuel:82.000000	is_emergency:0	 state:4	 runway:3
+DESCEND id:3	 t_start:6	 maxfuel:126	 n_fuel:101.000000	is_emergency:0	 state:2	 runway:3
+LANDING id:18	 t_start:5	 maxfuel:127	 n_fuel:97.000000	is_emergency:0	 state:3	 runway:2
+ARRIVE id:1	 t_start:13	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:1
+LANDING id:25	 t_start:11	 maxfuel:172	 n_fuel:162.000000	is_emergency:1	 state:3	 runway:1
+LANDING id:3	 t_start:6	 maxfuel:126	 n_fuel:91.000000	is_emergency:0	 state:3	 runway:3
+CLEARED id:18	 t_start:5	 maxfuel:127	 n_fuel:97.000000	is_emergency:0	 state:4	 runway:2
+DESCEND id:1	 t_start:13	 maxfuel:171	 n_fuel:171.000000	is_emergency:1	 state:2	 runway:2
+ARRIVE id:11	 t_start:14	 maxfuel:101	 n_fuel:101.000000	is_emergency:0	 state:1
+ARRIVE id:17	 t_start:14	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+CLEARED id:25	 t_start:11	 maxfuel:172	 n_fuel:162.000000	is_emergency:1	 state:4	 runway:1
+DESCEND id:19	 t_start:7	 maxfuel:122	 n_fuel:87.000000	is_emergency:0	 state:2	 runway:1
+LANDING id:1	 t_start:13	 maxfuel:171	 n_fuel:166.000000	is_emergency:1	 state:3	 runway:2
+ARRIVE id:5	 t_start:15	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:1
+CLEARED id:3	 t_start:6	 maxfuel:126	 n_fuel:91.000000	is_emergency:0	 state:4	 runway:3
+LANDING id:19	 t_start:7	 maxfuel:122	 n_fuel:82.000000	is_emergency:0	 state:3	 runway:1
+DESCEND id:5	 t_start:15	 maxfuel:104	 n_fuel:104.000000	is_emergency:1	 state:2	 runway:3
+CLEARED id:1	 t_start:13	 maxfuel:171	 n_fuel:166.000000	is_emergency:1	 state:4	 runway:2
+DESCEND id:10	 t_start:3	 maxfuel:145	 n_fuel:75.000000	is_emergency:0	 state:2	 runway:2
+CLEARED id:19	 t_start:7	 maxfuel:122	 n_fuel:82.000000	is_emergency:0	 state:4	 runway:1
+LANDING id:5	 t_start:15	 maxfuel:104	 n_fuel:89.000000	is_emergency:1	 state:3	 runway:3
+DESCEND id:21	 t_start:3	 maxfuel:150	 n_fuel:75.000000	is_emergency:0	 state:2	 runway:1
+LANDING id:10	 t_start:3	 maxfuel:145	 n_fuel:70.000000	is_emergency:0	 state:3	 runway:2
+CLEARED id:5	 t_start:15	 maxfuel:104	 n_fuel:89.000000	is_emergency:1	 state:4	 runway:3
+DESCEND id:11	 t_start:14	 maxfuel:101	 n_fuel:76.000000	is_emergency:0	 state:2	 runway:3
+LANDING id:21	 t_start:3	 maxfuel:150	 n_fuel:65.000000	is_emergency:0	 state:3	 runway:1
+CLEARED id:10	 t_start:3	 maxfuel:145	 n_fuel:70.000000	is_emergency:0	 state:4	 runway:2
+DESCEND id:22	 t_start:3	 maxfuel:158	 n_fuel:73.000000	is_emergency:0	 state:2	 runway:2
+CLEARED id:21	 t_start:3	 maxfuel:150	 n_fuel:65.000000	is_emergency:0	 state:4	 runway:1
+DESCEND id:8	 t_start:6	 maxfuel:153	 n_fuel:73.000000	is_emergency:0	 state:2	 runway:1
+LANDING id:11	 t_start:14	 maxfuel:101	 n_fuel:61.000000	is_emergency:0	 state:3	 runway:3
+LANDING id:22	 t_start:3	 maxfuel:158	 n_fuel:63.000000	is_emergency:0	 state:3	 runway:2
+CLEARED id:11	 t_start:14	 maxfuel:101	 n_fuel:61.000000	is_emergency:0	 state:4	 runway:3
+DESCEND id:24	 t_start:4	 maxfuel:164	 n_fuel:69.000000	is_emergency:0	 state:2	 runway:3
+LANDING id:8	 t_start:6	 maxfuel:153	 n_fuel:68.000000	is_emergency:0	 state:3	 runway:1
+CLEARED id:22	 t_start:3	 maxfuel:158	 n_fuel:63.000000	is_emergency:0	 state:4	 runway:2
+DESCEND id:17	 t_start:14	 maxfuel:126	 n_fuel:81.000000	is_emergency:0	 state:2	 runway:2
+LANDING id:24	 t_start:4	 maxfuel:164	 n_fuel:64.000000	is_emergency:0	 state:3	 runway:3
+CLEARED id:8	 t_start:6	 maxfuel:153	 n_fuel:68.000000	is_emergency:0	 state:4	 runway:1
+DESCEND id:20	 t_start:8	 maxfuel:163	 n_fuel:83.000000	is_emergency:0	 state:2	 runway:1
+LANDING id:17	 t_start:14	 maxfuel:126	 n_fuel:76.000000	is_emergency:0	 state:3	 runway:2
+LANDING id:20	 t_start:8	 maxfuel:163	 n_fuel:78.000000	is_emergency:0	 state:3	 runway:1
+CLEARED id:17	 t_start:14	 maxfuel:126	 n_fuel:76.000000	is_emergency:0	 state:4	 runway:2
+DESCEND id:14	 t_start:8	 maxfuel:183	 n_fuel:98.000000	is_emergency:0	 state:2	 runway:2
+CLEARED id:24	 t_start:4	 maxfuel:164	 n_fuel:64.000000	is_emergency:0	 state:4	 runway:3
+DESCEND id:9	 t_start:8	 maxfuel:180	 n_fuel:90.000000	is_emergency:0	 state:2	 runway:3
+LANDING id:14	 t_start:8	 maxfuel:183	 n_fuel:93.000000	is_emergency:0	 state:3	 runway:2
+LANDING id:9	 t_start:8	 maxfuel:180	 n_fuel:80.000000	is_emergency:0	 state:3	 runway:3
+CLEARED id:20	 t_start:8	 maxfuel:163	 n_fuel:78.000000	is_emergency:0	 state:4	 runway:1
+DESCEND id:16	 t_start:7	 maxfuel:190	 n_fuel:85.000000	is_emergency:0	 state:2	 runway:1
+CLEARED id:14	 t_start:8	 maxfuel:183	 n_fuel:93.000000	is_emergency:0	 state:4	 runway:2
+DESCEND id:13	 t_start:9	 maxfuel:178	 n_fuel:83.000000	is_emergency:0	 state:2	 runway:2
+LANDING id:13	 t_start:9	 maxfuel:178	 n_fuel:78.000000	is_emergency:0	 state:3	 runway:2
+LANDING id:16	 t_start:7	 maxfuel:190	 n_fuel:75.000000	is_emergency:0	 state:3	 runway:1
+CLEARED id:13	 t_start:9	 maxfuel:178	 n_fuel:78.000000	is_emergency:0	 state:4	 runway:2
+DESCEND id:12	 t_start:11	 maxfuel:180	 n_fuel:85.000000	is_emergency:0	 state:2	 runway:2
+CLEARED id:9	 t_start:8	 maxfuel:180	 n_fuel:80.000000	is_emergency:0	 state:4	 runway:3
+LANDING id:12	 t_start:11	 maxfuel:180	 n_fuel:80.000000	is_emergency:0	 state:3	 runway:2
+CLEARED id:16	 t_start:7	 maxfuel:190	 n_fuel:75.000000	is_emergency:0	 state:4	 runway:1
+CLEARED id:12	 t_start:11	 maxfuel:180	 n_fuel:80.000000	is_emergency:0	 state:4	 runway:2
+
+------------------------------
+Simulation finished successfully!
+*END SIMULATION*
+

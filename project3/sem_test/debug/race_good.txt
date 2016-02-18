@@ -1,0 +1,147 @@
+# RACE GOOD
+
+nsbradford@ubuntu:~/OS/project3/semaphores-airplane$ clear && make clean && make && ./simulate
+
+rm *.o
+gcc -Wall -c simulate.c 
+gcc -Wall -c plane.c
+gcc -o simulate simulate.o plane.o -lpthread
+
+------------------------------
+Initialize semaphores...
+
+------------------------------
+Initialize planes...
+FLYING id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:0
+FLYING id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:0
+FLYING id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:0
+
+------------------------------
+Create threads...
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+ -Plane 2: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 2: finished remove()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+DESCEND id:2	 t_start:4	 maxfuel:100	 n_fuel:100.000000	is_emergency:0	 state:2	 runway:0
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ -Plane 3: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 3: plane_wait() loop.
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:1
+ -Plane 1: finished insert()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:3	 t_start:6	 maxfuel:126	 n_fuel:126.000000	is_emergency:0	 state:1
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+ -Plane 1: plane_wait() loop.
+LANDING id:2	 t_start:4	 maxfuel:100	 n_fuel:75.000000	is_emergency:0	 state:3	 runway:0
+CLEARED id:2	 t_start:4	 maxfuel:100	 n_fuel:75.000000	is_emergency:0	 state:4	 runway:0
+ -Plane 2: sem_post(FREE_RUNWAY).
+ -Plane 2: FREE_RUNWAY had value 0
+ -Plane 2: sem_wait(SEM_WAIT_DONE).
+ -Plane 3: plane_wait() found is_next()
+ -Plane 3: plane_function:if: try to acquire SEM_BUFFER.
+ -Plane 3: plane_function:if: acquired SEM_BUFFER.
+ -Plane 3: finished remove()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+DESCEND id:3	 t_start:6	 maxfuel:126	 n_fuel:86.000000	is_emergency:0	 state:2	 runway:0
+ -Plane 2: exited.
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+ARRIVE id:1	 t_start:8	 maxfuel:171	 n_fuel:171.000000	is_emergency:0	 state:1
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+LANDING id:3	 t_start:6	 maxfuel:126	 n_fuel:61.000000	is_emergency:0	 state:3	 runway:0
+CLEARED id:3	 t_start:6	 maxfuel:126	 n_fuel:61.000000	is_emergency:0	 state:4	 runway:0
+ -Plane 3: sem_post(FREE_RUNWAY).
+ -Plane 3: FREE_RUNWAY had value 0
+ -Plane 3: sem_wait(SEM_WAIT_DONE).
+ -Plane 1: plane_wait() found (BUFFER_COUNT == 1).
+ -Plane 1: plane_function:if: try to acquire SEM_BUFFER.
+ -Plane 1: plane_function:if: acquired SEM_BUFFER.
+ -Plane 1: finished remove()
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+DESCEND id:1	 t_start:8	 maxfuel:171	 n_fuel:91.000000	is_emergency:0	 state:2	 runway:0
+ -Plane 3: exited.
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->
+LANDING id:1	 t_start:8	 maxfuel:171	 n_fuel:66.000000	is_emergency:0	 state:3	 runway:0
+CLEARED id:1	 t_start:8	 maxfuel:171	 n_fuel:66.000000	is_emergency:0	 state:4	 runway:0
+ -Plane 1: sem_post(FREE_RUNWAY).
+ -Plane 1: FREE_RUNWAY had value 0
+ -Plane 1: exited.
+	<-------------------------------------------------->
+	 ---BUFFER
+	 -------------------------------------------------->
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+GHOST
+	</-------------------------------------------------->

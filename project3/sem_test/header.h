@@ -18,9 +18,9 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define DEBUG true
+#define DEBUG false
 
-#define N_PLANES 2
+#define N_PLANES 25
 #define N_PLANE_BUFFER (N_PLANES)
 #define N_RUNWAYS 3
 
@@ -32,8 +32,7 @@
 #define T_LAND_RANGE 1
 #define N_FUEL_MIN 100
 #define N_FUEL_RANGE 100
-#define P_IS_EMERGENCY 0.1
-
+#define P_IS_EMERGENCY 0.0
 #define FUEL_RATE 5
 #define FUEL_DANGER_ZONE ((T_DESCEND_MIN + T_LAND_MIN) * FUEL_RATE)
 
@@ -70,8 +69,8 @@ sem_t *SEM_EMERGENCY;		// flag for an active emergency on a runway
 sem_t *SEM_PRINT;			// lets print_buffer() can be done  semi-atomically
 
 // turnstiles for reusable barrier
-sem_t *TURN_1;				// turnstile 1 (for reusable barrier)
-sem_t *TURN_2;				// turnstile 2 (for reusable barrier)
+sem_t *TURN_1;	// starts at 0; turnstile 1 (for reusable barrier)
+sem_t *TURN_2;	// starts at 1; turnstile 2 (for reusable barrier)
 sem_t *SEM_TURN_COUNT;		// locks TURN_COUNT
 unsigned int TURN_COUNT;	// count planes passing through turnstiles
 
