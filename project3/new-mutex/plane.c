@@ -1,6 +1,6 @@
 /**
  * plane.c
- * Nicholas Bradford (nsbradford@wpi.edu)
+ * Nicholas Bradford (nsbradford@wpi.edu) and Himanshu Sahay (hsahay@wpi.edu)
  *
  */
 
@@ -74,19 +74,21 @@ void print_buffer(){
  * Return true if plane is first in the buffer.
  */
 bool is_next(Plane *plane){
-	int i = 0;
-	for(i = 0; i < N_RUNWAYS; i++)
-		if(!lockedRunways[i])
-			return true;
-	return false;
+	return (PLANE_BUFFER[0]->id == plane->id);
 }
 
 int get_free_runway_count() {
-	int i = 0;
-	for(i = 0; i < N_RUNWAYS; i++)
-		if(!lockedRunways[i])
-			i++;
-	return i;
+	int i; int count = 0;
+	for(i = 0; i < N_RUNWAYS; i++) {
+		// printf("locked %d: %d", i, lockedRunways[i]);
+		if(!lockedRunways[i]){
+			count++;
+			// printf("count value now is %d", count);
+		}
+
+	}
+	// printf("i value is %d", i);
+	return count;
 }
 
 int get_first_free_runway() {
@@ -268,6 +270,7 @@ void plane_wait(Plane *plane){
 			// lock runway
 			plane->target_runway = get_first_free_runway();
 			lockedRunways[plane->target_runway] = 1; // lock it
+			printf("PLANE TARGET RUNWAY: %d, %d, %d, %d\n", plane->target_runway, lockedRunways[0], lockedRunways[1], lockedRunways[2]);
 			pthread_mutex_lock(FREE_RUNWAY + plane->target_runway);			// need to lock FREE_RUNWAY here so barrier works
 			flag_first = true;
 		}
@@ -307,7 +310,7 @@ void runway_insert(Plane *plane){
 	for (i = 0; i < N_RUNWAYS; i++){
 		if (RUNWAY_BUFFER[i]->state == GHOST){
 			RUNWAY_BUFFER[i] = plane;
-			plane->target_runway = i+1;
+			plane->target_runway = i;
 			return;
 		}
 	}
@@ -319,7 +322,7 @@ void runway_insert(Plane *plane){
  * IMPORTANT: assumes that SEM_BUFFER is already held
  */
 void runway_remove(Plane *plane){
-	unsigned int runway = plane->target_runway - 1;
+	unsigned int runway = plane->target_runway;
 	assert(RUNWAY_BUFFER[runway]->id == plane->id);
 	RUNWAY_BUFFER[runway] = NULL_PLANE;
 }
@@ -340,7 +343,13 @@ void plane_remove(Plane *plane){
 	if (DEBUG) val = get_free_runway_count();
 	if (DEBUG) printf(" -Plane %d: remove() FREE_RUNWAY has value %d\n", plane->id, val);
 	if (val > 0){
-		if (DEBUG) printf(" -Plane %d: remove() pthread_mutex_lock(FREE_RUNWAY).\n", plane->id);
+		if (DEBUG) printf(" -Plane %d: remove() pthread_mutex_lock(FREE_RUNWAY + plane->target_runway).\n", plane->id);
+		/////
+		plane->target_runway = get_first_free_runway();
+		lockedRunways[plane->target_runway] = 1; // lock it
+		printf("PLANE TARGET RUNWAY: %d, %d, %d, %d\n", plane->target_runway, lockedRunways[0], lockedRunways[1], lockedRunways[2]);
+		// pthread_mutex_lock(FREE_RUNWAY + plane->target_runway);			// need to lock FREE_RUNWAY here so barrier works
+		/////
 		pthread_mutex_lock(FREE_RUNWAY + plane->target_runway);			// need to lock FREE_RUNWAY here so barrier works
 	}
 
@@ -378,9 +387,10 @@ void plane_descend_land(Plane *plane){
 	if (DEBUG) val = get_free_runway_count();
 	if (DEBUG) printf(" -Plane %d: descend_land() FREE_RUNWAY has value %d\n", plane->id, val);
 	if (DEBUG) printf(" -Plane %d: pthread_mutex_unlock(FREE_RUNWAY).\n", plane->id);
-	pthread_mutex_unlock(FREE_RUNWAY + plane->target_runway);			// alert the planes in the buffer to wake
 	// free runway
 	lockedRunways[plane->target_runway] = 0;
+	printf("Freeing runway %d, func ret: %d, %d, %d, %d", plane->target_runway, get_first_free_runway(), lockedRunways[0], lockedRunways[1], lockedRunways[2]);
+	pthread_mutex_unlock(FREE_RUNWAY + plane->target_runway);			// alert the planes in the buffer to wake
 
 	if (BUFFER_COUNT > 0){
 		if (DEBUG) printf(" -Plane %d: descend_land() pthread_mutex_lock(SEM_WAIT_DONE).\n", plane->id);
@@ -410,7 +420,7 @@ void plane_function(void *ptr){
 	pthread_mutex_lock(SEM_BUFFER); 		// wait on synchronized buffer
 
 	if (plane->is_emergency){
-		printf("A new emergency place with id %d has entered airspace. \n", plane->id);
+		printf("A new emergency plane with id %d has entered airspace. \n", plane->id);
 		plane_emergency_insert(plane); // insert as an emergency plane
 	}
 	else {

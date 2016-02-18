@@ -32,7 +32,7 @@
 #define T_LAND_RANGE 1
 #define N_FUEL_MIN 100
 #define N_FUEL_RANGE 100
-#define P_IS_EMERGENCY 0.1
+#define P_IS_EMERGENCY 0.2
 
 #define FUEL_RATE 1
 #define FUEL_DANGER_ZONE ((T_DESCEND_MIN + T_LAND_MIN) * FUEL_RATE)
