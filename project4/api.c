@@ -32,7 +32,7 @@ vAddr create_page(){
 		return -1;
 	}
 
-	insert_page(&PT[address], RAM);
+	insert_to_RAM(&PT[address]);
 	return address;
 }
 
@@ -45,8 +45,8 @@ vAddr create_page(){
 uint32_t *get_value(vAddr address){
 	assert(address > 0);
 	if (address < SIZE_PT && PT[address].present){
-		insert_page(&PT[address], RAM);
-		return &PT[address].pAddr->array[PT[address].offset];
+		move_to_RAM(&PT[address]);
+		return read_mem(&PT[address]);
 	}
 	else{
 		return NULL;
@@ -60,8 +60,8 @@ uint32_t *get_value(vAddr address){
  * 		pages as needed, before updating the page in the RAM location.
  */
 void store_value(vAddr address, uint32_t *value){
-	insert_page(&PT[address], RAM);
-	PT[address].pAddr->array[PT[address].offset] = *value;
+	move_to_RAM(&PT[address]);
+	write_mem(&PT[address], *value);
 }
 
 /**
@@ -69,6 +69,7 @@ void store_value(vAddr address, uint32_t *value){
  * the user can free it. This frees the page, regardless of where it is in the hierarchy.
  */
 void free_page(vAddr address){
+	PT[address].device->bitmap[PT[address].offset] = false;
 	PT[address] = DEFAULT_PTE;
 	sift_pages_up(); // TODO move pages from lower levels to fill gap
 }

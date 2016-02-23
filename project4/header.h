@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stdint.h> 	// uint32_t
 #include <assert.h>
+#include <unistd.h>		// usleep()
 
 #define DEBUG true
 
@@ -23,14 +24,17 @@ typedef signed short vAddr;
 
 typedef struct storageDevice {
 	unsigned int size;
+	const unsigned int u_delay;
 	unsigned int mem_used;
+	bool *bitmap;
 	uint32_t *array;
+	struct storageDevice *child;
 } StorageDevice;
 
 typedef struct PageTableEntry {
 	bool present;			// true if present
 	vAddr address;			// PT virtual address
-	StorageDevice *pAddr;	// storage device
+	StorageDevice *device;	// storage device
 	int offset;				// position in storage device
 	// TODO need an additional member to store when last accessed
 } PTE;
@@ -50,9 +54,11 @@ uint32_t *get_value(vAddr address);
 void store_value(vAddr address, uint32_t *value);
 void free_page(vAddr address);
 
-// storage function
-void insert_page(PTE *pte, StorageDevice *device);
-vAddr evict_page(StorageDevice *device);
+// storage functions
+void insert_to_RAM(PTE *pte);
+void move_to_RAM(PTE *pte);
+uint32_t *read_mem(PTE *pte);
+void write_mem(PTE *pte, uint32_t value);
 void sift_pages_up();
 
 #endif

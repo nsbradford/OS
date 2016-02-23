@@ -6,19 +6,27 @@
 
 #include "header.h"
 
+
+bool BITMAP_RAM[SIZE_RAM];
+bool BITMAP_SSD[SIZE_SSD];
+bool BITMAP_HDD[SIZE_HDD];
 uint32_t ARRAY_RAM[SIZE_RAM];
 uint32_t ARRAY_SSD[SIZE_SSD];
 uint32_t ARRAY_HDD[SIZE_HDD];
-StorageDevice ram = {.size = SIZE_RAM, .mem_used = 0, .array = ARRAY_RAM};
-StorageDevice ssd = {.size = SIZE_SSD, .mem_used = 0, .array = ARRAY_SSD};
-StorageDevice hdd = {.size = SIZE_HDD, .mem_used = 0, .array = ARRAY_HDD};
+StorageDevice hdd = {.size = SIZE_HDD, .u_delay = 2500000, .mem_used = 0,
+	.bitmap = BITMAP_RAM, .array = ARRAY_HDD};
+StorageDevice ssd = {.size = SIZE_SSD, .u_delay = 100000, .mem_used = 0,
+	.bitmap = BITMAP_RAM, .array = ARRAY_SSD, .child = &hdd};
+StorageDevice ram = {.size = SIZE_RAM, .u_delay = 10000, .mem_used = 0,
+	.bitmap = BITMAP_RAM, .array = ARRAY_RAM, .child = &ssd};
+
 StorageDevice *RAM = &ram;
 StorageDevice *SSD = &ssd;
 StorageDevice *HDD = &hdd;
 
 const PTE DEFAULT_PTE = {
 	.present = false,
-	.address = -1,
-	.pAddr = NULL,
-	.offset = -1,
+	.address = 0,
+	.device = NULL,
+	.offset = 0,
 };
