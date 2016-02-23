@@ -10,8 +10,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h> 	// uint32_t
-#include <assert.h>
+#include <assert.h>		// assert()
 #include <unistd.h>		// usleep()
+#include <semaphore.h>
 
 #define DEBUG true
 
@@ -60,5 +61,8 @@ void move_to_RAM(PTE *pte);
 uint32_t *read_mem(PTE *pte);
 void write_mem(PTE *pte, uint32_t value);
 void sift_pages_up();
+
+// TODO synchronization constants
+//sem_t *SEM_1;
 
 #endif
