@@ -30,20 +30,22 @@ typedef struct storageDevice {
 	bool *bitmap;
 	uint32_t *array;
 	struct storageDevice *child;
+	struct storageDevice *parent;
 } StorageDevice;
 
 typedef struct PageTableEntry {
-	bool present;			// true if present
+	bool present;			// true if absent
 	vAddr address;			// PT virtual address
 	StorageDevice *device;	// storage device
 	int offset;				// position in storage device
 	// TODO need an additional member to store when last accessed
 } PTE;
 
+// which Page Eviction Algorithm to use
+extern unsigned int EVICT_ALGO_NUMBER;
 
 // global storage media
 PTE PT[SIZE_PT];
-
 extern StorageDevice *RAM;
 extern StorageDevice *SSD;
 extern StorageDevice *HDD;

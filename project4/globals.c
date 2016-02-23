@@ -24,6 +24,8 @@ StorageDevice *RAM = &ram;
 StorageDevice *SSD = &ssd;
 StorageDevice *HDD = &hdd;
 
+unsigned int EVICT_ALGO_NUMBER = 1; // default; can be reassigned in test code
+
 const PTE DEFAULT_PTE = {
 	.present = false,
 	.address = 0,
