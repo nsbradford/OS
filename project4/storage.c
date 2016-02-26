@@ -20,7 +20,7 @@ int check_bitmap_open_slots(StorageDevice *device){
 		if (!device->bitmap[i])
 			n_open_slots++;
 	}
-	if (DEBUG) printf("\t n_open_slots:%d\n", n_open_slots);
+	//if (DEBUG) printf("\t n_open_slots:%d\n", n_open_slots);
 	assert(device->size - n_open_slots == device->mem_used);
 	return n_open_slots;
 }
@@ -182,14 +182,6 @@ void insert_to_RAM(PTE *pte){
 
 	RAM->mem_used++;
 	assert(pte->device == RAM);
-
-	//if (DEBUG) printf("\t/--------<debug>\n");
-	//is_full(RAM);
-	//is_full(SSD);
-	//is_full(HDD);
-	//if (DEBUG) printf("\t\\--------</debug>\n");
-
-
 }
 
 /**
@@ -228,11 +220,7 @@ void move_to_RAM(PTE *pte){
 		write_mem(pte, *tmp);						// write data to child
 
 		pte->device->mem_used--;
-		RAM->mem_used++;
-		is_full(HDD);
-		is_full(SSD);
-		is_full(RAM);
-		
+		RAM->mem_used++;		
 		assert(RAM->mem_used <= RAM->size);
 	}
 }
