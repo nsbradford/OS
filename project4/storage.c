@@ -177,11 +177,107 @@ void insert_to_RAM(PTE *pte){
 }
 
 /**
- * Guarantee that the given page is in RAM.
+ * Guarantee that the given page is in RAM, move it to RAM otherwise
  * Model on a reverse of the evict() function.
  */
 void move_to_RAM(PTE *pte){
 
+	// if RAM is full, check SSD ??
+	// if RAM and SSD are full, check HDD ?? 
+
+	// if in HDD, simply move to RAM, no need to do intermediate step
+
+
+
+if (DEBUG) printf("ENTER move_to_RAM()\n");
+	
+
+	// if the PTE is in RAM, return
+	if (pte.device == RAM){
+		return;
+	}
+
+	if (pte.device == SSD) {
+		if (is_full(RAM)){
+			evict_page(RAM);
+		}
+
+
+		assert(!is_full(RAM));
+
+		// now, you can move the file to RAM
+		int i;
+		unsigned int ram_offset;
+		// vAddr insert_addr;
+
+		// find open slot in RAM
+		if (DEBUG) printf("\t find open slot in RAM\n");
+		for (i = 0; i < SIZE_RAM; i++){
+			if (!RAM->bitmap[i]){
+				ram_offset = i;
+				// now, the device is RAM
+				pte.device = RAM;
+				pte.ram_offset = i;
+				break;
+			}
+		}
+
+		// // find open PT slot
+		// if (DEBUG) printf("\t find open PT slot\n");
+		// for (i = 0; i < SIZE_PT; i++){
+		// 	if (PT[i].present){
+		// 		insert_addr = i;
+		// 		if (DEBUG) printf("\t insert_addr %d\n", insert_addr);
+		// 		break;
+		// 	}
+		// 	//if (DEBUG) printf("\t PT[i].present %d\n", PT[i].present);
+		// }
+
+		// if (DEBUG) printf("\t assignment\n");
+		//if (DEBUG) printf("\t insert_addr %d\n", insert_addr);
+		// // note that we never actually have to write to RAM for this
+		// if (DEBUG) printf("\t device\n");
+		// PT[insert_addr].device = RAM;						// set page new device
+		// if (DEBUG) printf("\t offset\n");
+		// PT[insert_addr].offset = ram_offset;				// set page new offset
+		// if (DEBUG) printf("\t bitmap\n");
+		// PT[insert_addr].device->bitmap[ram_offset] = true;	// set child bitmap
+		pte.device->bitmap[ram_offset] = true;
+		RAM->mem_used++;
+		SSD->mem_used--;
+		
+	}
+
+	else if (device == HDD){
+		if (is_full(SSD)){
+			evict_page(SSD);
+		}
+
+		assert(!is_full(SSD));
+
+		// now, you can move the file to SSD
+		int i;
+		unsigned int ssd_offset;
+
+		// find open slot in SSD
+		if (DEBUG) printf("\t find open slot in SSD\n");
+		for (i = 0; i < SIZE_RAM; i++){
+			if (!SSD->bitmap[i]){
+				ssd_offset = i;
+				// now, the device is SSD
+				pte.device = SSD;
+				pte.ssd_offset = i;
+				break;
+			}
+		}
+
+		pte.device->bitmap[ssd_offset] = true;
+		SSD->mem_used++;
+		HDD->mem_used--;
+
+		// now, call recursively on SSD
+		move_to_ram(pte);
+	}
 }
 
 /**
@@ -189,4 +285,8 @@ void move_to_RAM(PTE *pte){
  */
 void sift_pages_up(){
 	// TODO
+}
+
+void find_empty_slot(){
+
 }
