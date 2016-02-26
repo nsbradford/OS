@@ -14,10 +14,10 @@ void assertions(){
 }
 
 /**
- * multithreaded_helper()
+ * multithreadedHelper()
  *
  */
-void multithreaded_helper(int *threadID){
+void multithreadedHelper(int *threadID){
 	int i;
 
 	for (i=0; i<300; i++){
@@ -30,11 +30,11 @@ void multithreaded_helper(int *threadID){
 }
 
 /**
- * test_multithreaded()
+ * testMultithreaded()
  * Test the program with 5 threads
  */
 
-void test_multithreaded(){
+void testMultithreaded(){
 
 	pthread_t threads[5];
 	vAddr indexes[1000];
@@ -56,7 +56,7 @@ void test_multithreaded(){
 	for(i=0; i<5; i++){
 		uint32_t *thread_id = malloc(sizeof(int));
 		*thread_id = i;
-		pthread_create (&(threads[i]),NULL, (void *) &multithreaded_helper, thread_id);
+		pthread_create (&(threads[i]),NULL, (void *) &multithreadedHelper, thread_id);
 	}
 }
 
@@ -66,7 +66,6 @@ void test_multithreaded(){
  * This function puts everything into RAM and then successfully takes it out.
  */
 void testRAM(){
-	printf("\n------------------------------\nTest testRAM()...\n");
 	vAddr indexes[10];
 	int i;
 	for (i = 0; i < 10; i++){
@@ -82,10 +81,35 @@ void testRAM(){
 }
 
 /**
+ * testFullMemory()
+ * This function tries to add more than 1000 pages, and shows failure to do so
+ */
+void testFullMemory(){
+	
+	vAddr indexes[1015];
+	int i;
+
+	for (i = 0; i < 1000; i++){
+		indexes[i] = create_page();
+		uint32_t *value = get_value(indexes[i]);
+		*value = (i * 3);
+		store_value (indexes[i], value);
+	}
+
+	for (i = 0; i < 1000; i++){
+		indexes[i] = create_page();
+		// this should fail, and return -1
+		if (indexes[i] = -1){
+			printf(" Failed to allocate new page in memory. 1000 pages already in memory. \n");
+		}
+	}
+}
+
+
+/**
  * Test function. Used in a multithreaded manner during stress testing.
  */
 void memoryMaxer(){
-	printf("\n------------------------------\nTest memoryMaxer()...\n");
 	vAddr indexes[1000];
 	int i;
 	for (i = 0; i < 1000; i++){
@@ -109,12 +133,19 @@ int main(){
 	for (i = 1; i <= 3; i++){
 		EVICT_ALGO_NUMBER = i;
 	
+	if (DEBUG)
+		printf("Testing with testRAM() --------------------\n");
 	testRAM();
+
+	if (DEBUG)
+		printf("Testing with memoryMaxer() --------------------\n");
 	memoryMaxer();
 	
 	// TODO multithreading
 	// !! check if this test works for multithreading
-	test_multithreaded();
+	if (DEBUG)
+		printf("Testing with testMultithreaded() --------------------\n")
+	testMultithreaded();
 
 	}
 	
