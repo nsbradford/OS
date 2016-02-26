@@ -13,7 +13,8 @@
 #include <assert.h>		// assert()
 #include <unistd.h>		// usleep()
 #include <stdlib.h>		// rand
-#include <semaphore.h>
+#include <semaphore.h>	// mutexes and conditional variables
+ #include <pthread.h>
 
 #define DEBUG true
 
@@ -48,7 +49,8 @@ typedef struct PageTableEntry {
 	StorageDevice *device;	// storage device
 	int offset;				// position in storage device
 	bool r;					// reference bit
-	// TODO need an additional member to store when last accessed
+	pthread_mutex_t mutex;	// enable multithreading
+	pthread_cond_t condvar;	// enable multithreading
 } PTE;
 
 extern unsigned int EVICT_ALGO_NUMBER;
@@ -72,8 +74,5 @@ void move_to_RAM(PTE *pte);
 uint32_t *read_mem(PTE *pte);
 void write_mem(PTE *pte, uint32_t value);
 void sift_pages_up();
-
-// TODO synchronization constants
-//sem_t *SEM_1;
 
 #endif

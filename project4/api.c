@@ -6,13 +6,16 @@
 
 #include "header.h"
 
+//=================================================================================================
+// Unsafe versions of the 4 API calls
+
 /**
  * Reserves a new memory location, which is 32 bits in size. 
  * This memory block must be created in the emulated RAM, pushing other pages 
  * 		out of the emulated RAM into lower layers of the hierarchy, if needed. 
  * Returns -1 if no memory is available.
  */
-vAddr create_page(){
+vAddr UNSAFE_create_page(){
 	if (DEBUG) printf("ENTER create_page()\n");
 
 	int address = -1;
@@ -26,6 +29,8 @@ vAddr create_page(){
 			address = i;
 			PT[i].present = true;
 			PT[i].address = address;
+			pthread_mutex_init(&(PT[i].mutex), NULL);
+			pthread_cond_init(&(PT[i].condvar), NULL); // TODO
 			if (DEBUG) printf("\t address %d\n", address);
 			break;
 		}
@@ -46,7 +51,7 @@ vAddr create_page(){
  * Returns NULL if the pointer cannot be provided (e.g., a page with the 
  * 		given address does not exist).
  */
-uint32_t *get_value(vAddr address){
+uint32_t *UNSAFE_get_value(vAddr address){
 	if (DEBUG) printf("ENTER get_value()\n");
 	assert(address >= 0);
 	if (address < SIZE_PT && PT[address].present){
@@ -65,7 +70,7 @@ uint32_t *get_value(vAddr address){
  * 		If the page is not in RAM, the page is brought into RAM, evicting other
  * 		pages as needed, before updating the page in the RAM location.
  */
-void store_value(vAddr address, uint32_t *value){
+void UNSAFE_store_value(vAddr address, uint32_t *value){
 	if (DEBUG) printf("ENTER store_value()\n");
 	move_to_RAM(&PT[address]);
 	write_mem(&PT[address], *value);
@@ -75,9 +80,100 @@ void store_value(vAddr address, uint32_t *value){
  * When the user is finally done with the memory page that has been allocated, 
  * the user can free it. This frees the page, regardless of where it is in the hierarchy.
  */
-void free_page(vAddr address){
+void UNSAFE_free_page(vAddr address){
 	if (DEBUG) printf("ENTER free_page()\n");
 	PT[address].device->bitmap[PT[address].offset] = false;
 	PT[address] = DEFAULT_PTE;
 	sift_pages_up(); // TODO move pages from lower levels to fill gap
+}
+
+//=================================================================================================
+// Actual API calls, using mutexes and conditional variables
+
+/**
+ * Reserves a new memory location, which is 32 bits in size. 
+ * This memory block must be created in the emulated RAM, pushing other pages 
+ * 		out of the emulated RAM into lower layers of the hierarchy, if needed. 
+ * Returns -1 if no memory is available.
+ */
+vAddr create_page(){
+	// hey no need to do anything fancy here!
+	return UNSAFE_create_page();
+}
+
+/**
+ * This function obtains the indicated memory page from lower levels of the hierarchy,
+ * 		if needed, and returns an integer pointer to the location in emulated RAM.
+ * Returns NULL if the pointer cannot be provided (e.g., a page with the 
+ * 		given address does not exist).
+ */
+uint32_t *get_value(vAddr address){
+	uint32_t *value;
+	bool flag_continue = true;
+	
+	while (flag_continue){
+		// trylock returns 0 on success
+		if(pthread_mutex_trylock(&(PT[address].mutex)) == 0){
+			
+			value = UNSAFE_get_value(address); // the UNSAFE part
+			
+			pthread_mutex_unlock(&(PT[address].mutex));
+			pthread_cond_broadcast(&(PT[address].condvar));
+			flag_continue = false;
+			return value;
+		}
+		else{
+			pthread_cond_wait(&(PT[address].condvar), &(PT[address].mutex));
+		}
+	}
+	// should not reach here; place the return to get rid of warnings
+	return NULL;
+}
+
+/**
+ * When the user wants to update the contents of a page, the user indicates the value 
+ * 		that should be stored in that page. If the page is in memory, the value is written. 
+ * 		If the page is not in RAM, the page is brought into RAM, evicting other
+ * 		pages as needed, before updating the page in the RAM location.
+ */
+void store_value(vAddr address, uint32_t *value){
+	bool flag_continue = true;
+	
+	while (flag_continue){
+		// trylock returns 0 on success
+		if(pthread_mutex_trylock(&(PT[address].mutex)) == 0){
+			
+			UNSAFE_store_value(address, value); // the UNSAFE part
+			
+			pthread_mutex_unlock(&(PT[address].mutex));
+			pthread_cond_broadcast(&(PT[address].condvar));
+			flag_continue = false;
+		}
+		else{
+			pthread_cond_wait(&(PT[address].condvar), &(PT[address].mutex));
+		}
+	}
+}
+
+/**
+ * When the user is finally done with the memory page that has been allocated, 
+ * the user can free it. This frees the page, regardless of where it is in the hierarchy.
+ */
+void free_page(vAddr address){
+	bool flag_continue = true;
+
+	while (flag_continue){
+		// trylock returns 0 on success
+		if(pthread_mutex_trylock(&(PT[address].mutex)) == 0){
+			
+			UNSAFE_free_page(address); // the UNSAFE part
+			
+			pthread_mutex_unlock(&(PT[address].mutex));
+			pthread_cond_broadcast(&(PT[address].condvar));
+			flag_continue = false;
+		}
+		else{
+			pthread_cond_wait(&(PT[address].condvar), &(PT[address].mutex));
+		}
+	}
 }
