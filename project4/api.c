@@ -51,6 +51,7 @@ uint32_t *get_value(vAddr address){
 	assert(address >= 0);
 	if (address < SIZE_PT && PT[address].present){
 		move_to_RAM(&PT[address]);
+		PT[address].r = true; // set REFERENCED=true for the Second-Chance Algorithm
 		return read_mem(&PT[address]);
 	}
 	else{

@@ -24,9 +24,12 @@ StorageDevice *RAM = &ram;
 StorageDevice *SSD = &ssd;
 StorageDevice *HDD = &hdd;
 
+unsigned int EVICT_ALGO_NUMBER = 3;
+
 const PTE DEFAULT_PTE = {
 	.present = false,
 	.address = 0,
 	.device = NULL,
 	.offset = 0,
+	.r = false
 };

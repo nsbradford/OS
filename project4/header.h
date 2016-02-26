@@ -12,11 +12,12 @@
 #include <stdint.h> 	// uint32_t
 #include <assert.h>		// assert()
 #include <unistd.h>		// usleep()
+#include <stdlib.h>		// rand
 #include <semaphore.h>
 
 #define DEBUG true
 
-#define EVICT_ALGO_NUMBER 1
+
 #define SIZE_PT 1000
 #define SIZE_RAM 25
 #define SIZE_SSD 100
@@ -46,8 +47,11 @@ typedef struct PageTableEntry {
 	vAddr address;			// PT virtual address
 	StorageDevice *device;	// storage device
 	int offset;				// position in storage device
+	bool r;					// reference bit
 	// TODO need an additional member to store when last accessed
 } PTE;
+
+extern unsigned int EVICT_ALGO_NUMBER;
 
 // global storage media
 PTE PT[SIZE_PT];
