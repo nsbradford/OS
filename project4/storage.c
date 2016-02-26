@@ -6,11 +6,30 @@
 
 #include "header.h"
 
+void print_device(StorageDevice *device){
+	printf("DEVICE: size:%d mem_used:%d\n", device->size, device->mem_used);
+}
+
 //=================================================================================================
 // Core functions
 
+int check_bitmap_open_slots(StorageDevice *device){
+	int n_open_slots = 0;
+	int i;
+	for (i = 0; i < device->size; i++){
+		if (!device->bitmap[i])
+			n_open_slots++;
+	}
+	if (DEBUG) printf("\t n_open_slots:%d\n", n_open_slots);
+	assert(device->size - n_open_slots == device->mem_used);
+	return n_open_slots;
+}
+
 bool is_full(StorageDevice *device){
+	if (DEBUG) printf("\t is_full()\n");
+	if (DEBUG) print_device(device);
 	assert(device->mem_used <= device->size);
+	check_bitmap_open_slots(device);
 	return (device->mem_used == device->size);
 }
 
@@ -18,7 +37,7 @@ bool is_full(StorageDevice *device){
  * Read from memory. Has delays built-in.
  */
 uint32_t *read_mem(PTE *pte){
-	assert(pte->device == RAM);
+	//assert(pte->device == RAM);
 	usleep(pte->device->u_delay);
 	return &pte->device->array[pte->offset];
 }
@@ -27,15 +46,13 @@ uint32_t *read_mem(PTE *pte){
  * Write to memory. Has delays built-in.
  */
 void write_mem(PTE *pte, uint32_t value){
-	assert(pte->device == RAM);
+	//assert(pte->device == RAM);
 	usleep(pte->device->u_delay);
 	pte->device->array[pte->offset] = value;
 }
 
 //=================================================================================================
 // Page Eviction Algorithms go here!
-
-
 
 
 /**
@@ -141,37 +158,25 @@ void insert_to_RAM(PTE *pte){
 	
 	int i;
 	unsigned int ram_offset;
-	vAddr insert_addr;
+	bool flag_mem_full = true;
 
 	// find open slot in RAM
 	if (DEBUG) printf("\t find open slot in RAM\n");
 	for (i = 0; i < SIZE_RAM; i++){
 		if (!RAM->bitmap[i]){
+			flag_mem_full = false;
 			ram_offset = i;
 			break;
 		}
 	}
-
-	// find open PT slot
-	if (DEBUG) printf("\t find open PT slot\n");
-	for (i = 0; i < SIZE_PT; i++){
-		if (PT[i].present){
-			insert_addr = i;
-			if (DEBUG) printf("\t insert_addr %d\n", insert_addr);
-			break;
-		}
-		//if (DEBUG) printf("\t PT[i].present %d\n", PT[i].present);
-	}
+	assert(!flag_mem_full);
 
 	if (DEBUG) printf("\t assignment\n");
-	//if (DEBUG) printf("\t insert_addr %d\n", insert_addr);
 	// note that we never actually have to write to RAM for this
-	if (DEBUG) printf("\t device\n");
-	PT[insert_addr].device = RAM;						// set page new device
-	if (DEBUG) printf("\t offset\n");
-	PT[insert_addr].offset = ram_offset;				// set page new offset
-	if (DEBUG) printf("\t bitmap\n");
-	PT[insert_addr].device->bitmap[ram_offset] = true;	// set child bitmap
+	assert(pte->present);
+	pte->device = RAM;						// set page new device
+	pte->offset = ram_offset;				// set page new offset
+	pte->device->bitmap[ram_offset] = true;	// set child bitmap
 
 	RAM->mem_used++;
 }
@@ -181,102 +186,40 @@ void insert_to_RAM(PTE *pte){
  * Model on a reverse of the evict() function.
  */
 void move_to_RAM(PTE *pte){
-
-	// if RAM is full, check SSD ??
-	// if RAM and SSD are full, check HDD ?? 
-
-	// if in HDD, simply move to RAM, no need to do intermediate step
-
-
-
-if (DEBUG) printf("ENTER move_to_RAM()\n");
-	
-
-	// if the PTE is in RAM, return
-	if (pte.device == RAM){
+	if (DEBUG) printf("ENTER insert_to_RAM()\n");
+	if (pte->device == RAM){
+		if (DEBUG) printf("\t already in RAM, return\n");
 		return;
 	}
-
-	if (pte.device == SSD) {
+	else{
+		if (DEBUG) printf("\t not already in RAM\n");
 		if (is_full(RAM)){
+			if (DEBUG) printf("\t RAM is full\n");
 			evict_page(RAM);
 		}
 
-
-		assert(!is_full(RAM));
-
-		// now, you can move the file to RAM
 		int i;
 		unsigned int ram_offset;
-		// vAddr insert_addr;
 
-		// find open slot in RAM
-		if (DEBUG) printf("\t find open slot in RAM\n");
-		for (i = 0; i < SIZE_RAM; i++){
+		// find the first empty location in RAM
+		for (i = 0; i < RAM->size; i++){
 			if (!RAM->bitmap[i]){
 				ram_offset = i;
-				// now, the device is RAM
-				pte.device = RAM;
-				pte.ram_offset = i;
 				break;
 			}
 		}
 
-		// // find open PT slot
-		// if (DEBUG) printf("\t find open PT slot\n");
-		// for (i = 0; i < SIZE_PT; i++){
-		// 	if (PT[i].present){
-		// 		insert_addr = i;
-		// 		if (DEBUG) printf("\t insert_addr %d\n", insert_addr);
-		// 		break;
-		// 	}
-		// 	//if (DEBUG) printf("\t PT[i].present %d\n", PT[i].present);
-		// }
+		uint32_t *tmp = read_mem(pte);				// store page data
+		pte->device->bitmap[pte->offset] = false;	// set device bitmap
+		pte->device = RAM;							// set page new device
+		pte->offset = ram_offset;					// set page new offset
+		RAM->bitmap[ram_offset] = true;				// set RAM bitmap
+		write_mem(pte, *tmp);						// write data to child
 
-		// if (DEBUG) printf("\t assignment\n");
-		//if (DEBUG) printf("\t insert_addr %d\n", insert_addr);
-		// // note that we never actually have to write to RAM for this
-		// if (DEBUG) printf("\t device\n");
-		// PT[insert_addr].device = RAM;						// set page new device
-		// if (DEBUG) printf("\t offset\n");
-		// PT[insert_addr].offset = ram_offset;				// set page new offset
-		// if (DEBUG) printf("\t bitmap\n");
-		// PT[insert_addr].device->bitmap[ram_offset] = true;	// set child bitmap
-		pte.device->bitmap[ram_offset] = true;
+		pte->device->mem_used--;
 		RAM->mem_used++;
-		SSD->mem_used--;
 		
-	}
-
-	else if (device == HDD){
-		if (is_full(SSD)){
-			evict_page(SSD);
-		}
-
-		assert(!is_full(SSD));
-
-		// now, you can move the file to SSD
-		int i;
-		unsigned int ssd_offset;
-
-		// find open slot in SSD
-		if (DEBUG) printf("\t find open slot in SSD\n");
-		for (i = 0; i < SIZE_RAM; i++){
-			if (!SSD->bitmap[i]){
-				ssd_offset = i;
-				// now, the device is SSD
-				pte.device = SSD;
-				pte.ssd_offset = i;
-				break;
-			}
-		}
-
-		pte.device->bitmap[ssd_offset] = true;
-		SSD->mem_used++;
-		HDD->mem_used--;
-
-		// now, call recursively on SSD
-		move_to_ram(pte);
+		assert(RAM->mem_used <= RAM->size);
 	}
 }
 
@@ -285,8 +228,4 @@ if (DEBUG) printf("ENTER move_to_RAM()\n");
  */
 void sift_pages_up(){
 	// TODO
-}
-
-void find_empty_slot(){
-
 }

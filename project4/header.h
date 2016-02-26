@@ -16,10 +16,13 @@
 
 #define DEBUG true
 
+#define EVICT_ALGO_NUMBER 1
+
 #define SIZE_PT 1000
 #define SIZE_RAM 25
 #define SIZE_SSD 100
 #define SIZE_HDD 1000
+
 
 typedef signed short vAddr;
 
@@ -30,7 +33,6 @@ typedef struct storageDevice {
 	bool *bitmap;
 	uint32_t *array;
 	struct storageDevice *child;
-	struct storageDevice *parent;
 } StorageDevice;
 
 typedef struct PageTableEntry {
@@ -40,9 +42,6 @@ typedef struct PageTableEntry {
 	int offset;				// position in storage device
 	// TODO need an additional member to store when last accessed
 } PTE;
-
-// which Page Eviction Algorithm to use
-extern unsigned int EVICT_ALGO_NUMBER;
 
 // global storage media
 PTE PT[SIZE_PT];

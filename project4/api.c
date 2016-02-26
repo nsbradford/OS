@@ -17,10 +17,10 @@ vAddr create_page(){
 
 	int address = -1;
 
-	// find an empty PTE and assign the vAddr
+	// find an empty PTE and assign [bool present] and [vAddr address]
 	int i;
 	bool flag_mem_full = true;
-	for (i = 0; i < 10; i++){
+	for (i = 0; i < SIZE_PT; i++){
 		if (!PT[i].present){
 			flag_mem_full = false;
 			address = i;
