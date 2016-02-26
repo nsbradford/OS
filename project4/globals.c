@@ -13,11 +13,11 @@ bool BITMAP_HDD[SIZE_HDD];
 uint32_t ARRAY_RAM[SIZE_RAM];
 uint32_t ARRAY_SSD[SIZE_SSD];
 uint32_t ARRAY_HDD[SIZE_HDD];
-StorageDevice hdd = {.size = SIZE_HDD, .u_delay = 2500000, .mem_used = 0,
-	.bitmap = BITMAP_RAM, .array = ARRAY_HDD};
-StorageDevice ssd = {.size = SIZE_SSD, .u_delay = 100000, .mem_used = 0,
-	.bitmap = BITMAP_RAM, .array = ARRAY_SSD, .child = &hdd};
-StorageDevice ram = {.size = SIZE_RAM, .u_delay = 10000, .mem_used = 0,
+StorageDevice hdd = {.size = SIZE_HDD, .u_delay = DELAY_HDD, .mem_used = 0,
+	.bitmap = BITMAP_HDD, .array = ARRAY_HDD};
+StorageDevice ssd = {.size = SIZE_SSD, .u_delay = DELAY_SSD, .mem_used = 0,
+	.bitmap = BITMAP_SSD, .array = ARRAY_SSD, .child = &hdd};
+StorageDevice ram = {.size = SIZE_RAM, .u_delay = DELAY_RAM, .mem_used = 0,
 	.bitmap = BITMAP_RAM, .array = ARRAY_RAM, .child = &ssd};
 
 StorageDevice *RAM = &ram;

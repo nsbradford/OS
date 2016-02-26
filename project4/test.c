@@ -7,6 +7,12 @@
 #include "header.h"
 #include <pthread.h>
 
+void assertions(){
+	assert(RAM->size == 25);
+	assert(SSD->size == 100);
+	assert(HDD->size == 1000);
+}
+
 
 void testRAM(){
 	printf("\n------------------------------\nTest testRAM()...\n");
@@ -47,7 +53,8 @@ void memoryMaxer(){
  * Run the multithreaded stress test.
  */
 int main(){
-	testRAM();
+	assertions();
+	//testRAM();
 	memoryMaxer();
 	
 	// TODO multithreading

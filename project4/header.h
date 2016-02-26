@@ -17,12 +17,18 @@
 #define DEBUG true
 
 #define EVICT_ALGO_NUMBER 1
-
 #define SIZE_PT 1000
 #define SIZE_RAM 25
 #define SIZE_SSD 100
 #define SIZE_HDD 1000
+#define DELAY_RAM 1
+#define DELAY_SSD 2
+#define DELAY_HDD 3
 
+// do this only for real testing
+//#define DELAY_RAM 10000
+//#define DELAY_SSD 100000
+//#define DELAY_HDD 2500000
 
 typedef signed short vAddr;
 

@@ -7,7 +7,7 @@
 #include "header.h"
 
 void print_device(StorageDevice *device){
-	printf("DEVICE: size:%d mem_used:%d\n", device->size, device->mem_used);
+	printf("\t DEVICE: size:%d mem_used:%d\n", device->size, device->mem_used);
 }
 
 //=================================================================================================
@@ -142,6 +142,7 @@ void evict_page(StorageDevice *device){
 		default:
 			assert(false); // should never be default
 	}
+	if (DEBUG) printf("\t EXIT evict_page()\n");
 }
 
 //=================================================================================================
@@ -176,9 +177,19 @@ void insert_to_RAM(PTE *pte){
 	assert(pte->present);
 	pte->device = RAM;						// set page new device
 	pte->offset = ram_offset;				// set page new offset
-	pte->device->bitmap[ram_offset] = true;	// set child bitmap
+	RAM->bitmap[ram_offset] = true;			// set child bitmap
+	assert(RAM->bitmap[ram_offset] == true);
 
 	RAM->mem_used++;
+	assert(pte->device == RAM);
+
+	//if (DEBUG) printf("\t/--------<debug>\n");
+	//is_full(RAM);
+	//is_full(SSD);
+	//is_full(HDD);
+	//if (DEBUG) printf("\t\\--------</debug>\n");
+
+
 }
 
 /**
@@ -186,7 +197,7 @@ void insert_to_RAM(PTE *pte){
  * Model on a reverse of the evict() function.
  */
 void move_to_RAM(PTE *pte){
-	if (DEBUG) printf("ENTER insert_to_RAM()\n");
+	if (DEBUG) printf("ENTER move_to_RAM()\n");
 	if (pte->device == RAM){
 		if (DEBUG) printf("\t already in RAM, return\n");
 		return;
@@ -218,6 +229,9 @@ void move_to_RAM(PTE *pte){
 
 		pte->device->mem_used--;
 		RAM->mem_used++;
+		is_full(HDD);
+		is_full(SSD);
+		is_full(RAM);
 		
 		assert(RAM->mem_used <= RAM->size);
 	}
