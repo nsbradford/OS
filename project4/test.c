@@ -22,8 +22,7 @@ void multithreadedHelper(int *threadID){
 		if (val){
 			uint32_t myrand = (*val + rand()) %1000+1000;
 			store_value(address, &myrand);
-		}
-		
+		}	
 	}
 }
 
@@ -145,20 +144,20 @@ int main(int argc, char *argv[]){
 
 		if (choice == 1) {
 			begin = clock();
-			testRAM();
-			end = clock();
-		
-			printf("FOR EVICTION ALGORITHM %d\n", EVICT_ALGO_NUMBER);
-			printf("--------Time spent on testRAM() = %f s\n", (double) (end - begin)/CLOCKS_PER_SEC);
-		}
-
-		else if (choice == 2) {
-			begin = clock();
 			memoryMaxer();
 			end = clock();
 
 			printf("FOR EVICTION ALGORITHM %d\n", EVICT_ALGO_NUMBER);
 			printf("--------Time spent on memoryMaxer() = %f s\n", (double) (end - begin)/CLOCKS_PER_SEC );
+		}
+
+		else if (choice == 2) {
+			begin = clock();
+			testRAM();
+			end = clock();
+		
+			printf("FOR EVICTION ALGORITHM %d\n", EVICT_ALGO_NUMBER);
+			printf("--------Time spent on testRAM() = %f s\n", (double) (end - begin)/CLOCKS_PER_SEC);
 		}
 
 		else if (choice == 3) {
