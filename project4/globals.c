@@ -24,7 +24,7 @@ StorageDevice *RAM = &ram;
 StorageDevice *SSD = &ssd;
 StorageDevice *HDD = &hdd;
 
-unsigned int EVICT_ALGO_NUMBER = 3;
+unsigned int EVICT_ALGO_NUMBER = 1; // default
 
 const PTE DEFAULT_PTE = {
 	.present = false,

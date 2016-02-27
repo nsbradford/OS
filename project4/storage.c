@@ -17,14 +17,17 @@ void print_device(StorageDevice *device){
  * Lock a PTE using its mutex and conditional variable.
  */
 void lock_PTE(vAddr address){
+	if (!ENABLE_SYNC) return;
 	bool flag_continue = true;
 	
 	while (flag_continue){
+		//if (DEBUG) printf("\t LOCK_PTE: trylock address %d\n", address);
 		// trylock returns 0 on success
 		if(pthread_mutex_trylock(&(PT[address].mutex)) == 0){
 			flag_continue = false;
 		}
 		else{
+			if (DEBUG) printf("\t LOCK_PTE: wait on address %d\n", address);
 			pthread_cond_wait(&(PT[address].condvar), &(PT[address].mutex));
 		}
 	}
@@ -34,6 +37,7 @@ void lock_PTE(vAddr address){
  * Unlock a PTE using its mutex and conditional variable.
  */
 void unlock_PTE(vAddr address){
+	if (!ENABLE_SYNC) return;
 	pthread_mutex_unlock(&(PT[address].mutex));
 	pthread_cond_broadcast(&(PT[address].condvar));
 }
@@ -158,7 +162,7 @@ void evict_page2(StorageDevice *device){
 
 	// if we're RAM, check if SSD will have to evict
 	if (device == RAM && is_full(device->child)){
-		evict_page1(device->child);
+		evict_page2(device->child);
 	}
 
 	// find the first empty location in the child
@@ -215,6 +219,7 @@ void evict_page2(StorageDevice *device){
  * Returns the vAddr of the evicted page.
  */
 void evict_page3(StorageDevice *device){
+	if (DEBUG) printf("\t ENTER evict_page3()\n");
 	assert(device != HDD); 						// should never call on HDD
 	assert(device->mem_used == device->size); 	// should only call if device is full
 
@@ -224,7 +229,7 @@ void evict_page3(StorageDevice *device){
 
 	// if we're RAM, check if SSD will have to evict
 	if (device == RAM && is_full(device->child)){
-		evict_page1(device->child);
+		evict_page3(device->child);
 	}
 
 	// find the first empty location in the child
@@ -246,6 +251,7 @@ void evict_page3(StorageDevice *device){
 			}
 			else{
 				PT[i].r = false;
+				unlock_PTE(i);
 			}
 		}
 		else

@@ -16,8 +16,9 @@
 #include <semaphore.h>	// mutexes and conditional variables
  #include <pthread.h>
 
-#define DEBUG true
+#define DEBUG false
 #define ENABLE_ASSERT false
+#define ENABLE_SYNC true
 
 #define SIZE_PT 1000
 #define SIZE_RAM 25
@@ -53,9 +54,8 @@ typedef struct PageTableEntry {
 	pthread_cond_t condvar;	// enable multithreading
 } PTE;
 
-extern unsigned int EVICT_ALGO_NUMBER;
-
 // global storage media
+extern unsigned int EVICT_ALGO_NUMBER;
 PTE PT[SIZE_PT];
 extern StorageDevice *RAM;
 extern StorageDevice *SSD;

@@ -14,7 +14,7 @@
 void multithreaded_helper(int *threadID){
 	int i;
 
-	for (i=0; i<300; i++){
+	for (i=0; i<1; i++){
 		
 		int address = rand()%1000;
 		uint32_t *val = get_value(address);
@@ -30,10 +30,12 @@ void multithreaded_helper(int *threadID){
  * test_multithreaded()
  * Test the program with 5 threads
  */
-
 void test_multithreaded(){
+	printf("\n------------------------------\ntest_multithreaded() 5 threads\n");
 
-	pthread_t threads[5];
+	int THREADNUM = 2;
+
+	pthread_t threads[THREADNUM];
 	vAddr indexes[100];
 	int i;
 
@@ -51,11 +53,16 @@ void test_multithreaded(){
 	}
 	
 	// threads
-	for (i=0; i<5; i++){
+	for (i=0; i<THREADNUM; i++){
 		uint32_t *thread_id = malloc(sizeof(int));
 		*thread_id = i;
 		pthread_create (&(threads[i]),NULL, (void *) &multithreaded_helper, thread_id);
 	}
+
+	for (i = 0; i < THREADNUM; i++){
+		pthread_join(threads[i], NULL);
+	}
+	printf("\n------------------------------\nTest testRAM SUCCESS!\n");
 }
 
 
@@ -103,17 +110,13 @@ void memoryMaxer(){
  */
 int main(){
 	int i;
-	for (i = 1; i <= 3; i++){
+	for (i = 3; i <= 3; i++){
 		EVICT_ALGO_NUMBER = i;
-	
 		//testRAM();
-		//memoryMaxer();
-		
-		// TODO multithreading
-		// !! check if this test works for multithreading
-		test_multithreaded();
-
+		memoryMaxer();
 	}
-	
+	return 0;
+	EVICT_ALGO_NUMBER = 2;
+	test_multithreaded();
 	return 0;
 }

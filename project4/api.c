@@ -105,7 +105,7 @@ void UNSAFE_free_page(vAddr address){
  */
 vAddr create_page(){
 	// handle lock_PTE and unlock_PTE within UNSAFE_create_page itself
-	if (DEBUG) printf("ENTER create_page()\n");
+	printf("API create_page()\n");
 	return UNSAFE_create_page();
 }
 
@@ -116,7 +116,7 @@ vAddr create_page(){
  * 		given address does not exist).
  */
 uint32_t *get_value(vAddr address){
-	if (DEBUG) printf("ENTER get_value(%d)\n", address);
+	printf("API get_value(%d)\n", address);
 	uint32_t *value;
 	
 	lock_PTE(address);
@@ -133,7 +133,7 @@ uint32_t *get_value(vAddr address){
  * 		pages as needed, before updating the page in the RAM location.
  */
 void store_value(vAddr address, uint32_t *value){
-	if (DEBUG) printf("ENTER store_value(vAddr %d, value %d)\n", address, *value);
+	printf("API store_value(vAddr %d, value %d)\n", address, *value);
 	lock_PTE(address);
 	UNSAFE_store_value(address, value);
 	unlock_PTE(address);
@@ -144,7 +144,7 @@ void store_value(vAddr address, uint32_t *value){
  * the user can free it. This frees the page, regardless of where it is in the hierarchy.
  */
 void free_page(vAddr address){
-	if (DEBUG) printf("ENTER free_page(%d)\n", address);
+	printf("API free_page(%d)\n", address);
 	lock_PTE(address);
 	UNSAFE_free_page(address);
 	unlock_PTE(address);
