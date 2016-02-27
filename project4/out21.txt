@@ -1,0 +1,48 @@
+
+------------------------------
+Test testRAM()...
+API create_page()
+API get_value(0)
+API store_value(vAddr 0, value 0)
+API create_page()
+API get_value(1)
+API store_value(vAddr 1, value 3)
+API create_page()
+API get_value(2)
+API store_value(vAddr 2, value 6)
+API create_page()
+API get_value(3)
+API store_value(vAddr 3, value 9)
+API create_page()
+API get_value(4)
+API store_value(vAddr 4, value 12)
+API create_page()
+API get_value(5)
+API store_value(vAddr 5, value 15)
+API create_page()
+API get_value(6)
+API store_value(vAddr 6, value 18)
+API create_page()
+API get_value(7)
+API store_value(vAddr 7, value 21)
+API create_page()
+API get_value(8)
+API store_value(vAddr 8, value 24)
+API create_page()
+API get_value(9)
+API store_value(vAddr 9, value 27)
+API free_page(0)
+API free_page(1)
+API free_page(2)
+API free_page(3)
+API free_page(4)
+API free_page(5)
+API free_page(6)
+API free_page(7)
+API free_page(8)
+API free_page(9)
+
+------------------------------
+Test testRAM() SUCCESS!
+FOR EVICTION ALGORITHM 1
+--------Time spent on testRAM() = 0.001900 s

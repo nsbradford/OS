@@ -32,8 +32,9 @@ void multithreadedHelper(int *threadID){
  */
 
 void testMultithreaded(){
+	int NUMTHREADS = 2;
 
-	pthread_t threads[2];
+	pthread_t threads[NUMTHREADS];
 	vAddr indexes[100];
 	int i;
 
@@ -51,10 +52,13 @@ void testMultithreaded(){
 	}
 	
 	// threads
-	for (i=0; i<2; i++){
+	for (i=0; i<NUMTHREADS; i++){
 		uint32_t *thread_id = malloc(sizeof(int));
 		*thread_id = i;
 		pthread_create (&(threads[i]),NULL, (void *) &multithreadedHelper, thread_id);
+	}
+	for (i=0; i<NUMTHREADS; i++){
+		pthread_join (threads[i], NULL);
 	}
 }
 
@@ -78,8 +82,8 @@ void testFullMemory(){
 	for (i = 0; i < 1000; i++){
 		indexes[i] = create_page();
 		// this should fail, and return -1
-		if (indexes[i] = -1){
-			printf(" Failed to allocate new page in memory. 1000 pages already in memory. \n");
+		if (indexes[i] == -1){
+			//printf(" Failed to allocate new page in memory. 1000 pages already in memory. \n");
 		}
 	}
 
