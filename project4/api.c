@@ -16,7 +16,7 @@
  * Returns -1 if no memory is available.
  */
 vAddr UNSAFE_create_page(){
-	if (DEBUG) printf("ENTER create_page()\n");
+	if (DEBUG) printf(" ENTER UNSAFE_create_page()\n");
 
 	int address = -1;
 
@@ -27,6 +27,9 @@ vAddr UNSAFE_create_page(){
 		if (!PT[i].present){
 			flag_mem_full = false;
 			address = i;
+
+			lock_PTE(address);
+
 			PT[i].present = true;
 			PT[i].address = address;
 			pthread_mutex_init(&(PT[i].mutex), NULL);
@@ -42,6 +45,8 @@ vAddr UNSAFE_create_page(){
 	}
 
 	insert_to_RAM(&PT[address]);
+	unlock_PTE(address);
+
 	return address;
 }
 
@@ -52,7 +57,7 @@ vAddr UNSAFE_create_page(){
  * 		given address does not exist).
  */
 uint32_t *UNSAFE_get_value(vAddr address){
-	if (DEBUG) printf("ENTER get_value()\n");
+	if (DEBUG) printf(" ENTER UNSAFE_get_value()\n");
 	assert(address >= 0);
 	if (address < SIZE_PT && PT[address].present){
 		move_to_RAM(&PT[address]);
@@ -71,7 +76,8 @@ uint32_t *UNSAFE_get_value(vAddr address){
  * 		pages as needed, before updating the page in the RAM location.
  */
 void UNSAFE_store_value(vAddr address, uint32_t *value){
-	if (DEBUG) printf("ENTER store_value()\n");
+	if (DEBUG) printf(" ENTER UNSAFE_store_value()\n");
+	assert(PT[address].present);
 	move_to_RAM(&PT[address]);
 	write_mem(&PT[address], *value);
 }
@@ -81,10 +87,11 @@ void UNSAFE_store_value(vAddr address, uint32_t *value){
  * the user can free it. This frees the page, regardless of where it is in the hierarchy.
  */
 void UNSAFE_free_page(vAddr address){
-	if (DEBUG) printf("ENTER free_page()\n");
+	if (DEBUG) printf(" ENTER UNSAFE_free_page()\n");
 	PT[address].device->bitmap[PT[address].offset] = false;
+	PT[address].device->mem_used--;
 	PT[address] = DEFAULT_PTE;
-	sift_pages_up(); // TODO move pages from lower levels to fill gap
+	//sift_pages_up(); // move pages from lower levels to fill gap
 }
 
 //=================================================================================================
@@ -97,7 +104,8 @@ void UNSAFE_free_page(vAddr address){
  * Returns -1 if no memory is available.
  */
 vAddr create_page(){
-	// hey no need to do anything fancy here!
+	// handle lock_PTE and unlock_PTE within UNSAFE_create_page itself
+	if (DEBUG) printf("ENTER create_page()\n");
 	return UNSAFE_create_page();
 }
 
@@ -108,26 +116,14 @@ vAddr create_page(){
  * 		given address does not exist).
  */
 uint32_t *get_value(vAddr address){
+	if (DEBUG) printf("ENTER get_value(%d)\n", address);
 	uint32_t *value;
-	bool flag_continue = true;
 	
-	while (flag_continue){
-		// trylock returns 0 on success
-		if(pthread_mutex_trylock(&(PT[address].mutex)) == 0){
-			
-			value = UNSAFE_get_value(address); // the UNSAFE part
-			
-			pthread_mutex_unlock(&(PT[address].mutex));
-			pthread_cond_broadcast(&(PT[address].condvar));
-			flag_continue = false;
-			return value;
-		}
-		else{
-			pthread_cond_wait(&(PT[address].condvar), &(PT[address].mutex));
-		}
-	}
-	// should not reach here; place the return to get rid of warnings
-	return NULL;
+	lock_PTE(address);
+	value = UNSAFE_get_value(address);
+	unlock_PTE(address);
+
+	return value;	
 }
 
 /**
@@ -137,22 +133,10 @@ uint32_t *get_value(vAddr address){
  * 		pages as needed, before updating the page in the RAM location.
  */
 void store_value(vAddr address, uint32_t *value){
-	bool flag_continue = true;
-	
-	while (flag_continue){
-		// trylock returns 0 on success
-		if(pthread_mutex_trylock(&(PT[address].mutex)) == 0){
-			
-			UNSAFE_store_value(address, value); // the UNSAFE part
-			
-			pthread_mutex_unlock(&(PT[address].mutex));
-			pthread_cond_broadcast(&(PT[address].condvar));
-			flag_continue = false;
-		}
-		else{
-			pthread_cond_wait(&(PT[address].condvar), &(PT[address].mutex));
-		}
-	}
+	if (DEBUG) printf("ENTER store_value(vAddr %d, value %d)\n", address, *value);
+	lock_PTE(address);
+	UNSAFE_store_value(address, value);
+	unlock_PTE(address);
 }
 
 /**
@@ -160,20 +144,8 @@ void store_value(vAddr address, uint32_t *value){
  * the user can free it. This frees the page, regardless of where it is in the hierarchy.
  */
 void free_page(vAddr address){
-	bool flag_continue = true;
-
-	while (flag_continue){
-		// trylock returns 0 on success
-		if(pthread_mutex_trylock(&(PT[address].mutex)) == 0){
-			
-			UNSAFE_free_page(address); // the UNSAFE part
-			
-			pthread_mutex_unlock(&(PT[address].mutex));
-			pthread_cond_broadcast(&(PT[address].condvar));
-			flag_continue = false;
-		}
-		else{
-			pthread_cond_wait(&(PT[address].condvar), &(PT[address].mutex));
-		}
-	}
+	if (DEBUG) printf("ENTER free_page(%d)\n", address);
+	lock_PTE(address);
+	UNSAFE_free_page(address);
+	unlock_PTE(address);
 }

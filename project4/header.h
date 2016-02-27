@@ -17,7 +17,7 @@
  #include <pthread.h>
 
 #define DEBUG true
-
+#define ENABLE_ASSERT false
 
 #define SIZE_PT 1000
 #define SIZE_RAM 25
@@ -73,6 +73,10 @@ void insert_to_RAM(PTE *pte);
 void move_to_RAM(PTE *pte);
 uint32_t *read_mem(PTE *pte);
 void write_mem(PTE *pte, uint32_t value);
-void sift_pages_up();
+//void sift_pages_up();
+
+// synchronization functions
+void lock_PTE(vAddr address);
+void unlock_PTE(vAddr address);
 
 #endif

@@ -7,12 +7,6 @@
 #include "header.h"
 #include <pthread.h>
 
-void assertions(){
-	assert(RAM->size == 25);
-	assert(SSD->size == 100);
-	assert(HDD->size == 1000);
-}
-
 /**
  * multithreaded_helper()
  *
@@ -24,8 +18,11 @@ void multithreaded_helper(int *threadID){
 		
 		int address = rand()%1000;
 		uint32_t *val = get_value(address);
-		*val = rand();
-		store_value(address, val);
+		if (val){
+			uint32_t myrand = (*val + rand()) %1000+1000;
+			store_value(address, &myrand);
+		}
+		
 	}
 }
 
@@ -37,23 +34,24 @@ void multithreaded_helper(int *threadID){
 void test_multithreaded(){
 
 	pthread_t threads[5];
-	vAddr indexes[1000];
+	vAddr indexes[100];
 	int i;
 
 	// indexes
-	for (i = 0; i < 1000; ++i) {
+	for (i = 0; i < 100; ++i) {
 		if (DEBUG) 
 			printf("Page %d is being created\n",i);
 		
-		vAddr indexes[i] = create_page();
+		indexes[i] = create_page();
 		uint32_t *val = get_value(indexes[i]);
-		*val = (i * 3);
-		store_value(indexes[i], val);
-
+		if (val){
+			uint32_t myrand = (*val + rand()) %1000+1000;
+			store_value(indexes[i], &myrand);
+		}
 	}
 	
 	// threads
-	for(i=0; i<5; i++){
+	for (i=0; i<5; i++){
 		uint32_t *thread_id = malloc(sizeof(int));
 		*thread_id = i;
 		pthread_create (&(threads[i]),NULL, (void *) &multithreaded_helper, thread_id);
@@ -104,17 +102,16 @@ void memoryMaxer(){
  * Run the multithreaded stress test.
  */
 int main(){
-	assertions();
 	int i;
 	for (i = 1; i <= 3; i++){
 		EVICT_ALGO_NUMBER = i;
 	
-	testRAM();
-	memoryMaxer();
-	
-	// TODO multithreading
-	// !! check if this test works for multithreading
-	test_multithreaded();
+		//testRAM();
+		//memoryMaxer();
+		
+		// TODO multithreading
+		// !! check if this test works for multithreading
+		test_multithreaded();
 
 	}
 	

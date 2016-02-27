@@ -11,8 +11,39 @@ void print_device(StorageDevice *device){
 }
 
 //=================================================================================================
+// Synchronization functions
+
+/**
+ * Lock a PTE using its mutex and conditional variable.
+ */
+void lock_PTE(vAddr address){
+	bool flag_continue = true;
+	
+	while (flag_continue){
+		// trylock returns 0 on success
+		if(pthread_mutex_trylock(&(PT[address].mutex)) == 0){
+			flag_continue = false;
+		}
+		else{
+			pthread_cond_wait(&(PT[address].condvar), &(PT[address].mutex));
+		}
+	}
+}
+
+/**
+ * Unlock a PTE using its mutex and conditional variable.
+ */
+void unlock_PTE(vAddr address){
+	pthread_mutex_unlock(&(PT[address].mutex));
+	pthread_cond_broadcast(&(PT[address].condvar));
+}
+
+//=================================================================================================
 // Core functions
 
+/**
+ * Error check for the bitmap.
+ */
 int check_bitmap_open_slots(StorageDevice *device){
 	int n_open_slots = 0;
 	int i;
@@ -21,10 +52,13 @@ int check_bitmap_open_slots(StorageDevice *device){
 			n_open_slots++;
 	}
 	//if (DEBUG) printf("\t n_open_slots:%d\n", n_open_slots);
-	assert(device->size - n_open_slots == device->mem_used);
+	if (ENABLE_ASSERT) assert(device->size - n_open_slots == device->mem_used);
 	return n_open_slots;
 }
 
+/**
+ * Checks if a device is full; includes an error check.
+ */
 bool is_full(StorageDevice *device){
 	if (DEBUG) printf("\t is_full()\n");
 	if (DEBUG) print_device(device);
@@ -83,10 +117,13 @@ void evict_page1(StorageDevice *device){
 	
 	// ***Core of the eviction algorithm: find FIRST mapping in the proper device to evict
 	for (i = 0; i < SIZE_PT; i++){
+		lock_PTE(i);
 		if (PT[i].device == device){
 			evict_addr = i;
 			break;
 		}
+		else
+			unlock_PTE(i);
 	}
 	// ***End core of the eviction algorithm
 
@@ -102,6 +139,8 @@ void evict_page1(StorageDevice *device){
 	
 	assert(device->mem_used == device->size - 1);
 	assert(device->child->mem_used <= device->child->size);
+
+	unlock_PTE(evict_addr);
 }
 
 /**
@@ -133,17 +172,23 @@ void evict_page2(StorageDevice *device){
 	// ***Core of the eviction algorithm: find a RANDOM page mapping in the proper device to evict
 	unsigned int rand_start = rand() % SIZE_PT;
 	for (i = rand_start; i < SIZE_PT; i++){
+		lock_PTE(i);
 		if (PT[i].device == device){
 			evict_addr = i;
 			break;
 		}
+		else
+			unlock_PTE(i);
 	}
 	if (evict_addr == -1){
 		for (i = 0; i < rand_start; i++){
+			lock_PTE(i);
 			if (PT[i].device == device){
 				evict_addr = i;
 				break;
 			}
+			else
+				unlock_PTE(i);
 		}
 	}
 	// ***End core of the eviction algorithm
@@ -160,6 +205,8 @@ void evict_page2(StorageDevice *device){
 	
 	assert(device->mem_used == device->size - 1);
 	assert(device->child->mem_used <= device->child->size);
+
+	unlock_PTE(evict_addr);
 }	
 
 /**
@@ -190,6 +237,7 @@ void evict_page3(StorageDevice *device){
 	
 	// ***Core of the eviction algorithm: find an UNREFERENCED page mapping in the proper device to evict
 	for (i = 0; i < SIZE_PT; i++){
+		lock_PTE(i);
 		if (PT[i].device == device){
 			// check the r-bit; if referenced, give the page a second chance
 			if (!PT[i].r){
@@ -200,6 +248,9 @@ void evict_page3(StorageDevice *device){
 				PT[i].r = false;
 			}
 		}
+		else
+			unlock_PTE(i);
+
 		// if every page had been referenced, start again from the beginning
 		if (i == SIZE_PT - 1)
 			i = 0;
@@ -218,6 +269,8 @@ void evict_page3(StorageDevice *device){
 	
 	assert(device->mem_used == device->size - 1);
 	assert(device->child->mem_used <= device->child->size);
+
+	unlock_PTE(evict_addr);
 }
 
 /**
@@ -285,7 +338,7 @@ void insert_to_RAM(PTE *pte){
  * Model on a reverse of the evict() function.
  */
 void move_to_RAM(PTE *pte){
-	if (DEBUG) printf("ENTER move_to_RAM()\n");
+	if (DEBUG) printf("ENTER move_to_RAM(pte %d)\n", pte->address);
 	if (pte->device == RAM){
 		if (DEBUG) printf("\t already in RAM, return\n");
 		return;
@@ -324,6 +377,6 @@ void move_to_RAM(PTE *pte){
 /**
  * After a free_page() call, move pages into higher layers so that RAM is as full as possible.
  */
-void sift_pages_up(){
-	// TODO
-}
+//void sift_pages_up(){
+//	// TODO
+//}
