@@ -379,10 +379,3 @@ void move_to_RAM(PTE *pte){
 		assert(RAM->mem_used <= RAM->size);
 	}
 }
-
-/**
- * After a free_page() call, move pages into higher layers so that RAM is as full as possible.
- */
-//void sift_pages_up(){
-//	// TODO
-//}

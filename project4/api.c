@@ -10,10 +10,7 @@
 // Unsafe versions of the 4 API calls
 
 /**
- * Reserves a new memory location, which is 32 bits in size. 
- * This memory block must be created in the emulated RAM, pushing other pages 
- * 		out of the emulated RAM into lower layers of the hierarchy, if needed. 
- * Returns -1 if no memory is available.
+ * create_page() helper.
  */
 vAddr UNSAFE_create_page(){
 	if (DEBUG) printf(" ENTER UNSAFE_create_page()\n");
@@ -51,10 +48,7 @@ vAddr UNSAFE_create_page(){
 }
 
 /**
- * This function obtains the indicated memory page from lower levels of the hierarchy,
- * 		if needed, and returns an integer pointer to the location in emulated RAM.
- * Returns NULL if the pointer cannot be provided (e.g., a page with the 
- * 		given address does not exist).
+ * get_value() helper.
  */
 uint32_t *UNSAFE_get_value(vAddr address){
 	if (DEBUG) printf(" ENTER UNSAFE_get_value()\n");
@@ -70,10 +64,7 @@ uint32_t *UNSAFE_get_value(vAddr address){
 }
 
 /**
- * When the user wants to update the contents of a page, the user indicates the value 
- * 		that should be stored in that page. If the page is in memory, the value is written. 
- * 		If the page is not in RAM, the page is brought into RAM, evicting other
- * 		pages as needed, before updating the page in the RAM location.
+ * store_value() helper.
  */
 void UNSAFE_store_value(vAddr address, uint32_t *value){
 	if (DEBUG) printf(" ENTER UNSAFE_store_value()\n");
@@ -83,15 +74,13 @@ void UNSAFE_store_value(vAddr address, uint32_t *value){
 }
 
 /**
- * When the user is finally done with the memory page that has been allocated, 
- * the user can free it. This frees the page, regardless of where it is in the hierarchy.
+ * free_page() helper.
  */
 void UNSAFE_free_page(vAddr address){
 	if (DEBUG) printf(" ENTER UNSAFE_free_page()\n");
 	PT[address].device->bitmap[PT[address].offset] = false;
 	PT[address].device->mem_used--;
 	PT[address] = DEFAULT_PTE;
-	//sift_pages_up(); // move pages from lower levels to fill gap
 }
 
 //=================================================================================================
