@@ -1,2 +1,9 @@
-testing_methodology.txt
+Project 4 CS 3013 - C16
 
+1) void memoryMaxer(): Provided in the project specification.
+
+2) void testRAM(): This is a basic test that creates 10 pages and then deletes them, to illustrate the working of the 4 api calls create_page, get_value, store_value, and free_page.
+
+3) void testFullMemory(): This is a function that tries to create more than 1000 pages (which is the max amount allowed), and fails appropriately.
+
+4) void testMultithreaded(): This is a function that tests the program with multithreading, creating a small numbe of threads, and 100 pages. It utilizes the helper function multithreadedHelper() for thread creation.
