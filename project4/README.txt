@@ -45,5 +45,18 @@ Notes:						This project is divided into several components:
 								Synchonization was done over single Pages and abstracted into
 							the lock_PTE() and unlock_PTE() functions, which were called whenever
 							a thread wishes to access a particular page table entry.
+
+							--
+
+							Page Eviction Algo #1:
+								FIFO (Modified): Evict the first page in the Page Table that is 
+								in the requested StorageDevice.
+							Page Eviction Algo #2: 
+								Random: Evict a random page in the Page Table that is in the
+								requested StorageDevice.
+							Page Eviction Algo #3: 
+								Second-Change: As described in class, use an r-bit to give 
+								a "second chance" to pages that have been referenced before
+								evicting them.
 							
 EOF
