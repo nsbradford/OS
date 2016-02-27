@@ -129,7 +129,7 @@ void memoryMaxer(){
 
 
 /**
- * Run the multithreaded stress test.
+ * Run the stress tests.
  */
 int main(int argc, char *argv[]){
 
