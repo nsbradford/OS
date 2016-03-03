@@ -1,5 +1,5 @@
 # OS
-##CS3013: Operating Systems WPI C-Term 2016
+<b>WPI CS3013 C16: Operating Systems</b>
 
 project0: Recompile Linux
 
